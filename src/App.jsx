@@ -1,6 +1,7 @@
 import RateDisplay from './components/RateDisplay';
 import Timeline from './components/Timeline';
 import Calculator from './components/Calculator';
+import ChargingTip from './components/ChargingTip';
 
 export default function App() {
   return (
@@ -11,6 +12,7 @@ export default function App() {
       <RateDisplay />
       <Timeline />
       <Calculator />
+      <ChargingTip />
     </div>
   );
 }
