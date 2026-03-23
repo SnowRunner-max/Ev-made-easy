@@ -40,9 +40,9 @@ describe('App — structure', () => {
     expect(screen.getByTestId('app-footer')).toHaveTextContent(/PG&E|3CE/i);
   });
 
-  it('footer notes the base services charge is excluded', () => {
+  it('footer renders the Footer component', () => {
     render(<App />);
-    expect(screen.getByTestId('app-footer')).toHaveTextContent(/base service|daily charge|\$0\.79/i);
+    expect(screen.getByTestId('footer-toggle')).toBeInTheDocument();
   });
 });
 

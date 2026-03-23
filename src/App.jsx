@@ -2,6 +2,7 @@ import RateDisplay from './components/RateDisplay';
 import Timeline from './components/Timeline';
 import Calculator from './components/Calculator';
 import ChargingTip from './components/ChargingTip';
+import Footer from './components/Footer';
 
 export default function App() {
   return (
@@ -24,36 +25,7 @@ export default function App() {
         <ChargingTip />
       </main>
 
-      <footer
-        data-testid="app-footer"
-        className="border-t border-gray-200 bg-white px-4 py-6 text-center text-xs text-gray-400 space-y-1"
-      >
-        <p>
-          Rates shown combine 3CE generation + PG&E delivery for the EV2-A plan in Buellton, CA.
-        </p>
-        <p>
-          A daily base service charge of $0.79/day (~$24/month) is not included in the per-kWh rates above.
-        </p>
-        <p className="pt-1">
-          <a
-            href="https://www.pge.com/en/account/rate-plans/electric-vehicle-rate-plans.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-gray-600"
-          >
-            PG&E EV Rates
-          </a>
-          {' · '}
-          <a
-            href="https://3cenergy.org/rates"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-gray-600"
-          >
-            3CE Rates
-          </a>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
