@@ -21,10 +21,10 @@ export default function RateDisplay() {
   const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
 
   return (
-    <>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6">
       <div
         data-testid="rate-badge"
-        className={`${BADGE_CLASSES[colorScheme]} rounded-2xl p-8 text-center shadow-lg max-w-sm w-full mx-auto`}
+        className={`${BADGE_CLASSES[colorScheme]} rounded-2xl p-8 text-center shadow-lg w-full sm:w-64 shrink-0`}
       >
         <div data-testid="rate-value" className="text-6xl font-bold tracking-tight">
           <span>${rate.toFixed(2)}</span>
@@ -38,12 +38,12 @@ export default function RateDisplay() {
         </div>
       </div>
 
-      <p data-testid="countdown" className="mt-4 text-sm text-gray-500 text-center max-w-sm mx-auto">
+      <p data-testid="countdown" className="mt-4 sm:mt-0 text-sm text-gray-500 text-center sm:text-left">
         {nextLabel} starts in{' '}
         <span className="font-semibold text-gray-700">{formatted}</span>
         {' '}— rate {direction}{' '}
         <span className="font-semibold text-gray-700">${nextChange.newRate.toFixed(2)}/kWh</span>
       </p>
-    </>
+    </div>
   );
 }

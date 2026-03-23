@@ -64,7 +64,7 @@ export default function Calculator() {
     : null;
 
   return (
-    <div data-testid="calculator" className="w-full max-w-sm mx-auto mt-8">
+    <div data-testid="calculator" className="w-full">
       <h2 className="text-lg font-semibold text-gray-800 mb-3">Cost to Charge</h2>
 
       <select
@@ -120,7 +120,7 @@ export default function Calculator() {
       </div>
 
       {summary && (
-        <div data-testid="cost-output" className="mt-4 space-y-4">
+        <div data-testid="cost-output" className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <CostBlock prefix="to80" label="To charge to 80%" data={summary.to80} />
           <CostBlock prefix="to100" label="To charge to 100%" data={summary.to100} />
         </div>

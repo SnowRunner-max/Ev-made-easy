@@ -40,7 +40,7 @@ export default function Timeline() {
   const markerPercent = (getPacificFractionalHour(now) / 24) * 100;
 
   return (
-    <div data-testid="timeline" className="w-full max-w-sm mx-auto mt-8">
+    <div data-testid="timeline" className="w-full">
       {/* Outer wrapper is relative so the caret can sit above the bar */}
       <div className="relative">
         {/* Downward-pointing caret above the bar */}

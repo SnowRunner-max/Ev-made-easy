@@ -51,7 +51,7 @@ export default function ChargingTip() {
   return (
     <div
       data-testid="charging-tip"
-      className={`w-full max-w-sm mx-auto mt-6 rounded-lg border px-4 py-3 text-sm ${COLOR[period]}`}
+      className={`w-full rounded-lg border px-4 py-3 text-sm ${COLOR[period]}`}
     >
       <p data-testid="tip-message">{message}</p>
     </div>
