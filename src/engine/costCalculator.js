@@ -9,17 +9,18 @@ const DEFAULT_CHARGING_KW = 7.7;
  * @param {Date} startTime
  * @param {number} kwhNeeded
  * @param {number} chargingKw
+ * @param {Object} planConfig
  * @returns {{ totalCost: number, hoursNeeded: number }}
  */
-export function calcChargeCost(startTime, kwhNeeded, chargingKw = DEFAULT_CHARGING_KW) {
+export function calcChargeCost(startTime, kwhNeeded, chargingKw = DEFAULT_CHARGING_KW, planConfig) {
   const hoursNeeded = kwhNeeded / chargingKw;
   let remainingHours = hoursNeeded;
   let currentTime = startTime.getTime();
   let totalCost = 0;
 
   while (remainingHours > 0) {
-    const { rate } = getRate(new Date(currentTime));
-    const { time: nextBoundary } = getNextRateChange(new Date(currentTime));
+    const { rate } = getRate(new Date(currentTime), planConfig);
+    const { time: nextBoundary } = getNextRateChange(new Date(currentTime), planConfig);
     const hoursUntilBoundary = (nextBoundary.getTime() - currentTime) / 3_600_000;
     const hoursThisPeriod = Math.min(remainingHours, hoursUntilBoundary);
     totalCost += hoursThisPeriod * chargingKw * rate;
@@ -61,15 +62,16 @@ function buildPacificHour(dateStr, targetHour) {
  * @param {Date} date
  * @param {number} kwhNeeded
  * @param {number} chargingKw
+ * @param {Object} planConfig
  * @returns {{ startHour: number, totalCost: number }}
  */
-export function findCheapestWindow(date, kwhNeeded, chargingKw = DEFAULT_CHARGING_KW) {
+export function findCheapestWindow(date, kwhNeeded, chargingKw = DEFAULT_CHARGING_KW, planConfig) {
   const dateStr = getPacificDateStr(date);
   let best = null;
 
   for (let hour = 0; hour < 24; hour++) {
     const start = buildPacificHour(dateStr, hour);
-    const { totalCost } = calcChargeCost(start, kwhNeeded, chargingKw);
+    const { totalCost } = calcChargeCost(start, kwhNeeded, chargingKw, planConfig);
     if (!best || totalCost < best.totalCost) {
       best = { startHour: hour, totalCost };
     }
@@ -85,15 +87,16 @@ export function findCheapestWindow(date, kwhNeeded, chargingKw = DEFAULT_CHARGIN
  * @param {number} batteryKwh   — total usable battery capacity
  * @param {number} currentPct   — current state of charge (0–100)
  * @param {number} chargingKw
+ * @param {Object} planConfig
  * @returns {{ to80: object|null, to100: object|null }}
  */
-export function calcChargeSummary(startTime, batteryKwh, currentPct, chargingKw = DEFAULT_CHARGING_KW) {
+export function calcChargeSummary(startTime, batteryKwh, currentPct, chargingKw = DEFAULT_CHARGING_KW, planConfig) {
   function forTarget(targetPct) {
     if (currentPct >= targetPct) return null;
     const kwhNeeded = batteryKwh * (targetPct - currentPct) / 100;
-    const { totalCost: costNow, hoursNeeded } = calcChargeCost(startTime, kwhNeeded, chargingKw);
+    const { totalCost: costNow, hoursNeeded } = calcChargeCost(startTime, kwhNeeded, chargingKw, planConfig);
     const { totalCost: cheapestCost, startHour: cheapestHour } =
-      findCheapestWindow(startTime, kwhNeeded, chargingKw);
+      findCheapestWindow(startTime, kwhNeeded, chargingKw, planConfig);
     return {
       kwhNeeded,
       hoursNeeded,

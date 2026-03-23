@@ -33,9 +33,13 @@ function RateTable({ rates, touPeriods, seasons }) {
   );
 }
 
-export default function Footer({ ratesData = defaultRatesData }) {
+export default function Footer({ planConfig, ratesData }) {
+  // Support both planConfig (new) and ratesData (legacy) prop
+  const data = planConfig ?? ratesData ?? defaultRatesData;
   const [expanded, setExpanded] = useState(false);
-  const { _metadata: meta, rates, touPeriods, seasons, baseServicesCharge: bsc } = ratesData;
+  const { _metadata: meta, rates, touPeriods, seasons } = data;
+  const bsc = data.baseServicesCharge;
+  const dmc = data.dailyMeterCharge;
 
   return (
     <footer
@@ -66,12 +70,23 @@ export default function Footer({ ratesData = defaultRatesData }) {
             </section>
 
             <section>
-              <h3 className="font-semibold text-gray-700 mb-1">Daily base service charge</h3>
-              <p>
-                ${bsc.ratePerDay.toFixed(2)}/day (~${(bsc.ratePerDay * 30.5).toFixed(2)}/month) for
-                Income Tier {bsc.incomeTier} customers. This fixed charge is not reflected in the
-                per-kWh rates shown in the app.
-              </p>
+              <h3 className="font-semibold text-gray-700 mb-1">
+                {dmc ? 'Daily meter charge' : 'Daily base service charge'}
+              </h3>
+              {bsc && (
+                <p>
+                  ${bsc.ratePerDay.toFixed(2)}/day (~${(bsc.ratePerDay * 30.5).toFixed(2)}/month) for
+                  Income Tier {bsc.incomeTier} customers. This fixed charge is not reflected in the
+                  per-kWh rates shown in the app.
+                </p>
+              )}
+              {dmc && (
+                <p>
+                  ${dmc.ratePerDay.toFixed(5)}/day for the separately metered EV outlet.
+                  EV-B requires a dedicated second meter for your EV charger.
+                  This fixed charge is not reflected in the per-kWh rates shown in the app.
+                </p>
+              )}
             </section>
 
             <section>
@@ -79,7 +94,7 @@ export default function Footer({ ratesData = defaultRatesData }) {
               <ul className="space-y-0.5">
                 <li>PG&E delivery rates: {meta.effectiveDates.pgeDelivery}</li>
                 <li>3CE generation rates: {meta.effectiveDates.cceGeneration}</li>
-                <li>Last updated: {meta.lastUpdated}</li>
+                {meta.lastUpdated && <li>Last updated: {meta.lastUpdated}</li>}
               </ul>
             </section>
 

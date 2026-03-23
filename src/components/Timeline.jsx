@@ -7,14 +7,12 @@ const BG_COLORS = {
   red:     'bg-red-500',
 };
 
-// Dropped "4 PM" — too close to "3 PM" to render without overlap.
-// The amber→red color transition makes the 4 PM boundary visually clear.
-const BOUNDARY_LABELS = [
-  { hour: 0,  label: '12 AM' },
-  { hour: 15, label: '3 PM'  },
-  { hour: 21, label: '9 PM'  },
-  { hour: 24, label: '12 AM' },
-];
+function hourToLabel(hour) {
+  if (hour === 0 || hour === 24) return '12 AM';
+  if (hour < 12) return `${hour} AM`;
+  if (hour === 12) return '12 PM';
+  return `${hour - 12} PM`;
+}
 
 function getPacificFractionalHour(date) {
   const parts = new Intl.DateTimeFormat('en-US', {
@@ -28,7 +26,7 @@ function getPacificFractionalHour(date) {
   return (hour === 24 ? 0 : hour) + minute / 60;
 }
 
-export default function Timeline() {
+export default function Timeline({ planConfig }) {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -36,8 +34,15 @@ export default function Timeline() {
     return () => clearInterval(id);
   }, []);
 
-  const schedule = getDaySchedule(now);
+  const schedule = getDaySchedule(now, planConfig);
   const markerPercent = (getPacificFractionalHour(now) / 24) * 100;
+
+  // Derive boundary hours from block boundaries; filter out labels too close to neighbors
+  const allBoundaryHours = [0, ...schedule.map(b => b.endHour)];
+  const boundaryHours = allBoundaryHours.filter((h, i, arr) => {
+    if (i === 0 || i === arr.length - 1) return true;
+    return (h - arr[i - 1]) >= 2;
+  });
 
   return (
     <div data-testid="timeline" className="w-full">
@@ -82,9 +87,9 @@ export default function Timeline() {
 
       {/* Boundary time labels */}
       <div className="relative h-5 mt-1">
-        {BOUNDARY_LABELS.map(({ hour, label }) => {
-          const isFirst = hour === 0;
-          const isLast  = hour === 24;
+        {boundaryHours.map((hour, i) => {
+          const isFirst = i === 0;
+          const isLast  = i === boundaryHours.length - 1;
           return (
             <span
               key={hour}
@@ -93,7 +98,7 @@ export default function Timeline() {
               }`}
               style={{ left: `${(hour / 24) * 100}%` }}
             >
-              {label}
+              {hourToLabel(hour)}
             </span>
           );
         })}

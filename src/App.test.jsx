@@ -98,3 +98,21 @@ describe('App — all components present', () => {
     expect(screen.getByTestId('charging-tip')).toBeInTheDocument();
   });
 });
+
+describe('App — plan selector', () => {
+  it('renders the plan selector dropdown', () => {
+    render(<App />);
+    expect(screen.getByTestId('plan-select')).toBeInTheDocument();
+  });
+
+  it('defaults to EV2-A plan', () => {
+    render(<App />);
+    expect(screen.getByTestId('plan-select').value).toBe('ev2a');
+  });
+
+  it('has three plan options', () => {
+    render(<App />);
+    const options = screen.getByTestId('plan-select').querySelectorAll('option');
+    expect(options).toHaveLength(3);
+  });
+});

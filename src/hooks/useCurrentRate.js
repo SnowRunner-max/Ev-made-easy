@@ -3,7 +3,7 @@ import { getRate, getNextRateChange } from '../engine/rateEngine';
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
-export function useCurrentRate() {
+export function useCurrentRate(planConfig) {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -11,7 +11,7 @@ export function useCurrentRate() {
 
     function schedule() {
       const current = new Date();
-      const { time: nextChange } = getNextRateChange(current);
+      const { time: nextChange } = getNextRateChange(current, planConfig);
       const msUntilChange = nextChange.getTime() - current.getTime();
       const interval = msUntilChange <= FIVE_MINUTES_MS ? 1_000 : 60_000;
 
@@ -25,7 +25,7 @@ export function useCurrentRate() {
 
     schedule();
     return () => clearInterval(id);
-  }, []);
+  }, [planConfig]);
 
-  return { ...getRate(now), nextChange: getNextRateChange(now) };
+  return { ...getRate(now, planConfig), nextChange: getNextRateChange(now, planConfig) };
 }

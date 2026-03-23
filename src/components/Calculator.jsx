@@ -24,7 +24,7 @@ function CostBlock({ prefix, label, data }) {
           </span>
         </p>
         <p>
-          Best price (off-peak):{' '}
+          Best price:{' '}
           <span className="font-semibold text-emerald-700" data-testid={`${prefix}-cheapest-cost`}>
             ${data.cheapestCost.toFixed(2)}
           </span>
@@ -48,7 +48,7 @@ function CostBlock({ prefix, label, data }) {
   );
 }
 
-export default function Calculator() {
+export default function Calculator({ planConfig }) {
   const [selectedId, setSelectedId] = useState(vehiclesData.vehicles[0].id);
   const [customKwh, setCustomKwh] = useState('');
   const [currentPct, setCurrentPct] = useState(20);
@@ -60,7 +60,7 @@ export default function Calculator() {
     : selectedVehicle.usableBatteryKwh;
 
   const summary = batteryKwh > 0 && currentPct < 100
-    ? calcChargeSummary(new Date(), batteryKwh, currentPct)
+    ? calcChargeSummary(new Date(), batteryKwh, currentPct, 7.7, planConfig)
     : null;
 
   return (

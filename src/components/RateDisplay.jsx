@@ -13,8 +13,8 @@ const PERIOD_LABELS = {
   peak:     'Peak',
 };
 
-export default function RateDisplay() {
-  const { rate, season, periodLabel, colorScheme, nextChange } = useCurrentRate();
+export default function RateDisplay({ planConfig }) {
+  const { rate, season, periodLabel, colorScheme, nextChange } = useCurrentRate(planConfig);
   const { formatted } = useCountdown(nextChange.time);
 
   const nextLabel = PERIOD_LABELS[nextChange.newPeriod];
