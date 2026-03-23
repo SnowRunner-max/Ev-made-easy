@@ -1,0 +1,167 @@
+{
+  "_metadata": {
+    "ratePlan": "PG&E EV2-A with 3CE 3Cchoice generation",
+    "serviceArea": "Buellton, CA (Santa Barbara County)",
+    "ccaProvider": "Central Coast Community Energy (3CE)",
+    "ccaTier": "3Cchoice",
+    "pciaVintage": 2021,
+    "effectiveDates": {
+      "pgeDelivery": "2026-03-01",
+      "cceGeneration": "2026-02-15"
+    },
+    "sources": [
+      "PG&E EV2 Rate Schedule (Electric Schedule EV2, effective 2026-03-01)",
+      "3CE 3Cchoice Generation Rate Sheet (effective 2026-02-15)",
+      "PG&E EV2-A PCIA Non-Bypassable Charges Disclosure (2021 vintage)"
+    ],
+    "lastUpdated": "2026-03-22",
+    "notes": [
+      "Rates apply to EV2-A customers enrolled in 3CE 3Cchoice CCA program.",
+      "All-in rate = PG&E delivery-only rate + 3CE generation rate.",
+      "The PG&E bundled generation component is replaced by 3CE generation; bundled PCIA of -$0.01011/kWh is removed and replaced with vintaged PCIA of $0.05264/kWh.",
+      "Base Services Charge of $0.79343/day (Income Tier 3) is not included in per-kWh rates — display in footnote only.",
+      "EV2-A TOU periods are the same every day of the year, including weekends and PG&E holidays."
+    ]
+  },
+
+  "seasons": {
+    "summer": {
+      "label": "Summer",
+      "months": [6, 7, 8, 9],
+      "description": "June 1 – September 30"
+    },
+    "winter": {
+      "label": "Winter",
+      "months": [1, 2, 3, 4, 5, 10, 11, 12],
+      "description": "October 1 – May 31"
+    }
+  },
+
+  "touPeriods": {
+    "peak": {
+      "label": "Peak",
+      "windows": [
+        { "startHour": 16, "endHour": 21, "description": "4:00 PM – 9:00 PM" }
+      ],
+      "colorScheme": "red"
+    },
+    "partPeak": {
+      "label": "Part-Peak",
+      "windows": [
+        { "startHour": 15, "endHour": 16, "description": "3:00 PM – 4:00 PM" },
+        { "startHour": 21, "endHour": 24, "description": "9:00 PM – 12:00 AM" }
+      ],
+      "colorScheme": "amber"
+    },
+    "offPeak": {
+      "label": "Off-Peak",
+      "windows": [
+        { "startHour": 0, "endHour": 15, "description": "12:00 AM – 3:00 PM" }
+      ],
+      "colorScheme": "emerald"
+    }
+  },
+
+  "rates": {
+    "summer": {
+      "peak": {
+        "generation": 0.18441,
+        "delivery": 0.34979,
+        "combined": 0.53420
+      },
+      "partPeak": {
+        "generation": 0.14014,
+        "delivery": 0.28401,
+        "combined": 0.42415
+      },
+      "offPeak": {
+        "generation": 0.09941,
+        "delivery": 0.12313,
+        "combined": 0.22254
+      }
+    },
+    "winter": {
+      "peak": {
+        "generation": 0.12810,
+        "delivery": 0.27956,
+        "combined": 0.40766
+      },
+      "partPeak": {
+        "generation": 0.11574,
+        "delivery": 0.27534,
+        "combined": 0.39108
+      },
+      "offPeak": {
+        "generation": 0.09249,
+        "delivery": 0.13012,
+        "combined": 0.22261
+      }
+    }
+  },
+
+  "additionalCharges": {
+    "pcia": {
+      "ratePerKwh": 0.05264,
+      "vintage": 2021,
+      "description": "Power Charge Indifference Adjustment — charged by PG&E on CCA customer bills. Replaces the bundled PCIA of -$0.01011/kWh that is embedded in the PG&E bundled rate.",
+      "note": "Already included in the delivery rate figures above."
+    },
+    "franchiseFee": {
+      "ratePerKwh": 0.00048,
+      "description": "Franchise Fee Surcharge — charged by PG&E.",
+      "note": "Already included in the delivery rate figures above."
+    }
+  },
+
+  "baseServicesCharge": {
+    "ratePerDay": 0.79343,
+    "incomeTier": 3,
+    "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only — do not include in per-kWh rate calculations."
+  },
+
+  "billValidation": {
+    "description": "Cross-validation data from a November 2025 customer bill (winter rates). Use this to verify the rate engine produces correct outputs.",
+    "billMonth": "2025-11",
+    "season": "winter",
+    "pgeLineItems": {
+      "description": "PG&E charges shown on bill before 3CE generation credit. These are PG&E-side rates and include NBC, PCIA, and other adjustments.",
+      "peak": 0.48575,
+      "partPeak": 0.46905,
+      "offPeak": 0.30036
+    },
+    "cceLineItems": {
+      "description": "3CE generation charges shown separately on the 3CE portion of the bill.",
+      "peak": 0.14920,
+      "partPeak": 0.13753,
+      "offPeak": 0.11560
+    },
+    "note": "The Nov 2025 bill reflects slightly different rates than the March 2026 effective rates stored above. Use these figures to validate the rate engine's period detection and season logic, not the exact dollar amounts.",
+    "usage": {
+      "description": "Actual net kWh usage per TOU period from the November 2025 bill (billing period Oct 7 – Nov 5, 2025).",
+      "peak": 47.6368,
+      "partPeak": 28.7662,
+      "offPeak": 199.0572,
+      "total": 275.4602
+    },
+    "billedAmounts": {
+      "description": "Dollar amounts billed per period — used as expected values in validation tests.",
+      "cce": { "peak": 7.11, "partPeak": 3.96, "offPeak": 23.01, "total": 34.08 },
+      "pge": { "peak": 23.14, "partPeak": 13.49, "offPeak": 59.79 }
+    }
+  },
+
+  "holidays": {
+    "description": "PG&E-recognized holidays for 2026. EV2-A TOU periods do NOT change on holidays — rates are identical to any other day. Included for informational display and future rate plan compatibility.",
+    "year": 2026,
+    "dates": [
+      { "date": "2026-01-01", "name": "New Year's Day" },
+      { "date": "2026-02-16", "name": "Presidents' Day" },
+      { "date": "2026-05-25", "name": "Memorial Day" },
+      { "date": "2026-07-03", "name": "Independence Day (observed)" },
+      { "date": "2026-09-07", "name": "Labor Day" },
+      { "date": "2026-11-11", "name": "Veterans Day" },
+      { "date": "2026-11-26", "name": "Thanksgiving" },
+      { "date": "2026-12-25", "name": "Christmas Day" }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "_metadata": {
+    "description": "EV model database for the charging cost calculator. Battery sizes are usable capacity (not total/gross), which is the actual energy available for charging.",
+    "lastUpdated": "2026-03-22",
+    "defaultChargingSpeedKw": 7.7,
+    "defaultChargingSpeedNote": "7.7 kW assumes a standard Level 2 home EVSE at 240V / 32A. Actual speed varies by vehicle onboard charger limit and EVSE capacity."
+  },
+  "vehicles": [
+    {
+      "id": "tesla-model-3-standard",
+      "make": "Tesla",
+      "model": "Model 3",
+      "trim": "Standard Range",
+      "usableBatteryKwh": 60,
+      "approximateRangeMiles": 272,
+      "maxAcChargingKw": 7.7
+    },
+    {
+      "id": "tesla-model-y-long-range",
+      "make": "Tesla",
+      "model": "Model Y",
+      "trim": "Long Range",
+      "usableBatteryKwh": 75,
+      "approximateRangeMiles": 310,
+      "maxAcChargingKw": 11.5
+    },
+    {
+      "id": "chevy-bolt-ev-euv",
+      "make": "Chevrolet",
+      "model": "Bolt EV/EUV",
+      "trim": null,
+      "usableBatteryKwh": 65,
+      "approximateRangeMiles": 259,
+      "maxAcChargingKw": 7.2
+    },
+    {
+      "id": "chevy-equinox-ev",
+      "make": "Chevrolet",
+      "model": "Equinox EV",
+      "trim": null,
+      "usableBatteryKwh": 85,
+      "approximateRangeMiles": 319,
+      "maxAcChargingKw": 11.5
+    },
+    {
+      "id": "rivian-r1t-large",
+      "make": "Rivian",
+      "model": "R1T",
+      "trim": "Large Pack",
+      "usableBatteryKwh": 135,
+      "approximateRangeMiles": 352,
+      "maxAcChargingKw": 11.5
+    }
+  ]
+}
