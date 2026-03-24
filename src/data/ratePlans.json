@@ -49,6 +49,16 @@
           "offPeak":  { "generation": 0.09249, "delivery": 0.13012, "combined": 0.22261 }
         }
       },
+      "cceTiers": {
+        "3cchoice": {
+          "summer": { "peak": 0.52620, "partPeak": 0.41615, "offPeak": 0.21454 },
+          "winter": { "peak": 0.39966, "partPeak": 0.38308, "offPeak": 0.21461 }
+        },
+        "3cprime": {
+          "summer": { "peak": 0.53420, "partPeak": 0.42415, "offPeak": 0.22254 },
+          "winter": { "peak": 0.40766, "partPeak": 0.39108, "offPeak": 0.22261 }
+        }
+      },
       "pgeRates": {
         "summer": {
           "peak":     0.53809,
@@ -68,10 +78,10 @@
         "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
       },
       "_metadata": {
-        "ratePlan": "PG&E EV2-A with 3CE 3Cchoice generation",
+        "ratePlan": "PG&E EV2-A with 3CE generation",
         "providers": {
           "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+          "3ce": { "name": "Central Coast Community Energy (3CE)" }
         },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",
@@ -126,6 +136,16 @@
           "offPeak":  { "generation": 0.05685, "delivery": 0.28468, "combined": 0.34153 }
         }
       },
+      "cceTiers": {
+        "3cchoice": {
+          "summer": { "peak": 0.79449, "partPeak": 0.53449, "offPeak": 0.43316 },
+          "winter": { "peak": 0.40247, "partPeak": 0.35861, "offPeak": 0.33353 }
+        },
+        "3cprime": {
+          "summer": { "peak": 0.80249, "partPeak": 0.54249, "offPeak": 0.44116 },
+          "winter": { "peak": 0.41047, "partPeak": 0.36861, "offPeak": 0.34153 }
+        }
+      },
       "pgeRates": null,
       "baseServicesCharge": {
         "ratePerDay": 0.79343,
@@ -134,10 +154,10 @@
         "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
       },
       "_metadata": {
-        "ratePlan": "PG&E E-ELEC with 3CE 3Cchoice generation",
+        "ratePlan": "PG&E E-ELEC with 3CE generation",
         "providers": {
           "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+          "3ce": { "name": "Central Coast Community Energy (3CE)" }
         },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",
@@ -198,6 +218,16 @@
           "offPeak":  { "generation": 0.06686, "delivery": 0.23504, "combined": 0.30190 }
         }
       },
+      "cceTiers": {
+        "3cchoice": {
+          "summer": { "peak": 0.89730, "partPeak": 0.51115, "offPeak": 0.35269 },
+          "winter": { "peak": 0.52224, "partPeak": 0.36563, "offPeak": 0.29390 }
+        },
+        "3cprime": {
+          "summer": { "peak": 0.90530, "partPeak": 0.51915, "offPeak": 0.36069 },
+          "winter": { "peak": 0.53024, "partPeak": 0.37363, "offPeak": 0.30190 }
+        }
+      },
       "pgeRates": null,
       "dailyMeterCharge": {
         "ratePerDay": 0.04928,
@@ -205,10 +235,10 @@
         "description": "Daily charge for the separately metered EV outlet. Display in app footnote only."
       },
       "_metadata": {
-        "ratePlan": "PG&E EV-B with 3CE 3Cchoice generation",
+        "ratePlan": "PG&E EV-B with 3CE generation",
         "providers": {
           "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+          "3ce": { "name": "Central Coast Community Energy (3CE)" }
         },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",

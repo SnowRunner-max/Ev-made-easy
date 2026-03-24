@@ -140,7 +140,42 @@ describe('App — provider selector', () => {
     const pgRate = badge.textContent;
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     const cceRate = screen.getByTestId('rate-badge').textContent;
-    // EV2-A winter off-peak: PG&E=$0.22558, 3CE=$0.22261 — rates differ
+    // EV2-A winter off-peak: PG&E=$0.22558, 3CE 3Cchoice=$0.21461 — rates differ
     expect(pgRate).not.toBe(cceRate);
+  });
+});
+
+describe('App — tier selector', () => {
+  it('tier selector is hidden when provider is PG&E (default)', () => {
+    render(<App />);
+    expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
+  });
+
+  it('tier selector appears when provider is switched to 3CE', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    expect(screen.getByTestId('tier-select')).toBeInTheDocument();
+  });
+
+  it('defaults to 3Cchoice tier', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    expect(screen.getByTestId('tier-select').value).toBe('3cchoice');
+  });
+
+  it('switching to 3Cprime increases the displayed rate by ~$0.008', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    const choiceRate = parseFloat(screen.getByTestId('rate-badge').textContent.replace(/[^0-9.]/g, ''));
+    fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
+    const primeRate = parseFloat(screen.getByTestId('rate-badge').textContent.replace(/[^0-9.]/g, ''));
+    expect(primeRate - choiceRate).toBeCloseTo(0.008, 2);
+  });
+
+  it('tier selector is hidden again when switching back to PG&E', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: 'pge' } });
+    expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
   });
 });
