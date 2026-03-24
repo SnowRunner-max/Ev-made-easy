@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import App from './App';
 
@@ -114,5 +114,33 @@ describe('App — plan selector', () => {
     render(<App />);
     const options = screen.getByTestId('plan-select').querySelectorAll('option');
     expect(options).toHaveLength(3);
+  });
+});
+
+describe('App — provider selector', () => {
+  it('renders the provider selector dropdown', () => {
+    render(<App />);
+    expect(screen.getByTestId('provider-select')).toBeInTheDocument();
+  });
+
+  it('defaults to PG&E Bundled provider', () => {
+    render(<App />);
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+  });
+
+  it('has two provider options', () => {
+    render(<App />);
+    const options = screen.getByTestId('provider-select').querySelectorAll('option');
+    expect(options).toHaveLength(2);
+  });
+
+  it('switching to 3CE updates the displayed rate', () => {
+    render(<App />);
+    const badge = screen.getByTestId('rate-badge');
+    const pgRate = badge.textContent;
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    const cceRate = screen.getByTestId('rate-badge').textContent;
+    // EV2-A winter off-peak: PG&E=$0.22558, 3CE=$0.22261 — rates differ
+    expect(pgRate).not.toBe(cceRate);
   });
 });

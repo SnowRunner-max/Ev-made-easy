@@ -64,7 +64,7 @@ export default function Footer({ planConfig, ratesData }) {
             <section>
               <h3 className="font-semibold text-gray-700 mb-1">All-in rates ($/kWh)</h3>
               <p className="text-gray-500 mb-1">
-                3CE {meta.ccaTier} generation + PG&E delivery · {meta.serviceArea}
+                {meta.activeProvider ?? `3CE ${meta.ccaTier} generation + PG&E delivery`} · {meta.serviceArea}
               </p>
               <RateTable rates={rates} touPeriods={touPeriods} seasons={seasons} />
             </section>

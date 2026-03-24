@@ -49,6 +49,18 @@
           "offPeak":  { "generation": 0.09249, "delivery": 0.13012, "combined": 0.22261 }
         }
       },
+      "pgeRates": {
+        "summer": {
+          "peak":     0.53809,
+          "partPeak": 0.42760,
+          "offPeak":  0.22558
+        },
+        "winter": {
+          "peak":     0.41099,
+          "partPeak": 0.39428,
+          "offPeak":  0.22558
+        }
+      },
       "baseServicesCharge": {
         "ratePerDay": 0.79343,
         "label": "Base Services Charge",
@@ -57,6 +69,10 @@
       },
       "_metadata": {
         "ratePlan": "PG&E EV2-A with 3CE 3Cchoice generation",
+        "providers": {
+          "pge": { "name": "PG&E Bundled Service" },
+          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+        },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",
         "ccaTier": "3Cchoice",
@@ -110,6 +126,7 @@
           "offPeak":  { "generation": 0.05685, "delivery": 0.28468, "combined": 0.34153 }
         }
       },
+      "pgeRates": null,
       "baseServicesCharge": {
         "ratePerDay": 0.79343,
         "label": "Base Services Charge",
@@ -118,6 +135,10 @@
       },
       "_metadata": {
         "ratePlan": "PG&E E-ELEC with 3CE 3Cchoice generation",
+        "providers": {
+          "pge": { "name": "PG&E Bundled Service" },
+          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+        },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",
         "ccaTier": "3Cchoice",
@@ -177,6 +198,7 @@
           "offPeak":  { "generation": 0.06686, "delivery": 0.23504, "combined": 0.30190 }
         }
       },
+      "pgeRates": null,
       "dailyMeterCharge": {
         "ratePerDay": 0.04928,
         "label": "Daily Meter Charge",
@@ -184,6 +206,10 @@
       },
       "_metadata": {
         "ratePlan": "PG&E EV-B with 3CE 3Cchoice generation",
+        "providers": {
+          "pge": { "name": "PG&E Bundled Service" },
+          "3ce": { "name": "Central Coast Community Energy (3CE) — 3Cchoice" }
+        },
         "serviceArea": "Buellton, CA (Santa Barbara County)",
         "ccaProvider": "Central Coast Community Energy (3CE)",
         "ccaTier": "3Cchoice",
