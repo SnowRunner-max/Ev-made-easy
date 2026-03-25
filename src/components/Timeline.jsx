@@ -1,29 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getDaySchedule } from '../engine/rateEngine';
-
-const BG_COLORS = {
-  emerald: 'bg-emerald-500',
-  amber:   'bg-amber-500',
-  red:     'bg-red-500',
-};
+import { getPacificFractionalHour } from '../utils/pacificTime';
+import { PERIOD_COLORS } from '../constants/periodColors';
 
 function hourToLabel(hour) {
   if (hour === 0 || hour === 24) return '12 AM';
   if (hour < 12) return `${hour} AM`;
   if (hour === 12) return '12 PM';
   return `${hour - 12} PM`;
-}
-
-function getPacificFractionalHour(date) {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: false,
-  }).formatToParts(date);
-  const hour = parseInt(parts.find(p => p.type === 'hour').value);
-  const minute = parseInt(parts.find(p => p.type === 'minute').value);
-  return (hour === 24 ? 0 : hour) + minute / 60;
 }
 
 export default function Timeline({ planConfig }) {
@@ -66,7 +50,7 @@ export default function Timeline({ planConfig }) {
                 key={i}
                 data-testid={`segment-${block.period}-${i}`}
                 style={{ width: `${widthPct}%` }}
-                className={`${BG_COLORS[block.colorScheme]} flex items-center justify-center overflow-hidden`}
+                className={`${PERIOD_COLORS[block.period].bg} flex items-center justify-center overflow-hidden`}
                 title={`${block.periodLabel}: ${block.startHour}:00–${block.endHour}:00`}
               >
                 <span className="text-xs font-bold text-white drop-shadow select-none">

@@ -55,6 +55,10 @@ export default function App() {
 
   const planConfig = ratePlans.plans[planId];
 
+  if (!planConfig) {
+    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
+  }
+
   function handlePlanChange(newPlanId) {
     const newConfig = ratePlans.plans[newPlanId];
     if (!newConfig.pgeRates && provider === 'pge') {
@@ -64,7 +68,6 @@ export default function App() {
   }
 
   const effectivePlanConfig = getEffectiveConfig(planConfig, provider, cceTier);
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header

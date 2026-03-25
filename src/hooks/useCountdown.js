@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useSmartInterval } from './useSmartInterval';
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
@@ -18,24 +19,11 @@ function formatTimeRemaining(ms) {
 export function useCountdown(targetTime) {
   const [now, setNow] = useState(() => new Date());
 
-  useEffect(() => {
-    let id;
-
-    function schedule() {
-      const current = new Date();
-      const msRemaining = targetTime.getTime() - current.getTime();
-      const interval = msRemaining <= FIVE_MINUTES_MS ? 1_000 : 60_000;
-
-      id = setInterval(() => {
-        setNow(new Date());
-        clearInterval(id);
-        schedule();
-      }, interval);
-    }
-
-    schedule();
-    return () => clearInterval(id);
-  }, [targetTime]);
+  useSmartInterval(
+    () => setNow(new Date()),
+    () => targetTime.getTime() - Date.now(),
+    [targetTime]
+  );
 
   const msRemaining = Math.max(0, targetTime.getTime() - now.getTime());
   return { msRemaining, formatted: formatTimeRemaining(msRemaining) };

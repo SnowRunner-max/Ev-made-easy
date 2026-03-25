@@ -1,54 +1,18 @@
 import { useCurrentRate } from '../hooks/useCurrentRate';
 import { getDaySchedule, getPacificDateStr } from '../engine/rateEngine';
+import { getPacificHour, formatPacificTime, buildPacificTime } from '../utils/pacificTime';
+import { PERIOD_COLORS } from '../constants/periodColors';
 
 function savingsPct(cheapRate, expensiveRate) {
   return Math.round((1 - cheapRate / expensiveRate) * 100);
 }
 
-const COLOR = {
-  offPeak:  'bg-emerald-50 border-emerald-300 text-emerald-800',
-  partPeak: 'bg-amber-50 border-amber-300 text-amber-800',
-  peak:     'bg-red-50 border-red-300 text-red-800',
-};
-
-function formatPacificTime(date) {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    hour12: true,
-  }).format(date);
-}
-
 function findNextOffPeakStart(now, planConfig) {
-  const hour = parseInt(
-    new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Los_Angeles',
-      hour: 'numeric',
-      hour12: false,
-    }).format(now)
-  );
-  const currentHour = hour === 24 ? 0 : hour;
+  const currentHour = getPacificHour(now);
   const blocks = getDaySchedule(now, planConfig);
   const nextOffPeak = blocks.find(b => b.period === 'offPeak' && b.startHour > currentHour);
   if (nextOffPeak) {
-    // Build a date at that hour today (Pacific)
-    const dateStr = getPacificDateStr(now);
-    const [year, month, day] = dateStr.split('-').map(Number);
-    let guess = Date.UTC(year, month - 1, day, 20, 0, 0);
-    for (let i = 0; i < 25; i++) {
-      const h = parseInt(
-        new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/Los_Angeles',
-          hour: 'numeric',
-          hour12: false,
-        }).format(new Date(guess))
-      );
-      const ph = h === 24 ? 0 : h;
-      const diff = nextOffPeak.startHour - ph;
-      if (diff === 0) break;
-      guess += diff * 3_600_000;
-    }
-    return new Date(guess);
+    return buildPacificTime(getPacificDateStr(now), nextOffPeak.startHour);
   }
   // Off-peak must start at midnight tomorrow
   return null;
@@ -108,7 +72,7 @@ export default function ChargingTip({ planConfig }) {
   return (
     <div
       data-testid="charging-tip"
-      className={`w-full rounded-lg border px-4 py-3 text-sm ${COLOR[period]}`}
+      className={`w-full rounded-lg border px-4 py-3 text-sm ${PERIOD_COLORS[period].tip}`}
     >
       <p data-testid="tip-message">{message}</p>
     </div>

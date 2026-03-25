@@ -1,4 +1,5 @@
 import { getRate, getNextRateChange, getPacificDateStr } from './rateEngine';
+import { buildPacificTime } from '../utils/pacificTime';
 
 const DEFAULT_CHARGING_KW = 7.7;
 
@@ -32,30 +33,6 @@ export function calcChargeCost(startTime, kwhNeeded, chargingKw = DEFAULT_CHARGI
 }
 
 /**
- * Builds a Date at the given Pacific wall-clock hour on the same Pacific
- * calendar day as the reference date. Uses iterative Intl correction for
- * DST safety.
- */
-function buildPacificHour(dateStr, targetHour) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  let guess = Date.UTC(year, month - 1, day, 20, 0, 0); // UTC noon-ish Pacific
-
-  for (let i = 0; i < 25; i++) {
-    const formatted = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Los_Angeles',
-      hour: 'numeric',
-      hour12: false,
-    }).format(new Date(guess));
-    const pacificHour = parseInt(formatted) === 24 ? 0 : parseInt(formatted);
-    const diff = targetHour - pacificHour;
-    if (diff === 0) break;
-    guess += diff * 3_600_000;
-  }
-
-  return new Date(guess);
-}
-
-/**
  * Finds the cheapest 24-hour starting window for charging kwhNeeded kWh,
  * trying each Pacific hour of the day of the given date.
  *
@@ -70,7 +47,7 @@ export function findCheapestWindow(date, kwhNeeded, chargingKw = DEFAULT_CHARGIN
   let best = null;
 
   for (let hour = 0; hour < 24; hour++) {
-    const start = buildPacificHour(dateStr, hour);
+    const start = buildPacificTime(dateStr, hour);
     const { totalCost } = calcChargeCost(start, kwhNeeded, chargingKw, planConfig);
     if (!best || totalCost < best.totalCost) {
       best = { startHour: hour, totalCost };

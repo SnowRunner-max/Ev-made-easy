@@ -1,17 +1,5 @@
 import ratePlansData from '../data/ratePlans.json';
-
-// --- Pacific Time helpers ---
-
-function getPacificHour(date) {
-  const formatted = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    hour12: false,
-  }).format(date);
-  // 'en-US' hour12:false returns '24' for midnight in some runtimes — normalize
-  const hour = parseInt(formatted);
-  return hour === 24 ? 0 : hour;
-}
+import { getPacificHour, buildPacificTime } from '../utils/pacificTime';
 
 function getPacificMonth(date) {
   return parseInt(
@@ -36,31 +24,6 @@ function getPacificDayOfWeek(date) {
     weekday: 'short',
   }).format(date);
   return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
-}
-
-/**
- * Build a Date object representing a specific hour on the Pacific calendar date
- * of the given reference date. Uses a binary-search approach to find the UTC
- * millisecond that corresponds to the target Pacific wall-clock hour, which
- * correctly handles DST transitions without any hardcoded UTC offsets.
- */
-function buildPacificTime(referenceDateStr, targetHour, nextDay = false) {
-  // Parse the Pacific date parts
-  const [year, month, day] = referenceDateStr.split('-').map(Number);
-  const targetDay = nextDay ? day + 1 : day;
-
-  // Start with a UTC noon guess on the target date (always within ±14h of any timezone)
-  let guess = Date.UTC(year, month - 1, targetDay, 20, 0, 0); // 20:00 UTC ≈ noon Pacific
-
-  // Iteratively correct until Pacific hour matches targetHour
-  for (let i = 0; i < 25; i++) {
-    const pacificHour = getPacificHour(new Date(guess));
-    const diff = targetHour - pacificHour;
-    if (diff === 0) break;
-    guess += diff * 3600 * 1000;
-  }
-
-  return new Date(guess);
 }
 
 // --- Exported functions ---

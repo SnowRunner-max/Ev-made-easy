@@ -82,12 +82,12 @@ describe('Calculator — EV selector', () => {
     expect(screen.getByTestId('battery-display')).toHaveTextContent('40 kWh');
   });
 
-  it('shows 0 kWh when custom input is empty', () => {
+  it('shows 1 kWh (minimum) when custom input is empty', () => {
     render(<Calculator planConfig={ev2aConfig} />);
     fireEvent.change(screen.getByTestId('vehicle-select'), {
       target: { value: 'custom' },
     });
-    expect(screen.getByTestId('battery-display')).toHaveTextContent('0 kWh');
+    expect(screen.getByTestId('battery-display')).toHaveTextContent('1 kWh');
   });
 });
 
@@ -137,11 +137,11 @@ describe('Calculator — cost output', () => {
     expect(screen.getByTestId('cost-output')).toBeInTheDocument();
   });
 
-  it('does not render cost-output when custom battery is 0 kWh', () => {
+  it('renders cost-output with minimum 1 kWh when custom input is empty', () => {
     render(<Calculator planConfig={ev2aConfig} />);
     fireEvent.change(screen.getByTestId('vehicle-select'), { target: { value: 'custom' } });
-    // custom input is empty → batteryKwh = 0
-    expect(screen.queryByTestId('cost-output')).not.toBeInTheDocument();
+    // custom input is empty → batteryKwh clamps to minimum of 1 kWh
+    expect(screen.getByTestId('cost-output')).toBeInTheDocument();
   });
 
   it('does not render cost-output when slider is at 100%', () => {

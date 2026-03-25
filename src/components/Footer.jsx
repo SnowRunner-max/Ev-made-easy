@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import defaultRatesData from '../data/rates.json';
 
 const PERIOD_ORDER = ['peak', 'partPeak', 'offPeak'];
 
@@ -33,9 +32,8 @@ function RateTable({ rates, touPeriods, seasons }) {
   );
 }
 
-export default function Footer({ planConfig, ratesData }) {
-  // Support both planConfig (new) and ratesData (legacy) prop
-  const data = planConfig ?? ratesData ?? defaultRatesData;
+export default function Footer({ planConfig }) {
+  const data = planConfig;
   const [expanded, setExpanded] = useState(false);
   const { _metadata: meta, rates, touPeriods, seasons } = data;
   const bsc = data.baseServicesCharge;

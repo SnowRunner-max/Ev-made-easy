@@ -20,9 +20,15 @@ import {
 //   Jan 1 = Thursday, Jan 5 = Monday, Jan 10 = Saturday, Jan 11 = Sunday
 //   Jan 6 = Tuesday (non-holiday weekday)
 
-const ev2aConfig = ratePlans.plans['ev2a'];
+const ev2aConfig  = ratePlans.plans['ev2a'];
 const eelecConfig = ratePlans.plans['e-elec'];
 const evbConfig   = ratePlans.plans['ev-b'];
+const etoucConfig = ratePlans.plans['e-touc'];
+const etoudConfig = ratePlans.plans['e-toud'];
+const e1Config    = ratePlans.plans['e1'];
+const esConfig    = ratePlans.plans['es'];
+const etConfig    = ratePlans.plans['et'];
+const emConfig    = ratePlans.plans['em'];
 
 describe('getCurrentPeriod — EV2-A', () => {
   it('returns offPeak for 2:00 AM (January, PST)', () => {
@@ -656,5 +662,419 @@ describe('Bill validation (Nov 2025 statement — winter rates)', () => {
     // ~275 kWh at current winter rates should land between $50–$100
     expect(estimatedTotal).toBeGreaterThan(50);
     expect(estimatedTotal).toBeLessThan(100);
+  });
+});
+
+describe('getCurrentPeriod — E-TOU-C', () => {
+  it('returns offPeak for 2:00 AM (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T02:00:00-08:00'), etoucConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak for exactly midnight (0:00, January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T00:00:00-08:00'), etoucConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak for 3:59 PM — just before peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T15:59:00-08:00'), etoucConfig)).toBe('offPeak');
+  });
+
+  it('returns peak for 4:00 PM — peak start (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T16:00:00-08:00'), etoucConfig)).toBe('peak');
+  });
+
+  it('returns peak for 6:00 PM — mid-peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T18:00:00-08:00'), etoucConfig)).toBe('peak');
+  });
+
+  it('returns peak for 8:59 PM — last minute of peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T20:59:00-08:00'), etoucConfig)).toBe('peak');
+  });
+
+  it('returns offPeak for 9:00 PM — peak end (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T21:00:00-08:00'), etoucConfig)).toBe('offPeak');
+  });
+
+  it('returns peak on weekends (Saturday 5 PM) — no weekend relief', () => {
+    // Jan 10 = Saturday
+    expect(getCurrentPeriod(new Date('2026-01-10T17:00:00-08:00'), etoucConfig)).toBe('peak');
+  });
+
+  it('returns peak on PG&E holidays (New Year\'s Day 5 PM)', () => {
+    // Jan 1 = holiday, but E-TOU-C is unaffected
+    expect(getCurrentPeriod(new Date('2026-01-01T17:00:00-08:00'), etoucConfig)).toBe('peak');
+  });
+
+  it('returns peak in summer at 5 PM (July, PDT)', () => {
+    expect(getCurrentPeriod(new Date('2026-07-15T17:00:00-07:00'), etoucConfig)).toBe('peak');
+  });
+});
+
+describe('getRate — E-TOU-C', () => {
+  it('returns correct summer peak combined rate ($0.5224)', () => {
+    const result = getRate(new Date('2026-07-15T17:00:00-07:00'), etoucConfig);
+    expect(result.rate).toBeCloseTo(0.5224, 4);
+    expect(result.period).toBe('peak');
+    expect(result.season).toBe('summer');
+  });
+
+  it('returns correct summer off-peak combined rate ($0.3994)', () => {
+    const result = getRate(new Date('2026-07-15T02:00:00-07:00'), etoucConfig);
+    expect(result.rate).toBeCloseTo(0.3994, 4);
+    expect(result.period).toBe('offPeak');
+    expect(result.season).toBe('summer');
+  });
+
+  it('returns correct winter peak combined rate ($0.3976)', () => {
+    const result = getRate(new Date('2026-01-15T17:00:00-08:00'), etoucConfig);
+    expect(result.rate).toBeCloseTo(0.3976, 4);
+    expect(result.period).toBe('peak');
+    expect(result.season).toBe('winter');
+  });
+
+  it('returns correct winter off-peak combined rate ($0.3676)', () => {
+    const result = getRate(new Date('2026-01-15T02:00:00-08:00'), etoucConfig);
+    expect(result.rate).toBeCloseTo(0.3676, 4);
+    expect(result.period).toBe('offPeak');
+    expect(result.season).toBe('winter');
+  });
+
+  it('returns periodLabel and colorScheme', () => {
+    const peak = getRate(new Date('2026-01-15T17:00:00-08:00'), etoucConfig);
+    expect(peak.periodLabel).toBe('Peak');
+    expect(peak.colorScheme).toBe('red');
+
+    const offPeak = getRate(new Date('2026-01-15T02:00:00-08:00'), etoucConfig);
+    expect(offPeak.periodLabel).toBe('Off-Peak');
+    expect(offPeak.colorScheme).toBe('emerald');
+  });
+});
+
+describe('getDaySchedule — E-TOU-C', () => {
+  it('returns exactly 3 blocks', () => {
+    expect(getDaySchedule(new Date('2026-01-15T12:00:00-08:00'), etoucConfig)).toHaveLength(3);
+  });
+
+  it('returns blocks in correct order: offPeak, peak, offPeak', () => {
+    const blocks = getDaySchedule(new Date('2026-01-15T12:00:00-08:00'), etoucConfig);
+    expect(blocks[0].period).toBe('offPeak');
+    expect(blocks[1].period).toBe('peak');
+    expect(blocks[2].period).toBe('offPeak');
+  });
+
+  it('returns correct startHour/endHour boundaries', () => {
+    const blocks = getDaySchedule(new Date('2026-01-15T12:00:00-08:00'), etoucConfig);
+    expect(blocks[0]).toMatchObject({ startHour: 0,  endHour: 16 });
+    expect(blocks[1]).toMatchObject({ startHour: 16, endHour: 21 });
+    expect(blocks[2]).toMatchObject({ startHour: 21, endHour: 24 });
+  });
+
+  it('returns winter peak rate for a winter date', () => {
+    const blocks = getDaySchedule(new Date('2026-01-15T12:00:00-08:00'), etoucConfig);
+    const peakBlock = blocks.find(b => b.period === 'peak');
+    expect(peakBlock.rate).toBeCloseTo(0.3976, 4);
+  });
+
+  it('returns summer peak rate for a summer date', () => {
+    const blocks = getDaySchedule(new Date('2026-07-15T12:00:00-07:00'), etoucConfig);
+    const peakBlock = blocks.find(b => b.period === 'peak');
+    expect(peakBlock.rate).toBeCloseTo(0.5224, 4);
+  });
+
+  it('weekend schedule identical to weekday (Saturday)', () => {
+    const weekday = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), etoucConfig); // Tuesday
+    const weekend = getDaySchedule(new Date('2026-01-10T12:00:00-08:00'), etoucConfig); // Saturday
+    expect(weekday.map(b => b.period)).toEqual(weekend.map(b => b.period));
+  });
+});
+
+describe('getNextRateChange — E-TOU-C', () => {
+  it('from 1:00 AM → next change at 4:00 PM (offPeak → peak)', () => {
+    const now = new Date('2026-01-15T01:00:00-08:00');
+    const result = getNextRateChange(now, etoucConfig);
+    expect(result.newPeriod).toBe('peak');
+    expect(getPacificHourForTest(result.time)).toBe(16);
+  });
+
+  it('from 5:00 PM → next change at 9:00 PM (peak → offPeak)', () => {
+    const now = new Date('2026-01-15T17:00:00-08:00');
+    const result = getNextRateChange(now, etoucConfig);
+    expect(result.newPeriod).toBe('offPeak');
+    expect(getPacificHourForTest(result.time)).toBe(21);
+  });
+
+  it('from 10:00 PM → rolls to midnight, still offPeak (last block ends at 24)', () => {
+    const now = new Date('2026-01-15T22:00:00-08:00');
+    const result = getNextRateChange(now, etoucConfig);
+    expect(result.newPeriod).toBe('offPeak');
+    expect(getPacificHourForTest(result.time)).toBe(0);
+  });
+
+  it('result.time is in the future relative to input', () => {
+    const now = new Date('2026-01-15T10:00:00-08:00');
+    const result = getNextRateChange(now, etoucConfig);
+    expect(result.time.getTime()).toBeGreaterThan(now.getTime());
+  });
+});
+
+// E-TOU-D: weekday-only peak 5–8 PM, weekends/holidays always off-peak
+// Day references: Jan 6 = Tuesday (weekday), Jan 10 = Saturday, Jan 1 = New Year's (holiday)
+// July 15 = Wednesday (PDT, summer weekday)
+describe('getCurrentPeriod — E-TOU-D', () => {
+  it('returns offPeak for 2:00 AM on a weekday (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T02:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak for 4:59 PM on a weekday — just before peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T16:59:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns peak for 5:00 PM on a weekday — peak start (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T17:00:00-08:00'), etoudConfig)).toBe('peak');
+  });
+
+  it('returns peak for 6:00 PM on a weekday — mid-peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T18:00:00-08:00'), etoudConfig)).toBe('peak');
+  });
+
+  it('returns peak for 7:59 PM on a weekday — last minute of peak (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T19:59:00-08:00'), etoudConfig)).toBe('peak');
+  });
+
+  it('returns offPeak for 8:00 PM on a weekday — peak end (January, PST)', () => {
+    expect(getCurrentPeriod(new Date('2026-01-06T20:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak on Saturday at 6 PM — no weekend peak', () => {
+    expect(getCurrentPeriod(new Date('2026-01-10T18:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak on Sunday at 6 PM — no weekend peak', () => {
+    // Jan 11 = Sunday
+    expect(getCurrentPeriod(new Date('2026-01-11T18:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak on New Year\'s Day at 6 PM — holidays always off-peak', () => {
+    expect(getCurrentPeriod(new Date('2026-01-01T18:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns offPeak on Thanksgiving at 6 PM — holidays always off-peak', () => {
+    expect(getCurrentPeriod(new Date('2026-11-26T18:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+
+  it('returns peak on a summer weekday at 6 PM (July 15, PDT)', () => {
+    expect(getCurrentPeriod(new Date('2026-07-15T18:00:00-07:00'), etoudConfig)).toBe('peak');
+  });
+
+  it('returns offPeak on a summer weekend at 6 PM (July 18 = Saturday)', () => {
+    expect(getCurrentPeriod(new Date('2026-07-18T18:00:00-07:00'), etoudConfig)).toBe('offPeak');
+  });
+});
+
+describe('getRate — E-TOU-D', () => {
+  it('returns correct summer peak combined rate ($0.4771) — weekday', () => {
+    const result = getRate(new Date('2026-07-15T18:00:00-07:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.4771, 4);
+    expect(result.period).toBe('peak');
+    expect(result.season).toBe('summer');
+  });
+
+  it('returns correct summer off-peak combined rate ($0.3421) — weekday off-hours', () => {
+    const result = getRate(new Date('2026-07-15T02:00:00-07:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.3421, 4);
+    expect(result.period).toBe('offPeak');
+    expect(result.season).toBe('summer');
+  });
+
+  it('returns correct summer off-peak rate on weekend', () => {
+    const result = getRate(new Date('2026-07-18T18:00:00-07:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.3421, 4);
+    expect(result.period).toBe('offPeak');
+  });
+
+  it('returns correct winter peak combined rate ($0.3875) — weekday', () => {
+    const result = getRate(new Date('2026-01-06T18:00:00-08:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.3875, 4);
+    expect(result.period).toBe('peak');
+    expect(result.season).toBe('winter');
+  });
+
+  it('returns correct winter off-peak combined rate ($0.3489) — weekday off-hours', () => {
+    const result = getRate(new Date('2026-01-06T02:00:00-08:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.3489, 4);
+    expect(result.period).toBe('offPeak');
+    expect(result.season).toBe('winter');
+  });
+
+  it('returns winter off-peak rate on holiday at 6 PM', () => {
+    const result = getRate(new Date('2026-01-01T18:00:00-08:00'), etoudConfig);
+    expect(result.rate).toBeCloseTo(0.3489, 4);
+    expect(result.period).toBe('offPeak');
+  });
+
+  it('returns periodLabel and colorScheme', () => {
+    const peak = getRate(new Date('2026-01-06T18:00:00-08:00'), etoudConfig);
+    expect(peak.periodLabel).toBe('Peak');
+    expect(peak.colorScheme).toBe('red');
+
+    const offPeak = getRate(new Date('2026-01-06T02:00:00-08:00'), etoudConfig);
+    expect(offPeak.periodLabel).toBe('Off-Peak');
+    expect(offPeak.colorScheme).toBe('emerald');
+  });
+});
+
+describe('getDaySchedule — E-TOU-D weekday (Tuesday Jan 6)', () => {
+  it('returns exactly 3 blocks', () => {
+    expect(getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), etoudConfig)).toHaveLength(3);
+  });
+
+  it('returns blocks in correct order: offPeak, peak, offPeak', () => {
+    const blocks = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), etoudConfig);
+    expect(blocks[0].period).toBe('offPeak');
+    expect(blocks[1].period).toBe('peak');
+    expect(blocks[2].period).toBe('offPeak');
+  });
+
+  it('returns correct startHour/endHour boundaries', () => {
+    const blocks = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), etoudConfig);
+    expect(blocks[0]).toMatchObject({ startHour: 0,  endHour: 17 });
+    expect(blocks[1]).toMatchObject({ startHour: 17, endHour: 20 });
+    expect(blocks[2]).toMatchObject({ startHour: 20, endHour: 24 });
+  });
+
+  it('returns winter peak rate for a winter weekday', () => {
+    const blocks = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), etoudConfig);
+    const peakBlock = blocks.find(b => b.period === 'peak');
+    expect(peakBlock.rate).toBeCloseTo(0.3875, 4);
+  });
+});
+
+describe('getDaySchedule — E-TOU-D weekend (Saturday Jan 10)', () => {
+  it('returns exactly 1 block', () => {
+    expect(getDaySchedule(new Date('2026-01-10T12:00:00-08:00'), etoudConfig)).toHaveLength(1);
+  });
+
+  it('returns a single offPeak block covering the full day', () => {
+    const blocks = getDaySchedule(new Date('2026-01-10T12:00:00-08:00'), etoudConfig);
+    expect(blocks[0]).toMatchObject({ period: 'offPeak', startHour: 0, endHour: 24 });
+  });
+
+  it('holiday schedule same as weekend (New Year\'s Day)', () => {
+    const holidayBlocks = getDaySchedule(new Date('2026-01-01T12:00:00-08:00'), etoudConfig);
+    expect(holidayBlocks).toHaveLength(1);
+    expect(holidayBlocks[0].period).toBe('offPeak');
+  });
+});
+
+describe('getNextRateChange — E-TOU-D weekday', () => {
+  it('from 3:00 PM → next change at 5:00 PM (offPeak → peak)', () => {
+    const now = new Date('2026-01-06T15:00:00-08:00');
+    const result = getNextRateChange(now, etoudConfig);
+    expect(result.newPeriod).toBe('peak');
+    expect(getPacificHourForTest(result.time)).toBe(17);
+  });
+
+  it('from 6:00 PM → next change at 8:00 PM (peak → offPeak)', () => {
+    const now = new Date('2026-01-06T18:00:00-08:00');
+    const result = getNextRateChange(now, etoudConfig);
+    expect(result.newPeriod).toBe('offPeak');
+    expect(getPacificHourForTest(result.time)).toBe(20);
+  });
+
+  it('from 9:00 PM → rolls to midnight, still offPeak (last block ends at 24)', () => {
+    const now = new Date('2026-01-06T21:00:00-08:00');
+    const result = getNextRateChange(now, etoudConfig);
+    expect(result.newPeriod).toBe('offPeak');
+    expect(getPacificHourForTest(result.time)).toBe(0);
+  });
+
+  it('result.time is in the future relative to input', () => {
+    const now = new Date('2026-01-06T10:00:00-08:00');
+    const result = getNextRateChange(now, etoudConfig);
+    expect(result.time.getTime()).toBeGreaterThan(now.getTime());
+  });
+});
+
+// Tiered (non-TOU) plans: flat offPeak all day, no time variation.
+// Tier 2 rate is the representative rate for EV charging (incremental load exceeds baseline).
+// Tests verify: always offPeak, correct rate, single all-day block regardless of time/day.
+describe('getCurrentPeriod — tiered plans (E1, ES, ET, EM)', () => {
+  const flatPlans = [
+    { config: e1Config, label: 'E1' },
+    { config: esConfig, label: 'ES' },
+    { config: etConfig, label: 'ET' },
+    { config: emConfig, label: 'EM' },
+  ];
+
+  for (const { config, label } of flatPlans) {
+    it(`${label}: returns offPeak at 2:00 AM on a weekday`, () => {
+      expect(getCurrentPeriod(new Date('2026-01-06T02:00:00-08:00'), config)).toBe('offPeak');
+    });
+
+    it(`${label}: returns offPeak at 6:00 PM on a weekday (no peak window)`, () => {
+      expect(getCurrentPeriod(new Date('2026-01-06T18:00:00-08:00'), config)).toBe('offPeak');
+    });
+
+    it(`${label}: returns offPeak on a weekend at 6:00 PM`, () => {
+      expect(getCurrentPeriod(new Date('2026-01-10T18:00:00-08:00'), config)).toBe('offPeak');
+    });
+  }
+});
+
+describe('getRate — E1', () => {
+  it('returns Tier 2 combined rate ($0.40702) in winter', () => {
+    const result = getRate(new Date('2026-01-06T18:00:00-08:00'), e1Config);
+    expect(result.rate).toBeCloseTo(0.40702, 4);
+    expect(result.period).toBe('offPeak');
+    expect(result.season).toBe('winter');
+  });
+
+  it('returns Tier 2 combined rate ($0.40702) in summer', () => {
+    const result = getRate(new Date('2026-07-15T18:00:00-07:00'), e1Config);
+    expect(result.rate).toBeCloseTo(0.40702, 4);
+    expect(result.season).toBe('summer');
+  });
+});
+
+describe('getRate — ES', () => {
+  it('returns Tier 2 combined rate ($0.43380) in winter', () => {
+    const result = getRate(new Date('2026-01-06T18:00:00-08:00'), esConfig);
+    expect(result.rate).toBeCloseTo(0.43380, 4);
+  });
+});
+
+describe('getRate — ET', () => {
+  it('returns Tier 2 combined rate ($0.52346) in winter', () => {
+    const result = getRate(new Date('2026-01-06T18:00:00-08:00'), etConfig);
+    expect(result.rate).toBeCloseTo(0.52346, 4);
+  });
+});
+
+describe('getRate — EM', () => {
+  it('returns Tier 2 combined rate ($0.46572) in winter', () => {
+    const result = getRate(new Date('2026-01-06T18:00:00-08:00'), emConfig);
+    expect(result.rate).toBeCloseTo(0.46572, 4);
+  });
+});
+
+describe('getDaySchedule — tiered plans (flat all day)', () => {
+  it('E1: returns exactly 1 block', () => {
+    expect(getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), e1Config)).toHaveLength(1);
+  });
+
+  it('E1: block covers full day (0–24)', () => {
+    const blocks = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), e1Config);
+    expect(blocks[0]).toMatchObject({ period: 'offPeak', startHour: 0, endHour: 24 });
+  });
+
+  it('E1: weekday and weekend schedule identical', () => {
+    const weekday = getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), e1Config); // Tuesday
+    const weekend = getDaySchedule(new Date('2026-01-10T12:00:00-08:00'), e1Config); // Saturday
+    expect(weekday).toHaveLength(1);
+    expect(weekend).toHaveLength(1);
+    expect(weekday[0].period).toBe(weekend[0].period);
+  });
+
+  it('EM: returns exactly 1 block', () => {
+    expect(getDaySchedule(new Date('2026-01-06T12:00:00-08:00'), emConfig)).toHaveLength(1);
   });
 });

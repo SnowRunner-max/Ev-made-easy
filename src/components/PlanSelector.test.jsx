@@ -8,10 +8,10 @@ describe('PlanSelector', () => {
     expect(screen.getByTestId('plan-select')).toBeInTheDocument();
   });
 
-  it('renders three plan options', () => {
+  it('renders nine plan options (5 TOU + 4 tiered)', () => {
     render(<PlanSelector planId="ev2a" onChange={() => {}} />);
     const options = screen.getAllByRole('option');
-    expect(options).toHaveLength(3);
+    expect(options).toHaveLength(9);
   });
 
   it('includes EV2-A option', () => {
@@ -27,6 +27,36 @@ describe('PlanSelector', () => {
   it('includes EV-B option', () => {
     render(<PlanSelector planId="ev2a" onChange={() => {}} />);
     expect(screen.getByRole('option', { name: /EV-B/i })).toBeInTheDocument();
+  });
+
+  it('includes E-TOU-C option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /E-TOU-C/i })).toBeInTheDocument();
+  });
+
+  it('includes E-TOU-D option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /E-TOU-D/i })).toBeInTheDocument();
+  });
+
+  it('includes E1 option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /^E1/i })).toBeInTheDocument();
+  });
+
+  it('includes ES option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /^ES/i })).toBeInTheDocument();
+  });
+
+  it('includes ET option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /^ET/i })).toBeInTheDocument();
+  });
+
+  it('includes EM option', () => {
+    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /^EM/i })).toBeInTheDocument();
   });
 
   it('shows the currently selected planId', () => {

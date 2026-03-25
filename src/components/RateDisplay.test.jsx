@@ -4,6 +4,7 @@ import ratePlans from '../data/ratePlans.json';
 import RateDisplay from './RateDisplay';
 
 const ev2aConfig = ratePlans.plans['ev2a'];
+const e1Config   = ratePlans.plans['e1'];
 
 describe('RateDisplay', () => {
   beforeEach(() => vi.useFakeTimers());
@@ -99,7 +100,7 @@ describe('RateDisplay', () => {
       vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00'));
       render(<RateDisplay planConfig={ev2aConfig} />);
       const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Part-peak starts in');
+      expect(countdown).toHaveTextContent('Part-Peak starts in');
       expect(countdown).toHaveTextContent('rises to');
     });
 
@@ -127,7 +128,7 @@ describe('RateDisplay', () => {
       vi.setSystemTime(new Date('2026-01-15T20:30:00-08:00'));
       render(<RateDisplay planConfig={ev2aConfig} />);
       const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Part-peak starts in');
+      expect(countdown).toHaveTextContent('Part-Peak starts in');
       expect(countdown).toHaveTextContent('drops to');
     });
 
@@ -141,7 +142,7 @@ describe('RateDisplay', () => {
       vi.setSystemTime(new Date('2026-01-15T23:00:00-08:00'));
       render(<RateDisplay planConfig={ev2aConfig} />);
       const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Off-peak starts in');
+      expect(countdown).toHaveTextContent('Off-Peak starts in');
       expect(countdown).toHaveTextContent('drops to');
     });
 
@@ -149,6 +150,22 @@ describe('RateDisplay', () => {
       vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00')); // → part-peak
       render(<RateDisplay planConfig={ev2aConfig} />);
       expect(screen.getByTestId('countdown')).toHaveTextContent('$0.39/kWh');
+    });
+  });
+
+  describe('tiered plan (E1) — no countdown', () => {
+    beforeEach(() => {
+      vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    });
+
+    it('does not show a countdown for a flat tiered plan', () => {
+      render(<RateDisplay planConfig={e1Config} />);
+      expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
+    });
+
+    it('displays the E1 Tier 2 rate', () => {
+      render(<RateDisplay planConfig={e1Config} />);
+      expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.41/kWh');
     });
   });
 });

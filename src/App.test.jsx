@@ -110,10 +110,10 @@ describe('App — plan selector', () => {
     expect(screen.getByTestId('plan-select').value).toBe('ev2a');
   });
 
-  it('has three plan options', () => {
+  it('has nine plan options (5 TOU + 4 tiered)', () => {
     render(<App />);
     const options = screen.getByTestId('plan-select').querySelectorAll('option');
-    expect(options).toHaveLength(3);
+    expect(options).toHaveLength(9);
   });
 });
 

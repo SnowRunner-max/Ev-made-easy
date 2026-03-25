@@ -259,6 +259,323 @@
           "All-in rate = PG&E delivery-only rate + 3CE generation rate."
         ]
       }
+    },
+
+    "e1": {
+      "id": "e1",
+      "label": "E1",
+      "description": "Standard residential tiered rate — no time-of-use variation",
+      "weekdayVariant": false,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "default": [
+          { "period": "offPeak", "startHour": 0, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "offPeak": { "generation": 0, "delivery": 0.40702, "combined": 0.40702 }
+        },
+        "winter": {
+          "offPeak": { "generation": 0, "delivery": 0.40702, "combined": 0.40702 }
+        }
+      },
+      "baseServicesCharge": {
+        "ratePerDay": 0.79343,
+        "label": "Base Services Charge",
+        "incomeTier": 3,
+        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E E1 (Standard Residential Tiered)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
+        ],
+        "notes": [
+          "E1 is a tiered rate — charges based on usage relative to baseline, not time of day.",
+          "Tier 1 (0–100% baseline): $0.32561/kWh. Tier 2 (>100% baseline): $0.40702/kWh.",
+          "Tier 2 rate is used as the representative combined rate for EV charging (incremental load exceeds baseline).",
+          "No seasonal variation in energy charges.",
+          "Rates are PG&E bundled. generation field is 0.",
+          "CARE discount not modeled."
+        ]
+      }
+    },
+
+    "es": {
+      "id": "es",
+      "label": "ES",
+      "description": "Residential tiered rate with solar (NEM)",
+      "weekdayVariant": false,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "default": [
+          { "period": "offPeak", "startHour": 0, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "offPeak": { "generation": 0, "delivery": 0.43380, "combined": 0.43380 }
+        },
+        "winter": {
+          "offPeak": { "generation": 0, "delivery": 0.43380, "combined": 0.43380 }
+        }
+      },
+      "baseServicesCharge": {
+        "ratePerDay": 0.79343,
+        "label": "Base Services Charge",
+        "incomeTier": 3,
+        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E ES (Residential with Solar, Tiered)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
+        ],
+        "notes": [
+          "ES applies to NEM solar customers on a tiered rate.",
+          "Tier 2 combined rate = E1 Tier 2 ($0.40702) + ES surcharge ($0.02678) = $0.43380/kWh.",
+          "Tier 2 rate is used as the representative combined rate for EV charging.",
+          "No seasonal variation in energy charges.",
+          "Rates are PG&E bundled. generation field is 0.",
+          "CARE discount not modeled."
+        ]
+      }
+    },
+
+    "et": {
+      "id": "et",
+      "label": "ET",
+      "description": "Residential tiered rate (medical baseline allowance)",
+      "weekdayVariant": false,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "default": [
+          { "period": "offPeak", "startHour": 0, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "offPeak": { "generation": 0, "delivery": 0.52346, "combined": 0.52346 }
+        },
+        "winter": {
+          "offPeak": { "generation": 0, "delivery": 0.52346, "combined": 0.52346 }
+        }
+      },
+      "baseServicesCharge": {
+        "ratePerDay": 0.79343,
+        "label": "Base Services Charge",
+        "incomeTier": 3,
+        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E ET (Residential Tiered, Medical Baseline)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
+        ],
+        "notes": [
+          "ET applies to customers qualifying for medical baseline allowances.",
+          "Tier 2 combined rate = E1 Tier 2 ($0.40702) + ET surcharge ($0.11644) = $0.52346/kWh.",
+          "Tier 2 rate is used as the representative combined rate for EV charging.",
+          "No seasonal variation in energy charges.",
+          "Rates are PG&E bundled. generation field is 0.",
+          "CARE discount not modeled."
+        ]
+      }
+    },
+
+    "em": {
+      "id": "em",
+      "label": "EM",
+      "description": "Master-metered residential (multi-unit housing)",
+      "weekdayVariant": false,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "default": [
+          { "period": "offPeak", "startHour": 0, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "offPeak": { "generation": 0, "delivery": 0.46572, "combined": 0.46572 }
+        },
+        "winter": {
+          "offPeak": { "generation": 0, "delivery": 0.46572, "combined": 0.46572 }
+        }
+      },
+      "dailyMeterCharge": {
+        "ratePerDay": 0.41373,
+        "label": "Delivery Minimum Bill Amount",
+        "description": "EM delivery minimum bill amount per meter per day. Display in app footnote only. No Base Services Charge applies to EM."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E EM (Master-Metered Residential, Tiered)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
+        ],
+        "notes": [
+          "EM applies to master-metered multi-unit residential buildings.",
+          "Tier 1 (0–100% baseline): $0.37174/kWh. Tier 2 (>100% baseline): $0.46572/kWh.",
+          "Tier 2 rate is used as the representative combined rate for EV charging.",
+          "No Base Services Charge applies to EM; uses Delivery Minimum Bill Amount instead.",
+          "No seasonal variation in energy charges.",
+          "Rates are PG&E bundled. generation field is 0.",
+          "CARE discount not modeled."
+        ]
+      }
+    },
+
+    "e-toud": {
+      "id": "e-toud",
+      "label": "E-TOU-D",
+      "description": "Residential rate — peak 5–8 PM weekdays only",
+      "weekdayVariant": true,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "weekday": [
+          { "period": "offPeak", "startHour": 0,  "endHour": 17 },
+          { "period": "peak",    "startHour": 17, "endHour": 20 },
+          { "period": "offPeak", "startHour": 20, "endHour": 24 }
+        ],
+        "weekend": [
+          { "period": "offPeak", "startHour": 0, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "peak":    { "label": "Peak",     "colorScheme": "red"     },
+        "offPeak": { "label": "Off-Peak", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "peak":    { "generation": 0, "delivery": 0.4771, "combined": 0.4771 },
+          "offPeak": { "generation": 0, "delivery": 0.3421, "combined": 0.3421 }
+        },
+        "winter": {
+          "peak":    { "generation": 0, "delivery": 0.3875, "combined": 0.3875 },
+          "offPeak": { "generation": 0, "delivery": 0.3489, "combined": 0.3489 }
+        }
+      },
+      "baseServicesCharge": {
+        "ratePerDay": 0.79343,
+        "label": "Base Services Charge",
+        "incomeTier": 3,
+        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E E-TOU-D (Residential Time-of-Use, weekday-only peak)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet (E-TOU-D, effective 2026-03-01)",
+          "Advice Letter 5661-E-B (rate introduced May 1, 2020)"
+        ],
+        "notes": [
+          "Peak applies Monday–Friday only. Weekends and PG&E holidays are always off-peak.",
+          "Rates are PG&E bundled (delivery only; no 3CE generation split available). generation field is 0.",
+          "No baseline credit applies to E-TOU-D (unlike E-TOU-C).",
+          "Summer = June–September; Winter = October–May."
+        ]
+      }
+    },
+
+    "e-touc": {
+      "id": "e-touc",
+      "label": "E-TOU-C",
+      "description": "Default residential rate — peak 4–9 PM every day",
+      "weekdayVariant": false,
+      "seasons": {
+        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
+        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
+      },
+      "touSchedules": {
+        "default": [
+          { "period": "offPeak", "startHour": 0,  "endHour": 16 },
+          { "period": "peak",    "startHour": 16, "endHour": 21 },
+          { "period": "offPeak", "startHour": 21, "endHour": 24 }
+        ]
+      },
+      "touPeriods": {
+        "peak":    { "label": "Peak",     "colorScheme": "red"     },
+        "offPeak": { "label": "Off-Peak", "colorScheme": "emerald" }
+      },
+      "rates": {
+        "summer": {
+          "peak":    { "generation": 0, "delivery": 0.5224, "combined": 0.5224 },
+          "offPeak": { "generation": 0, "delivery": 0.3994, "combined": 0.3994 }
+        },
+        "winter": {
+          "peak":    { "generation": 0, "delivery": 0.3976, "combined": 0.3976 },
+          "offPeak": { "generation": 0, "delivery": 0.3676, "combined": 0.3676 }
+        }
+      },
+      "baseServicesCharge": {
+        "ratePerDay": 0.79343,
+        "label": "Base Services Charge",
+        "incomeTier": 3,
+        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      },
+      "_metadata": {
+        "ratePlan": "PG&E E-TOU-C (Residential Time-of-Use)",
+        "serviceArea": "Buellton, CA (Santa Barbara County)",
+        "effectiveDates": {
+          "pgeDelivery": "2026-03-01"
+        },
+        "sources": [
+          "PG&E Residential Inclusive TOU Rate Sheet (E-TOU-C, effective 2026-03-01)"
+        ],
+        "notes": [
+          "E-TOU-C is PG&E's default residential TOU rate. Customers are auto-enrolled.",
+          "Peak applies every day including weekends and PG&E holidays — no exceptions.",
+          "Rates are PG&E bundled (delivery only; no 3CE generation split available). generation field is 0.",
+          "Baseline Credit (–$0.0814/kWh on baseline usage) is not modeled — requires usage-tier logic.",
+          "Formerly known as E-TOU-C3. E-TOU-B eliminated October 31, 2025 (Advice Letter 7747-E)."
+        ]
+      }
     }
   }
 }

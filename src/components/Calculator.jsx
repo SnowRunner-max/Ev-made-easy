@@ -56,7 +56,7 @@ export default function Calculator({ planConfig }) {
   const isCustom = selectedId === CUSTOM_ID;
   const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedId);
   const batteryKwh = isCustom
-    ? Math.max(0, parseFloat(customKwh) || 0)
+    ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
     : selectedVehicle.usableBatteryKwh;
 
   const summary = batteryKwh > 0 && currentPct < 100
@@ -91,6 +91,7 @@ export default function Calculator({ planConfig }) {
             value={customKwh}
             onChange={e => setCustomKwh(e.target.value)}
             placeholder="Battery size"
+            aria-label="Custom battery size in kWh"
             className="w-32 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <span className="text-sm text-gray-500">kWh</span>
@@ -115,6 +116,7 @@ export default function Calculator({ planConfig }) {
           max="100"
           value={currentPct}
           onChange={e => setCurrentPct(Number(e.target.value))}
+          aria-label="Current charge percentage"
           className="w-full mt-1 accent-blue-500"
         />
       </div>
