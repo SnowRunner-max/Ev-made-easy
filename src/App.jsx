@@ -60,10 +60,6 @@ export default function App() {
   }
 
   function handlePlanChange(newPlanId) {
-    const newConfig = ratePlans.plans[newPlanId];
-    if (!newConfig.pgeRates && provider === 'pge') {
-      setProvider('3ce');
-    }
     setPlanId(newPlanId);
   }
 
@@ -78,8 +74,12 @@ export default function App() {
         <p className="text-sm text-gray-500 mt-0.5">Buellton, CA · {effectivePlanConfig._metadata.activeProvider}</p>
         <div className="mt-2 flex flex-col items-center gap-1">
           <PlanSelector planId={planId} onChange={handlePlanChange} />
-          <ProviderSelector provider={provider} onChange={setProvider} />
-          {provider === '3ce' && <TierSelector tier={cceTier} onChange={setCceTier} />}
+          {planConfig.pgeRates && (
+            <>
+              <ProviderSelector provider={provider} onChange={setProvider} />
+              {provider === '3ce' && <TierSelector tier={cceTier} onChange={setCceTier} />}
+            </>
+          )}
         </div>
       </header>
 

@@ -146,7 +146,18 @@
           "winter": { "peak": 0.41047, "partPeak": 0.36861, "offPeak": 0.34153 }
         }
       },
-      "pgeRates": null,
+      "pgeRates": {
+        "summer": {
+          "peak":     0.55214,
+          "partPeak": 0.39026,
+          "offPeak":  0.33358
+        },
+        "winter": {
+          "peak":     0.32063,
+          "partPeak": 0.29854,
+          "offPeak":  0.28468
+        }
+      },
       "baseServicesCharge": {
         "ratePerDay": 0.79343,
         "label": "Base Services Charge",
@@ -228,7 +239,18 @@
           "winter": { "peak": 0.53024, "partPeak": 0.37363, "offPeak": 0.30190 }
         }
       },
-      "pgeRates": null,
+      "pgeRates": {
+        "summer": {
+          "peak":     0.62131,
+          "partPeak": 0.37720,
+          "offPeak":  0.26465
+        },
+        "winter": {
+          "peak":     0.43878,
+          "partPeak": 0.30677,
+          "offPeak":  0.23504
+        }
+      },
       "dailyMeterCharge": {
         "ratePerDay": 0.04928,
         "label": "Daily Meter Charge",

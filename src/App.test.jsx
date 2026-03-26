@@ -145,6 +145,50 @@ describe('App — provider selector', () => {
   });
 });
 
+describe('App — provider does not auto-switch on plan change', () => {
+  it('provider stays pge when switching from ev2a to e-elec', () => {
+    render(<App />);
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'e-elec' } });
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev2a' } });
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+  });
+
+  it('provider stays pge when switching from ev2a to ev-b', () => {
+    render(<App />);
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev-b' } });
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev2a' } });
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+  });
+
+  it('provider stays 3ce after user explicitly sets it and then changes plan', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'e-elec' } });
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev2a' } });
+    expect(screen.getByTestId('provider-select').value).toBe('3ce');
+  });
+
+  it('provider selector is hidden for plans with no pgeRates (e-touc)', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'e-touc' } });
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+  });
+
+  it('provider selector is visible on e-elec', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'e-elec' } });
+    expect(screen.getByTestId('provider-select')).toBeInTheDocument();
+  });
+
+  it('provider selector is visible on ev-b', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev-b' } });
+    expect(screen.getByTestId('provider-select')).toBeInTheDocument();
+  });
+});
+
 describe('App — tier selector', () => {
   it('tier selector is hidden when provider is PG&E (default)', () => {
     render(<App />);
