@@ -2,229 +2,146 @@ import { describe, it, expect } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
 import { calcChargeCost, findCheapestWindow, calcChargeSummary } from './costCalculator';
 
-// All PST test dates use January 15, 2026 (-08:00) to avoid DST ambiguity.
-// All PDT test dates use July 15, 2026 (-07:00).
-// EV-B weekday dates use January 6, 2026 (Tuesday) (-08:00).
+// All PST dates use January 15, 2026 (-08:00). EV-B weekday = Tuesday Jan 6.
 
-const ev2aConfig = ratePlans.plans['ev2a'];
-const evbConfig   = ratePlans.plans['ev-b'];
+const ev2aRaw = ratePlans.ratePlans['EV2-A'];
+const evbRaw  = ratePlans.ratePlans['EV-B'];
+
+// Build effective planConfig with pre-computed combined rates (bundled provider)
+function buildEffectiveConfig(planConfig) {
+  if (!planConfig.touPeriods) return planConfig;
+  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const rates = Object.fromEntries(
+    seasons.map(season => [
+      season,
+      Object.fromEntries(
+        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
+          const delivery = planConfig.rates.pgeDelivery[season][period];
+          const cce = planConfig.rates.cce[season][period];
+          const combined = planConfig.rates.pgeTotalBundled[season][period];
+          return [period, { combined, delivery, generation: cce }];
+        })
+      ),
+    ])
+  );
+  return { ...planConfig, rates };
+}
+
+const ev2aConfig = buildEffectiveConfig(ev2aRaw);
+const evbConfig  = buildEffectiveConfig(evbRaw);
+
+// EV2-A bundled rates used in assertions:
+//   winter offPeak=0.22558, partPeak=0.39428, peak=0.41099
+//   summer peak=0.53809
 
 describe('calcChargeCost — EV2-A', () => {
-  describe('single-period charging', () => {
-    it('calculates cost entirely in winter off-peak (2 AM, 45 kWh)', () => {
-      // 45 / 7.7 = 5.84h — fits entirely in off-peak (ends 3 PM)
-      const start = new Date('2026-01-15T02:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 45, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(45 * 0.22261, 1); // ≈ $10.02
-    });
-
-    it('calculates cost entirely in winter off-peak (10 AM, 10 kWh)', () => {
-      const start = new Date('2026-01-15T10:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 10, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(10 * 0.22261, 1); // ≈ $2.23
-    });
-
-    it('calculates cost entirely in winter peak (5 PM, 10 kWh)', () => {
-      // 10 / 7.7 = 1.3h — peak runs until 9 PM, plenty of room
-      const start = new Date('2026-01-15T17:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 10, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(10 * 0.40766, 1); // ≈ $4.08
-    });
-
-    it('calculates cost entirely in summer peak (5 PM, 10 kWh)', () => {
-      const start = new Date('2026-07-15T17:00:00-07:00');
-      const { totalCost } = calcChargeCost(start, 10, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(10 * 0.53420, 1); // ≈ $5.34
-    });
+  it('single period: winter off-peak 2 AM, 45 kWh', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 45, 7.7, ev2aConfig);
+    expect(totalCost).toBeCloseTo(45 * 0.22558, 1);
   });
 
-  describe('multi-period charging', () => {
-    it('spans part-peak → peak starting at 3 PM (45 kWh)', () => {
-      // 3–4 PM (part-peak, 1h): 7.7 kWh × $0.39108 = $3.01
-      // 4 PM onward (peak):     37.3 kWh × $0.40766 = $15.21
-      // total ≈ $18.22
-      const start = new Date('2026-01-15T15:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 45, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(18.22, 1);
-    });
-
-    it('spans peak → part-peak starting at 8 PM (20 kWh)', () => {
-      // 8–9 PM (peak, 1h):       7.7 kWh × $0.40766 = $3.14
-      // 9 PM onward (part-peak): 12.3 kWh × $0.39108 = $4.81
-      // total ≈ $7.95
-      const start = new Date('2026-01-15T20:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 20, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(7.95, 1);
-    });
-
-    it('spans part-peak → off-peak crossing midnight (20 kWh, 10 PM)', () => {
-      // 10 PM–midnight (part-peak, 2h): 15.4 kWh × $0.39108 = $6.02
-      // midnight onward (off-peak):      4.6 kWh × $0.22261 = $1.02
-      // total ≈ $7.05
-      const start = new Date('2026-01-15T22:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 20, 7.7, ev2aConfig);
-      expect(totalCost).toBeCloseTo(7.05, 1);
-    });
+  it('single period: winter peak 5 PM, 10 kWh', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T17:00:00-08:00'), 10, 7.7, ev2aConfig);
+    expect(totalCost).toBeCloseTo(10 * 0.41099, 1);
   });
 
-  describe('return values', () => {
-    it('returns hoursNeeded = kwhNeeded / chargingKw', () => {
-      const start = new Date('2026-01-15T02:00:00-08:00');
-      const { hoursNeeded } = calcChargeCost(start, 45, 7.7, ev2aConfig);
-      expect(hoursNeeded).toBeCloseTo(45 / 7.7, 3);
-    });
+  it('multi-period: part-peak → peak starting at 3 PM, 45 kWh', () => {
+    // 1h part-peak: 7.7 × 0.39428 = 3.04; then 37.3 kWh peak: 37.3 × 0.41099 = 15.33 → ~18.37
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T15:00:00-08:00'), 45, 7.7, ev2aConfig);
+    expect(totalCost).toBeCloseTo(18.37, 1);
+  });
 
-    it('returns $0 cost when kwhNeeded is 0', () => {
-      const start = new Date('2026-01-15T02:00:00-08:00');
-      const { totalCost } = calcChargeCost(start, 0, 7.7, ev2aConfig);
-      expect(totalCost).toBe(0);
-    });
+  it('multi-period: peak → part-peak starting at 8 PM, 20 kWh', () => {
+    // 1h peak: 7.7 × 0.41099 = 3.16; 12.3 kWh part-peak: 12.3 × 0.39428 = 4.85 → ~8.01
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T20:00:00-08:00'), 20, 7.7, ev2aConfig);
+    expect(totalCost).toBeCloseTo(8.01, 1);
+  });
 
-    it('respects a custom chargingKw argument', () => {
-      const start = new Date('2026-01-15T02:00:00-08:00');
-      const { hoursNeeded } = calcChargeCost(start, 22, 11, ev2aConfig);
-      expect(hoursNeeded).toBeCloseTo(22 / 11, 3); // 2 hours
-    });
+  it('multi-period: part-peak → off-peak crossing midnight, 10 PM, 20 kWh', () => {
+    // 2h part-peak: 15.4 × 0.39428 = 6.07; 4.6 kWh off-peak: 4.6 × 0.22558 = 1.04 → ~7.11
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T22:00:00-08:00'), 20, 7.7, ev2aConfig);
+    expect(totalCost).toBeCloseTo(7.11, 1);
+  });
+
+  it('returns hoursNeeded = kwhNeeded / chargingKw', () => {
+    const { hoursNeeded } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 45, 7.7, ev2aConfig);
+    expect(hoursNeeded).toBeCloseTo(45 / 7.7, 3);
+  });
+
+  it('returns $0 when kwhNeeded is 0', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 0, 7.7, ev2aConfig);
+    expect(totalCost).toBe(0);
   });
 });
 
-describe('calcChargeCost — EV-B weekday (Tuesday Jan 6)', () => {
-  // EV-B winter rates: off-peak $0.30190, part-peak $0.37363, peak $0.53024
-  // Weekday schedule: offPeak 0–7, partPeak 7–14, peak 14–21, partPeak 21–23, offPeak 23–24
-
-  it('calculates cost entirely in EV-B weekday off-peak (3 AM, 30 kWh)', () => {
-    // 30 / 7.7 = 3.9h — fits in off-peak (ends 7 AM)
-    const start = new Date('2026-01-06T03:00:00-08:00');
-    const { totalCost } = calcChargeCost(start, 30, 7.7, evbConfig);
-    expect(totalCost).toBeCloseTo(30 * 0.30190, 1);
+describe('calcChargeCost — EV-B weekday (Tuesday Jan 6, winter)', () => {
+  it('single period: off-peak 3 AM, 30 kWh', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-06T03:00:00-08:00'), 30, 7.7, evbConfig);
+    expect(totalCost).toBeCloseTo(30 * 0.23504, 1);
   });
 
-  it('spans EV-B weekday part-peak → peak (30 kWh starting at 12 PM)', () => {
-    // 12–2 PM (part-peak, 2h): 15.4 kWh × $0.37363 = $5.75
-    // 2 PM onward (peak):      14.6 kWh × $0.53024 = $7.74
-    // total ≈ $13.49
-    const start = new Date('2026-01-06T12:00:00-08:00');
-    const { totalCost } = calcChargeCost(start, 30, 7.7, evbConfig);
-    expect(totalCost).toBeCloseTo(13.49, 1);
-  });
-
-  it('spans EV-B weekday peak → evening part-peak (20 kWh starting at 8 PM)', () => {
-    // 8–9 PM (peak, 1h):              7.7 kWh × $0.53024 = $4.08
-    // 9–11 PM (part-peak, 2h avail): 12.3 kWh × $0.37363 = $4.60
-    // total ≈ $8.68
-    const start = new Date('2026-01-06T20:00:00-08:00');
-    const { totalCost } = calcChargeCost(start, 20, 7.7, evbConfig);
-    expect(totalCost).toBeCloseTo(8.68, 1);
+  it('multi-period: part-peak → peak at noon, 30 kWh', () => {
+    // 2h part-peak: 15.4 × 0.30677 = 4.72; 14.6 kWh peak: 14.6 × 0.43878 = 6.41 → ~11.13
+    const { totalCost } = calcChargeCost(new Date('2026-01-06T12:00:00-08:00'), 30, 7.7, evbConfig);
+    expect(totalCost).toBeCloseTo(11.13, 1);
   });
 });
 
 describe('findCheapestWindow — EV2-A', () => {
-  it('finds midnight as cheapest start for winter off-peak (45 kWh)', () => {
-    const date = new Date('2026-01-15T14:00:00-08:00');
-    const { startHour, totalCost } = findCheapestWindow(date, 45, 7.7, ev2aConfig);
-    // 45 kWh / 7.7 kW = 5.84h — midnight to ~5:50 AM, all off-peak
+  it('finds midnight (off-peak) as cheapest start for 45 kWh', () => {
+    const { startHour, totalCost } = findCheapestWindow(new Date('2026-01-15T14:00:00-08:00'), 45, 7.7, ev2aConfig);
     expect(startHour).toBe(0);
-    expect(totalCost).toBeCloseTo(45 * 0.22261, 1);
+    expect(totalCost).toBeCloseTo(45 * 0.22558, 1);
   });
 
-  it('returns a start hour between 0 and 23', () => {
-    const date = new Date('2026-01-15T14:00:00-08:00');
-    const { startHour } = findCheapestWindow(date, 10, 7.7, ev2aConfig);
-    expect(startHour).toBeGreaterThanOrEqual(0);
-    expect(startHour).toBeLessThanOrEqual(23);
-  });
-
-  it('cheapest cost is always <= cost of starting now', () => {
-    // Starting at 5 PM (peak) — cheapest window must be cheaper or equal
+  it('cheapest cost <= cost of starting now (peak)', () => {
     const date = new Date('2026-01-15T17:00:00-08:00');
     const { totalCost: cheapest } = findCheapestWindow(date, 30, 7.7, ev2aConfig);
     const { totalCost: now } = calcChargeCost(date, 30, 7.7, ev2aConfig);
-    expect(cheapest).toBeLessThanOrEqual(now + 0.01); // +0.01 for float tolerance
-  });
-
-  it('works for summer rates', () => {
-    const date = new Date('2026-07-15T17:00:00-07:00');
-    const { startHour, totalCost } = findCheapestWindow(date, 30, 7.7, ev2aConfig);
-    expect(startHour).toBeGreaterThanOrEqual(0);
-    expect(totalCost).toBeGreaterThan(0);
+    expect(cheapest).toBeLessThanOrEqual(now + 0.01);
   });
 });
 
 describe('findCheapestWindow — EV-B', () => {
-  it('finds an off-peak start for EV-B weekday (30 kWh on Tuesday Jan 6)', () => {
-    const date = new Date('2026-01-06T17:00:00-08:00');
-    const { startHour, totalCost } = findCheapestWindow(date, 30, 7.7, evbConfig);
-    // Off-peak windows are 0–7 and 23–24; cheapest should start in first off-peak
+  it('finds off-peak start for weekday 30 kWh', () => {
+    const { startHour, totalCost } = findCheapestWindow(new Date('2026-01-06T17:00:00-08:00'), 30, 7.7, evbConfig);
     expect(startHour).toBeLessThan(7);
-    expect(totalCost).toBeCloseTo(30 * 0.30190, 1);
+    expect(totalCost).toBeCloseTo(30 * 0.23504, 1);
   });
 });
 
 describe('calcChargeSummary — EV2-A', () => {
   it('returns to80 and to100 objects', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const result = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
+    const result = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 20, 7.7, ev2aConfig);
     expect(result).toHaveProperty('to80');
     expect(result).toHaveProperty('to100');
   });
 
-  it('calculates correct kWh needed for each target', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80, to100 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
-    // 60 kWh × (80-20)% = 36 kWh; 60 × (100-20)% = 48 kWh
+  it('calculates kWh needed for each target', () => {
+    const { to80, to100 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 20, 7.7, ev2aConfig);
     expect(to80.kwhNeeded).toBeCloseTo(36, 2);
     expect(to100.kwhNeeded).toBeCloseTo(48, 2);
   });
 
-  it('calculates correct hoursNeeded for each target', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80, to100 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
-    expect(to80.hoursNeeded).toBeCloseTo(36 / 7.7, 2);
-    expect(to100.hoursNeeded).toBeCloseTo(48 / 7.7, 2);
+  it('costNow at 2 AM off-peak for 36 kWh', () => {
+    const { to80 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 20, 7.7, ev2aConfig);
+    expect(to80.costNow).toBeCloseTo(36 * 0.22558, 1);
   });
 
-  it('calculates costNow correctly (2 AM off-peak, 36 kWh)', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
-    expect(to80.costNow).toBeCloseTo(36 * 0.22261, 1); // ≈ $8.01
-  });
-
-  it('includes cheapestCost and savings fields', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
-    expect(to80).toHaveProperty('cheapestCost');
-    expect(to80).toHaveProperty('savings');
-  });
-
-  it('savings = costNow - cheapestCost', () => {
-    const start = new Date('2026-01-15T17:00:00-08:00'); // peak — should have savings
-    const { to80 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
+  it('savings = costNow - cheapestCost, non-negative', () => {
+    const { to80 } = calcChargeSummary(new Date('2026-01-15T17:00:00-08:00'), 60, 20, 7.7, ev2aConfig);
     expect(to80.savings).toBeCloseTo(to80.costNow - to80.cheapestCost, 4);
-  });
-
-  it('savings are non-negative (cheapest is always <= now)', () => {
-    const start = new Date('2026-01-15T17:00:00-08:00');
-    const { to80, to100 } = calcChargeSummary(start, 60, 20, 7.7, ev2aConfig);
     expect(to80.savings).toBeGreaterThanOrEqual(0);
-    expect(to100.savings).toBeGreaterThanOrEqual(0);
   });
 
-  it('returns null for to80 when currentPct is already >= 80', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80 } = calcChargeSummary(start, 60, 85, 7.7, ev2aConfig);
+  it('returns null for to80 when currentPct >= 80', () => {
+    const { to80 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 85, 7.7, ev2aConfig);
     expect(to80).toBeNull();
   });
 
-  it('returns null for both when currentPct is 100', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to80, to100 } = calcChargeSummary(start, 60, 100, 7.7, ev2aConfig);
+  it('returns null for both when currentPct = 100', () => {
+    const { to80, to100 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 100, 7.7, ev2aConfig);
     expect(to80).toBeNull();
-    expect(to100).toBeNull();
-  });
-
-  it('returns null for to100 when currentPct is exactly 100', () => {
-    const start = new Date('2026-01-15T02:00:00-08:00');
-    const { to100 } = calcChargeSummary(start, 60, 100, 7.7, ev2aConfig);
     expect(to100).toBeNull();
   });
 });

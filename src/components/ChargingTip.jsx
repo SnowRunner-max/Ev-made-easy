@@ -19,6 +19,10 @@ function findNextOffPeakStart(now, planConfig) {
 }
 
 function buildMessage(period, season, rate, nextChange, planConfig, now) {
+  if (!planConfig.touPeriods) {
+    return 'This plan has no time-based pricing — your rate is the same at all hours.';
+  }
+
   const offPeakRate = planConfig.rates[season].offPeak.combined;
   const partPeakData = planConfig.rates[season].partPeak;
 

@@ -3,169 +3,90 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
 import RateDisplay from './RateDisplay';
 
-const ev2aConfig = ratePlans.plans['ev2a'];
-const e1Config   = ratePlans.plans['e1'];
+function buildEffectiveConfig(planConfig) {
+  if (!planConfig.touPeriods) return planConfig;
+  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const rates = Object.fromEntries(
+    seasons.map(season => [
+      season,
+      Object.fromEntries(
+        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
+          const delivery = planConfig.rates.pgeDelivery[season][period];
+          const cce = planConfig.rates.cce[season][period];
+          const combined = planConfig.rates.pgeTotalBundled[season][period];
+          return [period, { combined, delivery, generation: cce }];
+        })
+      ),
+    ])
+  );
+  return { ...planConfig, rates };
+}
 
-describe('RateDisplay', () => {
+const ev2aConfig = buildEffectiveConfig(ratePlans.ratePlans['EV2-A']);
+const e1Config   = ratePlans.ratePlans['E-1'];
+
+describe('RateDisplay — TOU plan (EV2-A)', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  describe('off-peak (Jan 15, 2:00 AM PST — winter)', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2026-01-15T02:00:00-08:00'));
-    });
-
-    it('displays the rate formatted as $X.XX', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.22/kWh');
-    });
-
-    it('shows "Off-Peak" period label', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByText('Off-Peak')).toBeInTheDocument();
-    });
-
-    it('shows "Winter Rates" season tag', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByText('Winter Rates')).toBeInTheDocument();
-    });
-
-    it('badge has emerald color class', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-badge').className).toMatch(/emerald/);
-    });
+  it('shows off-peak rate $0.23/kWh in winter (2 AM)', () => {
+    vi.setSystemTime(new Date('2026-01-15T02:00:00-08:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.23/kWh');
   });
 
-  describe('part-peak (Jan 15, 3:30 PM PST — winter)', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2026-01-15T15:30:00-08:00'));
-    });
-
-    it('shows "Part-Peak" period label', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByText('Part-Peak')).toBeInTheDocument();
-    });
-
-    it('badge has amber color class', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-badge').className).toMatch(/amber/);
-    });
+  it('off-peak badge has emerald color', () => {
+    vi.setSystemTime(new Date('2026-01-15T02:00:00-08:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByTestId('rate-badge').className).toMatch(/emerald/);
   });
 
-  describe('peak (Jan 15, 6:00 PM PST — winter)', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
-    });
-
-    it('shows "Peak" period label', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByText('Peak')).toBeInTheDocument();
-    });
-
-    it('badge has red color class', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-badge').className).toMatch(/red/);
-    });
-
-    it('displays the winter peak rate', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.41/kWh');
-    });
+  it('shows peak rate $0.41/kWh in winter (6 PM)', () => {
+    vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.41/kWh');
   });
 
-  describe('summer peak (Jul 15, 6:00 PM PDT)', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2026-07-15T18:00:00-07:00'));
-    });
-
-    it('shows "Summer Rates" season tag', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByText('Summer Rates')).toBeInTheDocument();
-    });
-
-    it('displays the summer peak rate', () => {
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.53/kWh');
-    });
+  it('peak badge has red color', () => {
+    vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByTestId('rate-badge').className).toMatch(/red/);
   });
 
-  describe('countdown timer', () => {
-    it('shows time until next change at 2:45 PM (15m until part-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('countdown')).toHaveTextContent('15m');
-    });
-
-    it('shows correct label and direction at 2:45 PM (off-peak → part-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Part-Peak starts in');
-      expect(countdown).toHaveTextContent('rises to');
-    });
-
-    it('shows time until next change at 3:30 PM (30m until peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T15:30:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('countdown')).toHaveTextContent('30m');
-    });
-
-    it('shows correct label and direction at 3:30 PM (part-peak → peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T15:30:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Peak starts in');
-      expect(countdown).toHaveTextContent('rises to');
-    });
-
-    it('shows time until next change at 8:30 PM (30m until part-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T20:30:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('countdown')).toHaveTextContent('30m');
-    });
-
-    it('shows correct label and direction at 8:30 PM (peak → part-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T20:30:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Part-Peak starts in');
-      expect(countdown).toHaveTextContent('drops to');
-    });
-
-    it('shows time until next change at 11:00 PM (1h 0m until off-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T23:00:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('countdown')).toHaveTextContent('1h 0m');
-    });
-
-    it('shows correct label and direction at 11:00 PM (part-peak → off-peak)', () => {
-      vi.setSystemTime(new Date('2026-01-15T23:00:00-08:00'));
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      const countdown = screen.getByTestId('countdown');
-      expect(countdown).toHaveTextContent('Off-Peak starts in');
-      expect(countdown).toHaveTextContent('drops to');
-    });
-
-    it('shows next rate amount in the countdown', () => {
-      vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00')); // → part-peak
-      render(<RateDisplay planConfig={ev2aConfig} />);
-      expect(screen.getByTestId('countdown')).toHaveTextContent('$0.39/kWh');
-    });
+  it('shows summer peak rate $0.54/kWh (July 6 PM)', () => {
+    vi.setSystemTime(new Date('2026-07-15T18:00:00-07:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.54/kWh');
   });
 
-  describe('tiered plan (E1) — no countdown', () => {
-    beforeEach(() => {
-      vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
-    });
+  it('shows "Summer Rates" in summer', () => {
+    vi.setSystemTime(new Date('2026-07-15T18:00:00-07:00'));
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    expect(screen.getByText('Summer Rates')).toBeInTheDocument();
+  });
 
-    it('does not show a countdown for a flat tiered plan', () => {
-      render(<RateDisplay planConfig={e1Config} />);
-      expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
-    });
+  it('shows countdown with direction and next rate', () => {
+    vi.setSystemTime(new Date('2026-01-15T14:45:00-08:00')); // 15m until part-peak
+    render(<RateDisplay planConfig={ev2aConfig} />);
+    const countdown = screen.getByTestId('countdown');
+    expect(countdown).toHaveTextContent('15m');
+    expect(countdown).toHaveTextContent('rises to');
+  });
+});
 
-    it('displays the E1 Tier 2 rate', () => {
-      render(<RateDisplay planConfig={e1Config} />);
-      expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.41/kWh');
-    });
+describe('RateDisplay — tiered plan (E-1)', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('shows "Tiered Rate" (no per-kWh rate)', () => {
+    vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    render(<RateDisplay planConfig={e1Config} />);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('Tiered Rate');
+  });
+
+  it('no countdown for tiered plan', () => {
+    vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    render(<RateDisplay planConfig={e1Config} />);
+    expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
   });
 });

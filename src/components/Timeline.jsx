@@ -18,6 +18,17 @@ export default function Timeline({ planConfig }) {
     return () => clearInterval(id);
   }, []);
 
+  // E-1 tiered plan — no time-based schedule to display
+  if (!planConfig.touPeriods) {
+    return (
+      <div data-testid="timeline" className="w-full">
+        <div className="h-14 rounded-lg bg-gray-200 flex items-center justify-center">
+          <span className="text-sm text-gray-500">No time-based pricing — rate is the same all day</span>
+        </div>
+      </div>
+    );
+  }
+
   const schedule = getDaySchedule(now, planConfig);
   const markerPercent = (getPacificFractionalHour(now) / 24) * 100;
 

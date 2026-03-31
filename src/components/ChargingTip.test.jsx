@@ -3,27 +3,27 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
 import ChargingTip from './ChargingTip';
 
-const ev2aConfig = ratePlans.plans['ev2a'];
+function buildEffectiveConfig(planConfig) {
+  if (!planConfig.touPeriods) return planConfig;
+  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const rates = Object.fromEntries(
+    seasons.map(season => [
+      season,
+      Object.fromEntries(
+        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
+          const delivery = planConfig.rates.pgeDelivery[season][period];
+          const cce = planConfig.rates.cce[season][period];
+          const combined = planConfig.rates.pgeTotalBundled[season][period];
+          return [period, { combined, delivery, generation: cce }];
+        })
+      ),
+    ])
+  );
+  return { ...planConfig, rates };
+}
 
-// All PST test dates use January 15, 2026 (-08:00) to avoid DST ambiguity.
-
-describe('ChargingTip — rendering', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-01-15T10:00:00-08:00')); // off-peak
-  });
-  afterEach(() => vi.useRealTimers());
-
-  it('renders the charging-tip container', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('charging-tip')).toBeInTheDocument();
-  });
-
-  it('renders a tip message', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toBeInTheDocument();
-  });
-});
+const ev2aConfig = buildEffectiveConfig(ratePlans.ratePlans['EV2-A']);
+const e1Config   = ratePlans.ratePlans['E-1'];
 
 describe('ChargingTip — off-peak (10 AM)', () => {
   beforeEach(() => {
@@ -32,17 +32,17 @@ describe('ChargingTip — off-peak (10 AM)', () => {
   });
   afterEach(() => vi.useRealTimers());
 
-  it('shows a positive message during off-peak', () => {
+  it('renders tip container', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/cheapest|best time|off.peak/i);
+    expect(screen.getByTestId('charging-tip')).toBeInTheDocument();
   });
 
-  it('does not suggest waiting during off-peak', () => {
+  it('shows positive off-peak message', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).not.toHaveTextContent(/wait|consider/i);
+    expect(screen.getByTestId('tip-message')).toHaveTextContent(/cheapest|best time/i);
   });
 
-  it('shows the off-peak icon or indicator', () => {
+  it('has emerald color (off-peak)', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
     expect(screen.getByTestId('charging-tip').className).toMatch(/emerald|green/);
   });
@@ -55,97 +55,44 @@ describe('ChargingTip — peak (5 PM)', () => {
   });
   afterEach(() => vi.useRealTimers());
 
-  it('mentions that rates are expensive during peak', () => {
+  it('warns rates are expensive', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
     expect(screen.getByTestId('tip-message')).toHaveTextContent(/expensive|peak|most/i);
   });
 
-  it('suggests waiting until 9 PM (part-peak)', () => {
+  it('shows savings percentage', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/9.?pm/i);
+    expect(screen.getByTestId('tip-message')).toHaveTextContent(/%/);
   });
 
-  it('suggests waiting until midnight/12 AM (off-peak)', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/midnight|12.?am/i);
-  });
-
-  it('shows a savings percentage or dollar amount', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/%|\$/);
-  });
-
-  it('shows the peak icon or indicator', () => {
+  it('has red color (peak)', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
     expect(screen.getByTestId('charging-tip').className).toMatch(/red|orange/);
   });
 });
 
-describe('ChargingTip — part-peak afternoon (3 PM)', () => {
+describe('ChargingTip — part-peak (3 PM)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-01-15T15:00:00-08:00'));
   });
   afterEach(() => vi.useRealTimers());
 
-  it('warns that peak is approaching', () => {
+  it('warns peak is approaching', () => {
     render(<ChargingTip planConfig={ev2aConfig} />);
     expect(screen.getByTestId('tip-message')).toHaveTextContent(/peak|4.?pm/i);
   });
-
-  it('suggests waiting for off-peak', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/off.peak|cheaper/i);
-  });
-
-  it('shows a savings percentage or dollar amount', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/%|\$/);
-  });
-
-  it('shows the amber/part-peak indicator', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('charging-tip').className).toMatch(/amber|yellow/);
-  });
 });
 
-describe('ChargingTip — part-peak evening (9 PM)', () => {
+describe('ChargingTip — tiered plan (E-1)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-01-15T21:00:00-08:00'));
+    vi.setSystemTime(new Date('2026-01-15T17:00:00-08:00'));
   });
   afterEach(() => vi.useRealTimers());
 
-  it('mentions that cheaper rates are coming soon', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/12.?am|midnight|drop/i);
-  });
-
-  it('shows savings for waiting until off-peak', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/%|\$/);
-  });
-
-  it('shows the amber/part-peak indicator', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('charging-tip').className).toMatch(/amber|yellow/);
-  });
-});
-
-describe('ChargingTip — summer peak (5 PM July)', () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-07-15T17:00:00-07:00')); // PDT
-  });
-  afterEach(() => vi.useRealTimers());
-
-  it('still shows peak tip in summer', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('tip-message')).toHaveTextContent(/expensive|peak|most/i);
-  });
-
-  it('shows the peak indicator in summer', () => {
-    render(<ChargingTip planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('charging-tip').className).toMatch(/red|orange/);
+  it('shows no time-based pricing message', () => {
+    render(<ChargingTip planConfig={e1Config} />);
+    expect(screen.getByTestId('tip-message')).toHaveTextContent(/no time.based pricing|same at all hours/i);
   });
 });

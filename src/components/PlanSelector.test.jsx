@@ -3,82 +3,37 @@ import { describe, it, expect, vi } from 'vitest';
 import PlanSelector from './PlanSelector';
 
 describe('PlanSelector', () => {
-  it('renders a select element with data-testid="plan-select"', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
+  it('renders plan-select', () => {
+    render(<PlanSelector planId="EV2-A" onChange={() => {}} />);
     expect(screen.getByTestId('plan-select')).toBeInTheDocument();
   });
 
-  it('renders nine plan options (5 TOU + 4 tiered)', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    const options = screen.getAllByRole('option');
-    expect(options).toHaveLength(9);
+  it('has six plan options', () => {
+    render(<PlanSelector planId="EV2-A" onChange={() => {}} />);
+    expect(screen.getByTestId('plan-select').querySelectorAll('option')).toHaveLength(6);
   });
 
-  it('includes EV2-A option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /EV2-A/i })).toBeInTheDocument();
+  it('shows the selected planId', () => {
+    render(<PlanSelector planId="EV2-A" onChange={() => {}} />);
+    expect(screen.getByTestId('plan-select').value).toBe('EV2-A');
   });
 
-  it('includes E-ELEC option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /E-ELEC/i })).toBeInTheDocument();
+  it('calls onChange with the new value', () => {
+    const onChange = vi.fn();
+    render(<PlanSelector planId="EV2-A" onChange={onChange} />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV-B' } });
+    expect(onChange).toHaveBeenCalledWith('EV-B');
   });
 
-  it('includes EV-B option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /EV-B/i })).toBeInTheDocument();
+  it('includes EV2-A, E-ELEC, EV-B, E-TOU-C, E-TOU-D, E-1 options', () => {
+    render(<PlanSelector planId="EV2-A" onChange={() => {}} />);
+    for (const name of ['EV2-A', 'E-ELEC', 'EV-B', 'E-TOU-C', 'E-TOU-D', 'E-1']) {
+      expect(screen.getByRole('option', { name: new RegExp(name) })).toBeInTheDocument();
+    }
   });
 
-  it('includes E-TOU-C option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /E-TOU-C/i })).toBeInTheDocument();
-  });
-
-  it('includes E-TOU-D option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /E-TOU-D/i })).toBeInTheDocument();
-  });
-
-  it('includes E1 option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /^E1/i })).toBeInTheDocument();
-  });
-
-  it('includes ES option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /^ES/i })).toBeInTheDocument();
-  });
-
-  it('includes ET option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /^ET/i })).toBeInTheDocument();
-  });
-
-  it('includes EM option', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByRole('option', { name: /^EM/i })).toBeInTheDocument();
-  });
-
-  it('shows the currently selected planId', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    expect(screen.getByTestId('plan-select').value).toBe('ev2a');
-  });
-
-  it('shows e-elec as selected when planId is "e-elec"', () => {
-    render(<PlanSelector planId="e-elec" onChange={() => {}} />);
-    expect(screen.getByTestId('plan-select').value).toBe('e-elec');
-  });
-
-  it('calls onChange with new value when selection changes', () => {
-    const handleChange = vi.fn();
-    render(<PlanSelector planId="ev2a" onChange={handleChange} />);
-    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'ev-b' } });
-    expect(handleChange).toHaveBeenCalledWith('ev-b');
-  });
-
-  it('EV-B option text mentions separate meter', () => {
-    render(<PlanSelector planId="ev2a" onChange={() => {}} />);
-    const evbOption = screen.getByRole('option', { name: /EV-B/i });
-    expect(evbOption.textContent).toMatch(/meter/i);
+  it('EV-B option mentions separate meter', () => {
+    render(<PlanSelector planId="EV2-A" onChange={() => {}} />);
+    expect(screen.getByRole('option', { name: /EV-B/i }).textContent).toMatch(/meter/i);
   });
 });
