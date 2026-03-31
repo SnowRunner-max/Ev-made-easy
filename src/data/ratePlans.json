@@ -1,603 +1,402 @@
 {
-  "holidays": {
-    "description": "PG&E-recognized holidays for 2026. EV-B TOU periods change on holidays (use weekend schedule). EV2-A and E-ELEC periods do not change on holidays.",
-    "year": 2026,
-    "dates": [
-      { "date": "2026-01-01", "name": "New Year's Day" },
-      { "date": "2026-02-16", "name": "Presidents' Day" },
-      { "date": "2026-05-25", "name": "Memorial Day" },
-      { "date": "2026-07-03", "name": "Independence Day (observed)" },
-      { "date": "2026-09-07", "name": "Labor Day" },
-      { "date": "2026-11-11", "name": "Veterans Day" },
-      { "date": "2026-11-26", "name": "Thanksgiving" },
-      { "date": "2026-12-25", "name": "Christmas Day" }
+  "_metadata": {
+    "version": "2.0.0",
+    "description": "PG&E delivery + 3CE generation rate data for Buellton, CA (Santa Barbara County)",
+    "territory": "PG&E",
+    "cca": "Central Coast Community Energy (3CE)",
+    "baselineTerritory": "P",
+    "pgeAdviceLetter": "7846-E",
+    "pgeEffectiveDate": "2026-03-01",
+    "cceRateSheetDate": "2026-02-15",
+    "pciaVintage": "2021",
+    "pciaRate": 0.05264,
+    "franchiseFeeRate": 0.00048,
+    "holidays": [
+      "New Year's Day",
+      "Presidents' Day",
+      "Memorial Day",
+      "Independence Day",
+      "Labor Day",
+      "Veterans Day",
+      "Thanksgiving Day",
+      "Christmas Day"
+    ],
+    "notes": [
+      "All energy rates are $/kWh unless otherwise noted.",
+      "delivery = totalBundled - pgeGeneration (per tariff UNBUNDLING tables).",
+      "CCA combined rate = delivery + cce generation (3Cchoice tier).",
+      "PGE bundled rate = delivery + pgeGeneration = totalBundled.",
+      "PCIA and Franchise Fee are flat per-kWh charges billed separately by PG&E to CCA customers, not embedded in the TOU energy rates.",
+      "Base Services Charge (BSC) is a daily fixed charge, not included in per-kWh rates. Show in UI footnote only.",
+      "Baseline Credit (E-TOU-C only) is applied to usage within baseline allowance; not embedded in the per-kWh rates shown here."
     ]
   },
 
-  "plans": {
-    "ev2a": {
-      "id": "ev2a",
-      "label": "EV2-A",
-      "description": "Standard EV rate — no separate meter required",
-      "weekdayVariant": false,
+  "ratePlans": {
+
+    "EV2-A": {
+      "name": "Home Charging EV2-A",
+      "scheduleCode": "EV2",
+      "rateDesignation": "EV2-A",
+      "category": "EV Rate",
+      "status": "active",
+      "description": "Residential time-of-use for EV, battery storage, and heat pump customers. Whole-house metering.",
+      "eligibility": "EV, battery storage, or electric heat pump. Must not exceed 800% of annual baseline allowance.",
+      "meteringScope": "wholeHouse",
       "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak",  "startHour": 0,  "endHour": 15 },
-          { "period": "partPeak", "startHour": 15, "endHour": 16 },
-          { "period": "peak",     "startHour": 16, "endHour": 21 },
-          { "period": "partPeak", "startHour": 21, "endHour": 24 }
-        ]
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "June – September" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "October – May" }
       },
       "touPeriods": {
-        "peak":     { "label": "Peak",      "colorScheme": "red"     },
-        "partPeak": { "label": "Part-Peak", "colorScheme": "amber"   },
-        "offPeak":  { "label": "Off-Peak",  "colorScheme": "emerald" }
+        "summer": {
+          "peak":     { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "partPeak": [
+            { "start": "15:00", "end": "16:00", "days": "all", "label": "3pm–4pm every day" },
+            { "start": "21:00", "end": "00:00", "days": "all", "label": "9pm–midnight every day" }
+          ],
+          "offPeak":  { "label": "All other hours (midnight–3pm)" }
+        },
+        "winter": {
+          "peak":     { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "partPeak": [
+            { "start": "15:00", "end": "16:00", "days": "all", "label": "3pm–4pm every day" },
+            { "start": "21:00", "end": "00:00", "days": "all", "label": "9pm–midnight every day" }
+          ],
+          "offPeak":  { "label": "All other hours (midnight–3pm)" }
+        }
       },
       "rates": {
-        "summer": {
-          "peak":     { "generation": 0.18441, "delivery": 0.34979, "combined": 0.53420 },
-          "partPeak": { "generation": 0.14014, "delivery": 0.28401, "combined": 0.42415 },
-          "offPeak":  { "generation": 0.09941, "delivery": 0.12313, "combined": 0.22254 }
+        "pgeDelivery": {
+          "summer": { "peak": 0.34979, "partPeak": 0.28401, "offPeak": 0.12313 },
+          "winter": { "peak": 0.27956, "partPeak": 0.27534, "offPeak": 0.13012 }
         },
-        "winter": {
-          "peak":     { "generation": 0.12810, "delivery": 0.27956, "combined": 0.40766 },
-          "partPeak": { "generation": 0.11574, "delivery": 0.27534, "combined": 0.39108 },
-          "offPeak":  { "generation": 0.09249, "delivery": 0.13012, "combined": 0.22261 }
+        "pgeGeneration": {
+          "summer": { "peak": 0.18830, "partPeak": 0.14359, "offPeak": 0.10245 },
+          "winter": { "peak": 0.13143, "partPeak": 0.11894, "offPeak": 0.09546 }
+        },
+        "pgeTotalBundled": {
+          "summer": { "peak": 0.53809, "partPeak": 0.42760, "offPeak": 0.22558 },
+          "winter": { "peak": 0.41099, "partPeak": 0.39428, "offPeak": 0.22558 }
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "summer": { "peak": 0.17641, "partPeak": 0.13214, "offPeak": 0.09141 },
+          "winter": { "peak": 0.12010, "partPeak": 0.10774, "offPeak": 0.08449 }
         }
       },
-      "cceTiers": {
-        "3cchoice": {
-          "summer": { "peak": 0.52620, "partPeak": 0.41615, "offPeak": 0.21454 },
-          "winter": { "peak": 0.39966, "partPeak": 0.38308, "offPeak": 0.21461 }
-        },
-        "3cprime": {
-          "summer": { "peak": 0.53420, "partPeak": 0.42415, "offPeak": 0.22254 },
-          "winter": { "peak": 0.40766, "partPeak": 0.39108, "offPeak": 0.22261 }
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.19713,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/customer/day",
+          "note": "Income-tiered BSC effective March 1, 2026 per Advice Letter 7846-E"
         }
       },
-      "pgeRates": {
-        "summer": {
-          "peak":     0.53809,
-          "partPeak": 0.42760,
-          "offPeak":  0.22558
-        },
-        "winter": {
-          "peak":     0.41099,
-          "partPeak": 0.39428,
-          "offPeak":  0.22558
-        }
-      },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E EV2-A with 3CE generation",
-        "providers": {
-          "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE)" }
-        },
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "ccaProvider": "Central Coast Community Energy (3CE)",
-        "ccaTier": "3Cchoice",
-        "pciaVintage": 2021,
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01",
-          "cceGeneration": "2026-02-15"
-        },
-        "sources": [
-          "PG&E EV2 Rate Schedule (Electric Schedule EV2, effective 2026-03-01)",
-          "3CE 3Cchoice Generation Rate Sheet (effective 2026-02-15)"
-        ],
-        "notes": [
-          "TOU periods are the same every day of the year, including weekends and PG&E holidays.",
-          "All-in rate = PG&E delivery-only rate + 3CE generation rate."
-        ]
-      }
+      "californiaClimateCredit": -36.18,
+      "tariffSource": "ELEC_SCHEDS_EV2"
     },
 
-    "e-elec": {
-      "id": "e-elec",
-      "label": "E-ELEC",
-      "description": "Electric Home rate — for all-electric homes (NEM 3.0 default)",
-      "weekdayVariant": false,
+    "E-ELEC": {
+      "name": "Electric Home Rate Plan (E-ELEC)",
+      "scheduleCode": "E-ELEC",
+      "rateDesignation": "E-ELEC",
+      "category": "EV Rate",
+      "status": "active",
+      "description": "Residential time-of-use for customers with EV, battery storage, or electric heat pump. Whole-house metering. Same TOU windows as EV2-A.",
+      "eligibility": "EV, battery storage, or electric heat pump for water heating or climate control. Also required for Net Billing Tariff customers.",
+      "meteringScope": "wholeHouse",
       "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak",  "startHour": 0,  "endHour": 15 },
-          { "period": "partPeak", "startHour": 15, "endHour": 16 },
-          { "period": "peak",     "startHour": 16, "endHour": 21 },
-          { "period": "partPeak", "startHour": 21, "endHour": 24 }
-        ]
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "June – September" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "October – May" }
       },
       "touPeriods": {
-        "peak":     { "label": "Peak",      "colorScheme": "red"     },
-        "partPeak": { "label": "Part-Peak", "colorScheme": "amber"   },
-        "offPeak":  { "label": "Off-Peak",  "colorScheme": "emerald" }
+        "summer": {
+          "peak":     { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "partPeak": [
+            { "start": "15:00", "end": "16:00", "days": "all", "label": "3pm–4pm every day" },
+            { "start": "21:00", "end": "00:00", "days": "all", "label": "9pm–midnight every day" }
+          ],
+          "offPeak":  { "label": "All other hours (midnight–3pm)" }
+        },
+        "winter": {
+          "peak":     { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "partPeak": [
+            { "start": "15:00", "end": "16:00", "days": "all", "label": "3pm–4pm every day" },
+            { "start": "21:00", "end": "00:00", "days": "all", "label": "9pm–midnight every day" }
+          ],
+          "offPeak":  { "label": "All other hours (midnight–3pm)" }
+        }
       },
       "rates": {
-        "summer": {
-          "peak":     { "generation": 0.25035, "delivery": 0.55214, "combined": 0.80249 },
-          "partPeak": { "generation": 0.15223, "delivery": 0.39026, "combined": 0.54249 },
-          "offPeak":  { "generation": 0.10758, "delivery": 0.33358, "combined": 0.44116 }
+        "pgeDelivery": {
+          "summer": { "peak": 0.28915, "partPeak": 0.22638, "offPeak": 0.21480 },
+          "winter": { "peak": 0.21977, "partPeak": 0.21765, "offPeak": 0.21714 }
         },
-        "winter": {
-          "peak":     { "generation": 0.08984, "delivery": 0.32063, "combined": 0.41047 },
-          "partPeak": { "generation": 0.07007, "delivery": 0.29854, "combined": 0.36861 },
-          "offPeak":  { "generation": 0.05685, "delivery": 0.28468, "combined": 0.34153 }
+        "pgeGeneration": {
+          "summer": { "peak": 0.26299, "partPeak": 0.16388, "offPeak": 0.11878 },
+          "winter": { "peak": 0.10086, "partPeak": 0.08089, "offPeak": 0.06754 }
+        },
+        "pgeTotalBundled": {
+          "summer": { "peak": 0.55214, "partPeak": 0.39026, "offPeak": 0.33358 },
+          "winter": { "peak": 0.32063, "partPeak": 0.29854, "offPeak": 0.28468 }
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "summer": { "peak": 0.25035, "partPeak": 0.15223, "offPeak": 0.10758 },
+          "winter": { "peak": 0.08984, "partPeak": 0.07007, "offPeak": 0.05685 }
         }
       },
-      "cceTiers": {
-        "3cchoice": {
-          "summer": { "peak": 0.79449, "partPeak": 0.53449, "offPeak": 0.43316 },
-          "winter": { "peak": 0.40247, "partPeak": 0.35861, "offPeak": 0.33353 }
-        },
-        "3cprime": {
-          "summer": { "peak": 0.80249, "partPeak": 0.54249, "offPeak": 0.44116 },
-          "winter": { "peak": 0.41047, "partPeak": 0.36861, "offPeak": 0.34153 }
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.19713,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/customer/day",
+          "note": "Income-tiered BSC effective March 1, 2026 per Advice Letter 7846-E"
         }
       },
-      "pgeRates": {
-        "summer": {
-          "peak":     0.55214,
-          "partPeak": 0.39026,
-          "offPeak":  0.33358
-        },
-        "winter": {
-          "peak":     0.32063,
-          "partPeak": 0.29854,
-          "offPeak":  0.28468
-        }
-      },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E E-ELEC with 3CE generation",
-        "providers": {
-          "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE)" }
-        },
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "ccaProvider": "Central Coast Community Energy (3CE)",
-        "ccaTier": "3Cchoice",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01",
-          "cceGeneration": "2026-02-15"
-        },
-        "sources": [
-          "PG&E E-ELEC Rate Schedule (Electric Home Rate Plan)",
-          "3CE 3Cchoice Generation Rate Sheet (effective 2026-02-15)"
-        ],
-        "notes": [
-          "TOU periods are the same every day of the year, including weekends and PG&E holidays.",
-          "E-ELEC is the default rate plan for NEM 3.0 (solar) customers.",
-          "All-in rate = PG&E delivery-only rate + 3CE generation rate."
-        ]
-      }
+      "californiaClimateCredit": -36.18,
+      "tariffSource": "ELEC_SCHEDS_EELEC"
     },
 
-    "ev-b": {
-      "id": "ev-b",
-      "label": "EV-B",
-      "description": "Separately Metered EV rate — requires a dedicated second meter for your EV",
-      "weekdayVariant": true,
+    "EV-B": {
+      "name": "EV Rate B (Separately Metered)",
+      "scheduleCode": "EV",
+      "rateDesignation": "EV-B",
+      "category": "EV Rate",
+      "status": "active",
+      "description": "Residential time-of-use for a separately metered EV charging outlet. Requires a dedicated second meter for EV only.",
+      "eligibility": "Registered BEV or PHEV with a separately metered EV outlet. Not eligible for SmartRate, Medical Baseline, CARE, or FERA.",
+      "meteringScope": "separatelyMeteredEV",
+      "deprecationNotice": "EV-A (Rate A) was eliminated November 30, 2025 per Advice Letter 7771-E. Only Rate B remains.",
       "seasons": {
-        "summer": { "label": "Summer", "months": [5, 6, 7, 8, 9, 10], "description": "May 1 – October 31" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 11, 12], "description": "November 1 – April 30" }
-      },
-      "touSchedules": {
-        "weekday": [
-          { "period": "offPeak",  "startHour": 0,  "endHour": 7  },
-          { "period": "partPeak", "startHour": 7,  "endHour": 14 },
-          { "period": "peak",     "startHour": 14, "endHour": 21 },
-          { "period": "partPeak", "startHour": 21, "endHour": 23 },
-          { "period": "offPeak",  "startHour": 23, "endHour": 24 }
-        ],
-        "weekend": [
-          { "period": "offPeak", "startHour": 0,  "endHour": 15 },
-          { "period": "peak",    "startHour": 15, "endHour": 19 },
-          { "period": "offPeak", "startHour": 19, "endHour": 24 }
-        ]
+        "summer": { "startMonth": 5, "endMonth": 10, "label": "May – October" },
+        "winter": { "startMonth": 11, "endMonth": 4, "label": "November – April" }
       },
       "touPeriods": {
-        "peak":     { "label": "Peak",      "colorScheme": "red"     },
-        "partPeak": { "label": "Part-Peak", "colorScheme": "amber"   },
-        "offPeak":  { "label": "Off-Peak",  "colorScheme": "emerald" }
+        "summer": {
+          "peak": [
+            { "start": "14:00", "end": "21:00", "days": "weekdays", "label": "2pm–9pm Monday–Friday" },
+            { "start": "15:00", "end": "19:00", "days": "weekendsAndHolidays", "label": "3pm–7pm Saturday, Sunday & holidays" }
+          ],
+          "partPeak": [
+            { "start": "07:00", "end": "14:00", "days": "weekdaysExceptHolidays", "label": "7am–2pm Monday–Friday (except holidays)" },
+            { "start": "21:00", "end": "23:00", "days": "weekdaysExceptHolidays", "label": "9pm–11pm Monday–Friday (except holidays)" }
+          ],
+          "offPeak": { "label": "All other hours" }
+        },
+        "winter": {
+          "peak": [
+            { "start": "14:00", "end": "21:00", "days": "weekdays", "label": "2pm–9pm Monday–Friday" },
+            { "start": "15:00", "end": "19:00", "days": "weekendsAndHolidays", "label": "3pm–7pm Saturday, Sunday & holidays" }
+          ],
+          "partPeak": [
+            { "start": "07:00", "end": "14:00", "days": "weekdaysExceptHolidays", "label": "7am–2pm Monday–Friday (except holidays)" },
+            { "start": "21:00", "end": "23:00", "days": "weekdaysExceptHolidays", "label": "9pm–11pm Monday–Friday (except holidays)" }
+          ],
+          "offPeak": { "label": "All other hours" }
+        }
       },
       "rates": {
-        "summer": {
-          "peak":     { "generation": 0.28399, "delivery": 0.62131, "combined": 0.90530 },
-          "partPeak": { "generation": 0.14195, "delivery": 0.37720, "combined": 0.51915 },
-          "offPeak":  { "generation": 0.09604, "delivery": 0.26465, "combined": 0.36069 }
+        "pgeDelivery": {
+          "summer": { "peak": 0.32434, "partPeak": 0.22370, "offPeak": 0.15753 },
+          "winter": { "peak": 0.33628, "partPeak": 0.22912, "offPeak": 0.15739 }
         },
-        "winter": {
-          "peak":     { "generation": 0.09146, "delivery": 0.43878, "combined": 0.53024 },
-          "partPeak": { "generation": 0.06686, "delivery": 0.30677, "combined": 0.37363 },
-          "offPeak":  { "generation": 0.06686, "delivery": 0.23504, "combined": 0.30190 }
+        "pgeGeneration": {
+          "summer": { "peak": 0.29697, "partPeak": 0.15350, "offPeak": 0.10712 },
+          "winter": { "peak": 0.10250, "partPeak": 0.07765, "offPeak": 0.07765 }
+        },
+        "pgeTotalBundled": {
+          "summer": { "peak": 0.62131, "partPeak": 0.37720, "offPeak": 0.26465 },
+          "winter": { "peak": 0.43878, "partPeak": 0.30677, "offPeak": 0.23504 }
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "summer": { "peak": 0.28399, "partPeak": 0.14195, "offPeak": 0.09604 },
+          "winter": { "peak": 0.09146, "partPeak": 0.06686, "offPeak": 0.06686 }
         }
       },
-      "cceTiers": {
-        "3cchoice": {
-          "summer": { "peak": 0.89730, "partPeak": 0.51115, "offPeak": 0.35269 },
-          "winter": { "peak": 0.52224, "partPeak": 0.36563, "offPeak": 0.29390 }
-        },
-        "3cprime": {
-          "summer": { "peak": 0.90530, "partPeak": 0.51915, "offPeak": 0.36069 },
-          "winter": { "peak": 0.53024, "partPeak": 0.37363, "offPeak": 0.30190 }
+      "fixedCharges": {
+        "type": "flatMeterCharge",
+        "meterCharge": {
+          "rate": 0.04928,
+          "unit": "$/meter/day",
+          "note": "Flat daily meter charge. BSC does not apply to EV-B."
         }
       },
-      "pgeRates": {
-        "summer": {
-          "peak":     0.62131,
-          "partPeak": 0.37720,
-          "offPeak":  0.26465
-        },
-        "winter": {
-          "peak":     0.43878,
-          "partPeak": 0.30677,
-          "offPeak":  0.23504
-        }
-      },
-      "dailyMeterCharge": {
-        "ratePerDay": 0.04928,
-        "label": "Daily Meter Charge",
-        "description": "Daily charge for the separately metered EV outlet. Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E EV-B with 3CE generation",
-        "providers": {
-          "pge": { "name": "PG&E Bundled Service" },
-          "3ce": { "name": "Central Coast Community Energy (3CE)" }
-        },
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "ccaProvider": "Central Coast Community Energy (3CE)",
-        "ccaTier": "3Cchoice",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01",
-          "cceGeneration": "2026-02-15"
-        },
-        "sources": [
-          "PG&E EV Schedule (Electric Schedule EV, Rate B, effective 2026-03-01)",
-          "3CE 3Cchoice Generation Rate Sheet for EV schedule (effective 2026-02-15)"
-        ],
-        "notes": [
-          "EV-B requires a separately metered outlet dedicated to EV charging (second meter).",
-          "EV-A was eliminated November 30, 2025 — only EV-B (Rate B) is available.",
-          "Weekday TOU periods differ from weekend/holiday TOU periods.",
-          "Season definition differs from EV2-A: Summer = May–October, Winter = November–April.",
-          "All-in rate = PG&E delivery-only rate + 3CE generation rate."
-        ]
-      }
+      "californiaClimateCredit": null,
+      "tariffSource": "ELEC_SCHEDS_EV"
     },
 
-    "e1": {
-      "id": "e1",
-      "label": "E1",
-      "description": "Standard residential tiered rate — no time-of-use variation",
-      "weekdayVariant": false,
+    "E-TOU-C": {
+      "name": "Time-of-Use (Peak 4–9pm Every Day)",
+      "scheduleCode": "E-TOU-C",
+      "rateDesignation": "E-TOU-C",
+      "category": "Residential TOU",
+      "status": "active",
+      "description": "General residential time-of-use with peak pricing 4–9pm every day. Includes a baseline credit for usage within baseline allowance. Peak and Off-Peak only (no part-peak).",
+      "eligibility": "All residential customers. Opt-in basis.",
+      "meteringScope": "wholeHouse",
       "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak", "startHour": 0, "endHour": 24 }
-        ]
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "June – September" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "October – May" }
       },
       "touPeriods": {
-        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
-      },
-      "rates": {
         "summer": {
-          "offPeak": { "generation": 0, "delivery": 0.40702, "combined": 0.40702 }
+          "peak":    { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "offPeak": { "label": "All other hours" }
         },
         "winter": {
-          "offPeak": { "generation": 0, "delivery": 0.40702, "combined": 0.40702 }
+          "peak":    { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "offPeak": { "label": "All other hours" }
         }
       },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E E1 (Standard Residential Tiered)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
+      "rates": {
+        "pgeDelivery": {
+          "summer": { "peak": 0.31458, "offPeak": 0.29458 },
+          "winter": { "peak": 0.26047, "offPeak": 0.25715 }
         },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
-        ],
-        "notes": [
-          "E1 is a tiered rate — charges based on usage relative to baseline, not time of day.",
-          "Tier 1 (0–100% baseline): $0.32561/kWh. Tier 2 (>100% baseline): $0.40702/kWh.",
-          "Tier 2 rate is used as the representative combined rate for EV charging (incremental load exceeds baseline).",
-          "No seasonal variation in energy charges.",
-          "Rates are PG&E bundled. generation field is 0.",
-          "CARE discount not modeled."
-        ]
-      }
+        "pgeGeneration": {
+          "summer": { "peak": 0.20782, "offPeak": 0.10482 },
+          "winter": { "peak": 0.13710, "offPeak": 0.11042 }
+        },
+        "pgeTotalBundled": {
+          "summer": { "peak": 0.52240, "offPeak": 0.39940 },
+          "winter": { "peak": 0.39757, "offPeak": 0.36757 }
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "summer": { "peak": 0.19573, "offPeak": 0.09376 },
+          "winter": { "peak": 0.12572, "offPeak": 0.09930 }
+        }
+      },
+      "baselineCredit": {
+        "rate": -0.08140,
+        "unit": "$/kWh",
+        "appliesTo": "Usage within baseline allowance only",
+        "note": "Applied to both peak and off-peak. Reduces effective rate for baseline-level usage."
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.19713,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/customer/day",
+          "note": "Income-tiered BSC effective March 1, 2026 per Advice Letter 7846-E"
+        }
+      },
+      "californiaClimateCredit": -36.18,
+      "tariffSource": "ELEC_SCHEDS_ETOUC"
     },
 
-    "es": {
-      "id": "es",
-      "label": "ES",
-      "description": "Residential tiered rate with solar (NEM)",
-      "weekdayVariant": false,
+    "E-TOU-D": {
+      "name": "Time-of-Use (Peak 5–8pm Weekdays)",
+      "scheduleCode": "E-TOU-D",
+      "rateDesignation": "E-TOU-D",
+      "category": "Residential TOU",
+      "status": "active",
+      "description": "Residential time-of-use with narrow peak window 5–8pm on non-holiday weekdays only. Peak and Off-Peak only (no part-peak). No baseline allowance.",
+      "eligibility": "All residential customers. Opt-in basis.",
+      "meteringScope": "wholeHouse",
       "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak", "startHour": 0, "endHour": 24 }
-        ]
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "June – September" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "October – May" }
       },
       "touPeriods": {
-        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
-      },
-      "rates": {
         "summer": {
-          "offPeak": { "generation": 0, "delivery": 0.43380, "combined": 0.43380 }
+          "peak":    { "start": "17:00", "end": "20:00", "days": "weekdaysExceptHolidays", "label": "5pm–8pm Monday–Friday (except holidays)" },
+          "offPeak": { "label": "All other hours including weekends and holidays" }
         },
         "winter": {
-          "offPeak": { "generation": 0, "delivery": 0.43380, "combined": 0.43380 }
+          "peak":    { "start": "17:00", "end": "20:00", "days": "weekdaysExceptHolidays", "label": "5pm–8pm Monday–Friday (except holidays)" },
+          "offPeak": { "label": "All other hours including weekends and holidays" }
         }
       },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E ES (Residential with Solar, Tiered)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
+      "rates": {
+        "pgeDelivery": {
+          "summer": { "peak": 0.27082, "offPeak": 0.24082 },
+          "winter": { "peak": 0.22208, "offPeak": 0.21855 }
         },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
-        ],
-        "notes": [
-          "ES applies to NEM solar customers on a tiered rate.",
-          "Tier 2 combined rate = E1 Tier 2 ($0.40702) + ES surcharge ($0.02678) = $0.43380/kWh.",
-          "Tier 2 rate is used as the representative combined rate for EV charging.",
-          "No seasonal variation in energy charges.",
-          "Rates are PG&E bundled. generation field is 0.",
-          "CARE discount not modeled."
-        ]
-      }
+        "pgeGeneration": {
+          "summer": { "peak": 0.20626, "offPeak": 0.10130 },
+          "winter": { "peak": 0.16539, "offPeak": 0.13031 }
+        },
+        "pgeTotalBundled": {
+          "summer": { "peak": 0.47708, "offPeak": 0.34212 },
+          "winter": { "peak": 0.38747, "offPeak": 0.34886 }
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "summer": { "peak": 0.19419, "offPeak": 0.09028 },
+          "winter": { "peak": 0.15372, "offPeak": 0.11900 }
+        }
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.19713,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/customer/day",
+          "note": "Income-tiered BSC effective March 1, 2026 per Advice Letter 7846-E"
+        }
+      },
+      "californiaClimateCredit": -36.18,
+      "tariffSource": "ELEC_SCHEDS_ETOUD"
     },
 
-    "et": {
-      "id": "et",
-      "label": "ET",
-      "description": "Residential tiered rate (medical baseline allowance)",
-      "weekdayVariant": false,
-      "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak", "startHour": 0, "endHour": 24 }
-        ]
-      },
-      "touPeriods": {
-        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
-      },
+    "E-1": {
+      "name": "Residential Tiered Rate (E-1)",
+      "scheduleCode": "E-1",
+      "rateDesignation": "E-1",
+      "category": "Tiered (Non-TOU)",
+      "status": "active",
+      "description": "Standard residential tiered rate with no time-of-use periods. Rate varies by usage tier relative to baseline allowance. Same rate 24/7.",
+      "eligibility": "All residential customers. Default rate schedule.",
+      "meteringScope": "wholeHouse",
+      "seasons": null,
+      "touPeriods": null,
       "rates": {
-        "summer": {
-          "offPeak": { "generation": 0, "delivery": 0.52346, "combined": 0.52346 }
+        "pgeDelivery": {
+          "tier1": 0.19706,
+          "tier2": 0.27847,
+          "note": "Tier 1 = 0–100% of baseline. Tier 2 = 101–400%+ of baseline."
         },
-        "winter": {
-          "offPeak": { "generation": 0, "delivery": 0.52346, "combined": 0.52346 }
+        "pgeGeneration": {
+          "allUsage": 0.12855
+        },
+        "pgeTotalBundled": {
+          "tier1": 0.32561,
+          "tier2": 0.40702,
+          "note": "Tier 2 applies to usage from 101% to over 400% of baseline (same rate for both ranges)."
+        },
+        "cce": {
+          "tier": "3Cchoice",
+          "allUsage": 0.11725
         }
       },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
+      "baselineCredit": null,
+      "conservationIncentiveAdjustment": {
+        "tier1": -0.04052,
+        "tier2": 0.04089,
+        "note": "Already embedded in the tiered delivery rates above."
       },
-      "_metadata": {
-        "ratePlan": "PG&E ET (Residential Tiered, Medical Baseline)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
-        },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
-        ],
-        "notes": [
-          "ET applies to customers qualifying for medical baseline allowances.",
-          "Tier 2 combined rate = E1 Tier 2 ($0.40702) + ET surcharge ($0.11644) = $0.52346/kWh.",
-          "Tier 2 rate is used as the representative combined rate for EV charging.",
-          "No seasonal variation in energy charges.",
-          "Rates are PG&E bundled. generation field is 0.",
-          "CARE discount not modeled."
-        ]
-      }
-    },
-
-    "em": {
-      "id": "em",
-      "label": "EM",
-      "description": "Master-metered residential (multi-unit housing)",
-      "weekdayVariant": false,
-      "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak", "startHour": 0, "endHour": 24 }
-        ]
-      },
-      "touPeriods": {
-        "offPeak": { "label": "Tier 2", "colorScheme": "emerald" }
-      },
-      "rates": {
-        "summer": {
-          "offPeak": { "generation": 0, "delivery": 0.46572, "combined": 0.46572 }
-        },
-        "winter": {
-          "offPeak": { "generation": 0, "delivery": 0.46572, "combined": 0.46572 }
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.19713,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/customer/day",
+          "note": "Income-tiered BSC effective March 1, 2026 per Advice Letter 7846-E"
         }
       },
-      "dailyMeterCharge": {
-        "ratePerDay": 0.41373,
-        "label": "Delivery Minimum Bill Amount",
-        "description": "EM delivery minimum bill amount per meter per day. Display in app footnote only. No Base Services Charge applies to EM."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E EM (Master-Metered Residential, Tiered)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
-        },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet, effective March 1, 2026"
-        ],
-        "notes": [
-          "EM applies to master-metered multi-unit residential buildings.",
-          "Tier 1 (0–100% baseline): $0.37174/kWh. Tier 2 (>100% baseline): $0.46572/kWh.",
-          "Tier 2 rate is used as the representative combined rate for EV charging.",
-          "No Base Services Charge applies to EM; uses Delivery Minimum Bill Amount instead.",
-          "No seasonal variation in energy charges.",
-          "Rates are PG&E bundled. generation field is 0.",
-          "CARE discount not modeled."
-        ]
-      }
-    },
-
-    "e-toud": {
-      "id": "e-toud",
-      "label": "E-TOU-D",
-      "description": "Residential rate — peak 5–8 PM weekdays only",
-      "weekdayVariant": true,
-      "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "weekday": [
-          { "period": "offPeak", "startHour": 0,  "endHour": 17 },
-          { "period": "peak",    "startHour": 17, "endHour": 20 },
-          { "period": "offPeak", "startHour": 20, "endHour": 24 }
-        ],
-        "weekend": [
-          { "period": "offPeak", "startHour": 0, "endHour": 24 }
-        ]
-      },
-      "touPeriods": {
-        "peak":    { "label": "Peak",     "colorScheme": "red"     },
-        "offPeak": { "label": "Off-Peak", "colorScheme": "emerald" }
-      },
-      "rates": {
-        "summer": {
-          "peak":    { "generation": 0, "delivery": 0.4771, "combined": 0.4771 },
-          "offPeak": { "generation": 0, "delivery": 0.3421, "combined": 0.3421 }
-        },
-        "winter": {
-          "peak":    { "generation": 0, "delivery": 0.3875, "combined": 0.3875 },
-          "offPeak": { "generation": 0, "delivery": 0.3489, "combined": 0.3489 }
-        }
-      },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E E-TOU-D (Residential Time-of-Use, weekday-only peak)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
-        },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet (E-TOU-D, effective 2026-03-01)",
-          "Advice Letter 5661-E-B (rate introduced May 1, 2020)"
-        ],
-        "notes": [
-          "Peak applies Monday–Friday only. Weekends and PG&E holidays are always off-peak.",
-          "Rates are PG&E bundled (delivery only; no 3CE generation split available). generation field is 0.",
-          "No baseline credit applies to E-TOU-D (unlike E-TOU-C).",
-          "Summer = June–September; Winter = October–May."
-        ]
-      }
-    },
-
-    "e-touc": {
-      "id": "e-touc",
-      "label": "E-TOU-C",
-      "description": "Default residential rate — peak 4–9 PM every day",
-      "weekdayVariant": false,
-      "seasons": {
-        "summer": { "label": "Summer", "months": [6, 7, 8, 9], "description": "June 1 – September 30" },
-        "winter": { "label": "Winter", "months": [1, 2, 3, 4, 5, 10, 11, 12], "description": "October 1 – May 31" }
-      },
-      "touSchedules": {
-        "default": [
-          { "period": "offPeak", "startHour": 0,  "endHour": 16 },
-          { "period": "peak",    "startHour": 16, "endHour": 21 },
-          { "period": "offPeak", "startHour": 21, "endHour": 24 }
-        ]
-      },
-      "touPeriods": {
-        "peak":    { "label": "Peak",     "colorScheme": "red"     },
-        "offPeak": { "label": "Off-Peak", "colorScheme": "emerald" }
-      },
-      "rates": {
-        "summer": {
-          "peak":    { "generation": 0, "delivery": 0.5224, "combined": 0.5224 },
-          "offPeak": { "generation": 0, "delivery": 0.3994, "combined": 0.3994 }
-        },
-        "winter": {
-          "peak":    { "generation": 0, "delivery": 0.3976, "combined": 0.3976 },
-          "offPeak": { "generation": 0, "delivery": 0.3676, "combined": 0.3676 }
-        }
-      },
-      "baseServicesCharge": {
-        "ratePerDay": 0.79343,
-        "label": "Base Services Charge",
-        "incomeTier": 3,
-        "description": "Daily customer charge for Income Tier 3 (standard, non-CARE/FERA customers). Display in app footnote only."
-      },
-      "_metadata": {
-        "ratePlan": "PG&E E-TOU-C (Residential Time-of-Use)",
-        "serviceArea": "Buellton, CA (Santa Barbara County)",
-        "effectiveDates": {
-          "pgeDelivery": "2026-03-01"
-        },
-        "sources": [
-          "PG&E Residential Inclusive TOU Rate Sheet (E-TOU-C, effective 2026-03-01)"
-        ],
-        "notes": [
-          "E-TOU-C is PG&E's default residential TOU rate. Customers are auto-enrolled.",
-          "Peak applies every day including weekends and PG&E holidays — no exceptions.",
-          "Rates are PG&E bundled (delivery only; no 3CE generation split available). generation field is 0.",
-          "Baseline Credit (–$0.0814/kWh on baseline usage) is not modeled — requires usage-tier logic.",
-          "Formerly known as E-TOU-C3. E-TOU-B eliminated October 31, 2025 (Advice Letter 7747-E)."
-        ]
-      }
+      "californiaClimateCredit": -36.18,
+      "tariffSource": "ELEC_SCHEDS_E1"
     }
   }
 }
