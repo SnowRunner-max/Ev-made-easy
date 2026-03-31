@@ -75,9 +75,9 @@ All rate data lives in `src/data/ratePlans.json`. The three supported plans shar
 
 |Period   |Summer     |Winter     |
 |---------|-----------|-----------|
-|Peak     |$0.53420   |$0.40766   |
-|Part-Peak|$0.42415   |$0.39108   |
-|Off-Peak |$0.22254   |$0.22261   |
+|Peak     |$0.52620   |$0.39966   |
+|Part-Peak|$0.41615   |$0.38308   |
+|Off-Peak |$0.21454   |$0.21461   |
 
 **Base Services Charge:** $0.79343/day (Income Tier 3). Show in footnote only, never in per-kWh display.
 
@@ -89,8 +89,8 @@ All rate data lives in `src/data/ratePlans.json`. The three supported plans shar
 |Total Bundled Rate (Winter)    |$0.41099|$0.39428 |$0.22558|
 |Delivery Only (Summer)         |$0.34979|$0.28401 |$0.12313|
 |Delivery Only (Winter)         |$0.27956|$0.27534 |$0.13012|
-|3CE Generation (Summer)        |$0.18441|$0.14014 |$0.09941|
-|3CE Generation (Winter)        |$0.12810|$0.11574 |$0.09249|
+|3CE Generation (Summer)        |$0.17641|$0.13214 |$0.09141|
+|3CE Generation (Winter)        |$0.12010|$0.10774 |$0.08449|
 
 **Additional per-kWh adjustments for CCA customers:**
 - PCIA (2021 vintage for Buellton): $0.05264/kWh
@@ -112,9 +112,9 @@ All rate data lives in `src/data/ratePlans.json`. The three supported plans shar
 
 |Period   |Summer     |Winter     |
 |---------|-----------|-----------|
-|Peak     |$0.80249   |$0.41047   |
-|Part-Peak|$0.53249   |$0.36861   |
-|Off-Peak |$0.44116   |$0.34153   |
+|Peak     |$0.53950   |$0.30961   |
+|Part-Peak|$0.37861   |$0.28772   |
+|Off-Peak |$0.32238   |$0.27399   |
 
 *(PG&E E-ELEC delivery + 3CE 3Cchoice generation)*
 
@@ -153,9 +153,9 @@ All rate data lives in `src/data/ratePlans.json`. The three supported plans shar
 
 |Period   |Summer     |Winter     |
 |---------|-----------|-----------|
-|Peak     |$0.90530   |$0.53024   |
-|Part-Peak|$0.51915   |$0.37363   |
-|Off-Peak |$0.36069   |$0.30190   |
+|Peak     |$0.60833   |$0.42774   |
+|Part-Peak|$0.36565   |$0.29598   |
+|Off-Peak |$0.25357   |$0.22425   |
 
 **Daily Meter Charge:** $0.04928/day (not a base services charge — it is a separate meter fee). Show in footer.
 
