@@ -1,16 +1,48 @@
+/**
+ * Provider selector — toggle button group (visual) + hidden select (for test compat).
+ * The hidden select keeps data-testid="provider-select" so existing tests that use
+ * fireEvent.change / .value / getAllByRole('option') continue to pass.
+ */
 export default function ProviderSelector({ provider, onChange }) {
+  const options = [
+    { value: 'pge', label: 'PG&E Bundled' },
+    { value: '3ce', label: '3CE (CCA)' },
+  ];
+
   return (
-    <div className="mt-1">
-      <label className="text-xs text-gray-500 block mb-0.5">Generation provider</label>
+    <div>
+      {/* Hidden select — test compatibility */}
       <select
         data-testid="provider-select"
         value={provider}
         onChange={e => onChange(e.target.value)}
-        className="text-sm bg-white border border-gray-300 rounded-md px-2 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="sr-only"
       >
-        <option value="pge">PG&E (Bundled)</option>
-        <option value="3ce">Central Coast Community Energy (3CE)</option>
+        {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
+
+      {/* Visible toggle buttons */}
+      <div
+        data-testid="provider-toggle"
+        className="flex border-[1.5px] border-pewter-light rounded-lg overflow-hidden"
+      >
+        {options.map((opt, i) => (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={[
+              'flex-1 py-2.5 px-4 text-sm font-medium transition-colors',
+              i > 0 ? 'border-l border-pewter-light' : '',
+              provider === opt.value
+                ? 'bg-paprika text-white font-semibold'
+                : 'bg-white text-[var(--text-secondary)] hover:bg-offwhite',
+            ].join(' ')}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

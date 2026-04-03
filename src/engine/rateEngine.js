@@ -199,13 +199,14 @@ export function getCurrentPeriod(date, planConfig) {
  */
 export function getRate(date, planConfig, provider = null) {
   if (!planConfig.touPeriods) {
-    // E-1 tiered plan — no TOU periods
+    // E-1 tiered plan — flat rate, no TOU periods; _flatRate set by getEffectiveConfig
+    const flat = planConfig._flatRate;
     return {
       period: 'offPeak',
       season: null,
-      rate: null,
-      generation: null,
-      delivery: null,
+      rate: flat ? flat.combined : null,
+      generation: flat ? flat.generation : null,
+      delivery: flat ? flat.delivery : null,
       periodLabel: 'Flat Rate',
       colorScheme: 'emerald',
     };

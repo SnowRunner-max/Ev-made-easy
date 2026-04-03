@@ -18,7 +18,7 @@ describe('App — structure', () => {
 
   it('header includes app title', () => {
     render(<App />);
-    expect(screen.getByTestId('app-header')).toHaveTextContent(/EV Charging Cost Calculator/i);
+    expect(screen.getByTestId('app-header')).toHaveTextContent(/EV Made Easy/i);
   });
 
   it('renders rate badge, timeline, calculator, charging tip', () => {
@@ -56,9 +56,9 @@ describe('App — provider selector', () => {
 
   it('switching to 3CE changes the displayed rate', () => {
     render(<App />);
-    const before = screen.getByTestId('rate-badge').textContent;
+    const before = screen.getByTestId('rate-value').textContent;
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
-    expect(screen.getByTestId('rate-badge').textContent).not.toBe(before);
+    expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
   });
 
   it('provider persists when switching plans', () => {
