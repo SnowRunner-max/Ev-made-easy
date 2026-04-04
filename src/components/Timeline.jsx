@@ -18,12 +18,11 @@ export default function Timeline({ planConfig }) {
     return () => clearInterval(id);
   }, []);
 
-  // E-1 tiered plan — no time-based schedule to display
   if (!planConfig.touPeriods) {
     return (
       <div data-testid="timeline" className="w-full">
-        <div className="h-14 rounded-lg bg-gray-200 flex items-center justify-center">
-          <span className="text-sm text-gray-500">No time-based pricing — rate is the same all day</span>
+        <div className="h-11 rounded-lg bg-pewter-light flex items-center justify-center">
+          <span className="text-sm text-[var(--text-muted)]">No time-based pricing — rate is the same all day</span>
         </div>
       </div>
     );
@@ -32,7 +31,6 @@ export default function Timeline({ planConfig }) {
   const schedule = getDaySchedule(now, planConfig);
   const markerPercent = (getPacificFractionalHour(now) / 24) * 100;
 
-  // Derive boundary hours from block boundaries; filter out labels too close to neighbors
   const allBoundaryHours = [0, ...schedule.map(b => b.endHour)];
   const boundaryHours = allBoundaryHours.filter((h, i, arr) => {
     if (i === 0 || i === arr.length - 1) return true;
@@ -41,19 +39,18 @@ export default function Timeline({ planConfig }) {
 
   return (
     <div data-testid="timeline" className="w-full">
-      {/* Outer wrapper is relative so the caret can sit above the bar */}
       <div className="relative">
-        {/* Downward-pointing caret above the bar */}
+        {/* Downward caret above bar */}
         <div
           data-testid="timeline-marker-caret"
-          className="absolute -top-4 -translate-x-1/2 pointer-events-none z-10 text-blue-500 text-sm leading-none select-none"
+          className="absolute -top-4 -translate-x-1/2 pointer-events-none z-10 text-white text-[10px] leading-none select-none drop-shadow"
           style={{ left: `${markerPercent}%` }}
         >
           ▼
         </div>
 
         {/* Segmented bar */}
-        <div className="relative flex h-14 rounded-lg overflow-hidden">
+        <div className="relative flex h-11 rounded-lg overflow-hidden shadow-sm">
           {schedule.map((block, i) => {
             const widthPct = ((block.endHour - block.startHour) / 24) * 100;
             return (
@@ -64,31 +61,31 @@ export default function Timeline({ planConfig }) {
                 className={`${PERIOD_COLORS[block.period].bg} flex items-center justify-center overflow-hidden`}
                 title={`${block.periodLabel}: ${block.startHour}:00–${block.endHour}:00`}
               >
-                <span className="text-xs font-bold text-white drop-shadow select-none">
+                <span className="text-[11px] font-bold text-white drop-shadow select-none">
                   ${block.rate.toFixed(2)}
                 </span>
               </div>
             );
           })}
 
-          {/* Blue vertical line */}
+          {/* Current time marker */}
           <div
             data-testid="timeline-marker"
-            className="absolute top-0 bottom-0 w-0.5 bg-blue-500 pointer-events-none"
+            className="absolute top-0 bottom-0 w-0.5 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.6)] pointer-events-none"
             style={{ left: `${markerPercent}%` }}
           />
         </div>
       </div>
 
-      {/* Boundary time labels */}
-      <div className="relative h-5 mt-1">
+      {/* Boundary labels */}
+      <div className="relative h-5 mt-1.5">
         {boundaryHours.map((hour, i) => {
           const isFirst = i === 0;
           const isLast  = i === boundaryHours.length - 1;
           return (
             <span
               key={hour}
-              className={`absolute text-xs text-gray-400 ${
+              className={`absolute text-[10px] text-[var(--text-muted)] ${
                 isFirst ? '' : isLast ? '-translate-x-full' : '-translate-x-1/2'
               }`}
               style={{ left: `${(hour / 24) * 100}%` }}
@@ -97,6 +94,22 @@ export default function Timeline({ planConfig }) {
             </span>
           );
         })}
+      </div>
+
+      {/* Legend */}
+      <div className="flex gap-4 mt-3 text-[11px] text-[var(--text-secondary)]">
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block" />
+          Off-Peak
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-sm bg-amber-500 inline-block" />
+          Part-Peak
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block" />
+          Peak
+        </span>
       </div>
     </div>
   );

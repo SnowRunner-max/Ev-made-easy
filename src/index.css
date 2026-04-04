@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+@theme {
+  /* Brand palette */
+  --color-ink:             #050517;
+  --color-ink-light:       #12122a;
+  --color-ink-surface:     #1a1a34;
+  --color-paprika:         #CF5C36;
+  --color-paprika-hover:   #B84E2D;
+  --color-apricot:         #EFC88B;
+  --color-custard:         #F4E3B2;
+  --color-pewter:          #D3D5D7;
+  --color-pewter-light:    #EAEBED;
+  --color-offwhite:        #FAFAF8;
+
+  /* Typography */
+  --font-sans:  'DM Sans', system-ui, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+}
+
+:root {
+  /* Semantic text */
+  --text-primary:   #1a1a2e;
+  --text-secondary: #6B6B7B;
+  --text-muted:     #9B9BAB;
+
+  /* TOU period colors — used in inline styles / donut chart */
+  --green:        #2D8F5C;
+  --green-bg:     #E8F5EE;
+  --green-border: #B8DFC8;
+  --amber:        #B87B2B;
+  --amber-bg:     #FDF3E0;
+  --amber-border: #E8CFA0;
+  --red:          #C0392B;
+  --red-bg:       #FDECEB;
+  --red-border:   #E8B4AF;
+
+  --topbar-h: 56px;
+}

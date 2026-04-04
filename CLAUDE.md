@@ -17,6 +17,18 @@ A lightweight, mobile-first React SPA that shows Buellton, CA residents the real
 - **No routing library.** Single page app — one view.
 - **No state management library.** React useState/useReducer is sufficient.
 
+## Context Loading Strategy
+
+This file is long by design — it's the single source of truth for rate data, development practices, and design rules. **Do not load the entire file on every task.** Load sections progressively based on the work at hand:
+
+- **Always load:** Tech Stack, File Structure, Common Pitfalls
+- **Load when working on the rate engine or cost calculator:** Rate Data Reference
+- **Load when writing or fixing tests:** Testing Strategy (section 2)
+- **Load when touching UI components or styling:** UI/UX Design System (section 5), Tailwind CSS Best Practices (section 4)
+- **Load when modifying rate data:** Rate Data Reference + Common Pitfalls (especially #1–#8)
+
+Every token loaded into context that isn't relevant to the current task depletes attention for the tokens that matter.
+
 ## File Structure
 
 ```
@@ -348,15 +360,215 @@ function getPacificHour(date) {
 
 - **Use Tailwind utilities directly in JSX.** No `@apply` unless extracting a truly reusable component class.
 - **Mobile-first responsive design.** Write base styles for mobile, then add `sm:`, `md:`, `lg:` prefixes for larger screens.
-- **Use semantic color naming** via Tailwind config or consistent utility classes:
-  - Off-Peak: `bg-emerald-500`, `text-emerald-700`, `border-emerald-400`
-  - Part-Peak: `bg-amber-500`, `text-amber-700`, `border-amber-400`
-  - Peak: `bg-red-500`, `text-red-700`, `border-red-400`
-- **Avoid arbitrary values** (`bg-[#1a2b3c]`) unless matching a specific brand color
-- **Use `max-w-md` or `max-w-lg`** on the main container to keep the app readable on large screens
-- **Dark mode is not required for v1** but avoid hardcoding white backgrounds — use `bg-gray-50` or similar so dark mode can be added later
+- **Use the brand color palette** via CSS custom properties and Tailwind's `bg-[var(--color)]` syntax, or extend `tailwind.config.js` with the brand tokens defined in section 5 below.
+- **Avoid arbitrary hex values** (`bg-[#1a2b3c]`) — always reference a named CSS variable or Tailwind config token. If a color isn't in the palette, it shouldn't be in the app.
+- **Use `max-w-[1120px]`** on the main layout container to match the two-panel design width.
+- **Dark mode is not required for v1** but avoid hardcoding white backgrounds — use `bg-[var(--off-white)]` or the Tailwind equivalent so dark mode can be added later.
 
-### 5. Code Quality Rules
+### 5. UI/UX Design System
+
+This section defines the visual design language for the entire app. The design is modeled after NerdWallet's mortgage calculator pattern — a two-panel layout with inputs on the left and a persistent, live-updating results panel on the right.
+
+**Visual reference:** See `/docs/ev-made-easy-redesign.html` for the interactive prototype that demonstrates every element described below.
+
+#### 5.1 Color Palette — Brand Tokens
+
+All colors are defined as CSS custom properties in `index.css` (or a `theme.css` file imported by `index.css`). Every color used in the app must come from this palette. No rogue hex values.
+
+```css
+:root {
+  /* ── Brand palette ── */
+  --color-ink:             #050517;   /* Ink Black — results panel bg, headings, nav, footer */
+  --color-ink-light:       #12122a;   /* Card surfaces on dark backgrounds */
+  --color-ink-surface:     #1a1a34;   /* Elevated surfaces on dark backgrounds */
+  --color-paprika:         #CF5C36;   /* Spicy Paprika — primary CTA, active states, focus rings, links */
+  --color-paprika-hover:   #B84E2D;   /* Paprika darkened for hover states */
+  --color-paprika-glow:    rgba(207,92,54,0.15); /* Focus ring glow */
+  --color-apricot:         #EFC88B;   /* Apricot Cream — secondary accent, labels on dark bg */
+  --color-custard:         #F4E3B2;   /* Vanilla Custard — table hover, info callouts */
+  --color-grey:            #D3D5D7;   /* Alabaster Grey — borders, disabled states, muted text on dark */
+  --color-grey-light:      #EAEBED;   /* Input borders, dividers */
+  --color-off-white:       #FAFAF8;   /* Page background */
+  --color-white:           #FFFFFF;   /* Input panel background, card surfaces */
+
+  /* ── Semantic text ── */
+  --text-primary:          #1a1a2e;
+  --text-secondary:        #6B6B7B;
+  --text-muted:            #9B9BAB;
+
+  /* ── TOU period colors (used in timeline, badges, tips) ── */
+  --color-green:           #2D8F5C;   /* Off-Peak */
+  --color-green-bg:        #E8F5EE;
+  --color-green-border:    #B8DFC8;
+  --color-amber:           #B87B2B;   /* Part-Peak */
+  --color-amber-bg:        #FDF3E0;
+  --color-amber-border:    #E8CFA0;
+  --color-red:             #C0392B;   /* Peak */
+  --color-red-bg:          #FDECEB;
+  --color-red-border:      #E8B4AF;
+}
+```
+
+**Tailwind config extension** — add brand colors to `tailwind.config.js` so they can be used as `bg-ink`, `text-paprika`, `border-grey-light`, etc.:
+
+```javascript
+// tailwind.config.js — colors section
+colors: {
+  ink:       { DEFAULT: '#050517', light: '#12122a', surface: '#1a1a34' },
+  paprika:   { DEFAULT: '#CF5C36', hover: '#B84E2D' },
+  apricot:   '#EFC88B',
+  custard:   '#F4E3B2',
+  grey:      { DEFAULT: '#D3D5D7', light: '#EAEBED' },
+  'off-white': '#FAFAF8',
+}
+```
+
+#### 5.2 Typography
+
+- **Body font:** `'DM Sans'` — clean, modern sans-serif. Used for all UI text, labels, form elements, and body copy.
+- **Display font:** `'DM Serif Display'` — warm serif with character. Used **only** for hero numbers (the rate `$0.23/kWh`, the cost estimate `$8.12`) and the app title in the top bar.
+- **Never mix serif into body text, labels, or buttons.** Serif is reserved for big, glanceable numbers.
+
+Load both fonts via Google Fonts in `index.html`:
+```html
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+```
+
+Tailwind config:
+```javascript
+fontFamily: {
+  sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+  serif: ['"DM Serif Display"', 'Georgia', 'serif'],
+}
+```
+
+Usage pattern:
+```jsx
+{/* Hero number — serif */}
+<span className="font-serif text-5xl tracking-tight">$0.23</span>
+
+{/* Everything else — sans (default, no class needed) */}
+<label className="text-sm font-semibold">Current charge</label>
+```
+
+#### 5.3 Layout — Two-Panel (NerdWallet Pattern)
+
+The app uses a **split-panel layout** inspired by NerdWallet's mortgage calculator:
+
+```
+┌──────────────────────────────────────────────────────────┐
+│  Top Bar (sticky, dark: --color-ink)                     │
+├──────────────────────────────────┬───────────────────────┤
+│  LEFT PANEL (inputs)             │  RIGHT PANEL (results)│
+│  Background: --color-white       │  Background: --color- │
+│  Scrolls normally                │  ink                  │
+│                                  │  position: sticky     │
+│  • Plan selector                 │  top: topbar height   │
+│  • Provider toggle               │                       │
+│  • Vehicle selector              │  • Rate badge (period)│
+│  • Charge slider                 │  • Hero rate number   │
+│  • Season toggle                 │  • Countdown          │
+│  • Timeline (24h bar)            │  • Donut chart        │
+│  • Charging tip                  │  • Cost cards (80/100)│
+│                                  │  • Rate breakdown     │
+├──────────────────────────────────┴───────────────────────┤
+│  Footer (collapsible, full-width)                        │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Layout rules:**
+- Desktop: `grid-template-columns: 1fr 380px` with `max-width: 1120px` centered.
+- The right panel is `position: sticky; top: [topbar height]; height: calc(100vh - [topbar height]); overflow-y: auto;` — it stays visible as the user scrolls the left panel.
+- **Mobile (< 860px):** Stack vertically — inputs first, results below. Results panel becomes static (not sticky). The grid collapses to a single column.
+- The left panel has a white background. The right panel has an Ink Black background with white/grey/apricot text.
+- A `1px solid var(--color-grey-light)` border separates the two panels on desktop.
+
+#### 5.4 Component-to-Panel Mapping
+
+Every existing React component belongs to exactly one panel. This mapping must be preserved during the redesign:
+
+| Component          | Panel          | Notes                                               |
+|--------------------|----------------|-----------------------------------------------------|
+| `PlanSelector`     | Left (inputs)  | `<select>` with optgroups. Add `.form-hint` text below explaining the selected plan. |
+| `ProviderSelector` | Left (inputs)  | Render as a toggle-button group, not a `<select>`. Two buttons: "PG&E Bundled" / "3CE (CCA)". |
+| Vehicle select     | Left (inputs)  | Part of `Calculator.jsx`. The vehicle `<select>` and custom kWh input. |
+| Charge slider      | Left (inputs)  | Part of `Calculator.jsx`. The charge % slider with large serif display of current value. |
+| Season toggle      | Left (inputs)  | **New control.** Toggle-button group for Summer/Winter preview. Default to current season. |
+| `Timeline`         | Left (inputs)  | The 24-hour segmented bar with current-time marker. Include legend below. |
+| `ChargingTip`      | Left (inputs)  | Color-coded tip box at bottom of left panel. |
+| `RateDisplay`      | Right (results)| Rate badge (period indicator with pulse dot), hero rate number, season label, countdown. |
+| Donut chart        | Right (results)| **New component.** Shows delivery/generation/CCA proportions for the current rate. |
+| Cost cards         | Right (results)| From `Calculator.jsx` — the "Charge to 80%" and "Charge to 100%" output cards. |
+| Rate breakdown     | Right (results)| **New component.** Collapsible table showing per-period delivery/generation/total rates. Hidden by default (progressive disclosure). |
+| `Footer`           | Below both     | Full-width, collapsible. Same content as current Footer. |
+
+#### 5.5 Four UX Principles
+
+These are not suggestions — they are **rules** enforced during development and code review, just like "always pass planConfig" or "test edge cases explicitly."
+
+**Principle 1: Instant feedback.** Every input change (dropdown, slider, toggle) must immediately update the results panel. No "Calculate" button. No loading spinners for local computation. `useState` + derived values, not async flows.
+
+**Principle 2: Progressive disclosure.** The default view shows only what a first-time visitor needs: vehicle, charge level, plan, and the resulting cost. Advanced details (rate component breakdown, per-period tables, BSC amounts) live behind a clearly labeled toggle — always accessible, never shown by default. Test: a user who has never seen a PG&E bill should understand the default view.
+
+**Principle 3: One hero number.** The current per-kWh rate (e.g., `$0.23/kWh`) is the single most visually prominent element on the page — `font-serif text-5xl` on the dark results panel. Everything else (donut chart, cost cards, timeline) exists to explain and contextualize that one number. Do not compete with it visually.
+
+**Principle 4: Contextual education.** Every input field has a brief, plain-English `.form-hint` below it. Not a tooltip, not a modal — inline text visible at a glance. Examples:
+- Plan selector: "For customers with an EV, battery storage, or heat pump. Whole-house metering."
+- Provider toggle: "Most Buellton residents are served by 3CE for generation."
+- Charge slider: No hint needed — the large percentage display is self-explanatory.
+
+#### 5.6 Component Styling Patterns
+
+**Form inputs (left panel):**
+- Labels: `text-sm font-semibold text-[var(--text-primary)]`
+- Selects: Full-width, `border-[1.5px] border-grey-light rounded-lg`, focus state uses `ring-2 ring-paprika/15 border-paprika`
+- Hints: `text-xs text-[var(--text-muted)]` below the input
+
+**Toggle buttons (provider, season):**
+- A flex row of buttons inside a `border rounded-lg overflow-hidden` container
+- Active button: `bg-paprika text-white font-semibold`
+- Inactive button: `bg-white text-[var(--text-secondary)]`, hover `bg-off-white`
+
+**Section dividers (left panel):**
+- `<hr>` with `border-grey-light my-6`
+- Optional section labels: `text-[11px] uppercase tracking-widest text-paprika font-semibold`
+
+**Results panel cards (right panel):**
+- Background: `bg-ink-light`
+- Border: `border border-white/[0.06] rounded-xl`
+- Header: `text-xs uppercase tracking-wide text-grey`
+- Value: `font-serif text-2xl` (white)
+- Detail: `text-xs text-[var(--text-muted)]`
+
+**Rate badge (right panel):**
+- Pill shape: `rounded-full px-3 py-1`
+- Contains a small pulsing dot + period label
+- Off-peak: green dot + green text on green/20 bg
+- Part-peak: apricot dot + apricot text on apricot/20 bg
+- Peak: red dot + red text on red/25 bg
+
+**Donut chart (right panel):**
+- CSS `conic-gradient` on a `border-radius: 50%` div — no charting library needed.
+- Three segments: Paprika (delivery), Apricot (PG&E generation or 3CE generation depending on provider), Custard (CCA generation when provider=3CE).
+- Inner cutout via a `::after` pseudo-element with `bg-ink`.
+- Legend to the right of the donut with colored dots + labels + values.
+
+**Charging tip (left panel):**
+- `rounded-xl border px-4 py-3 text-sm`
+- Off-peak: `bg-green-bg border-green-border text-[#1a5e3a]`
+- Part-peak: `bg-amber-bg border-amber-border text-[#7a5614]`
+- Peak: `bg-red-bg border-red-border text-[#8a2720]`
+
+#### 5.7 Mobile Adaptations
+
+- **Breakpoint:** `860px` (use `@media (max-width: 860px)` or Tailwind `max-md:`)
+- Below breakpoint: single-column stack. Left panel content first, results panel below.
+- Results panel becomes `position: static` (not sticky), full-width, same dark background.
+- Hero rate font size reduces from `text-5xl` to `text-4xl`.
+- Donut chart + legend stack vertically (centered).
+- Future enhancement: mobile sticky footer bar showing just the hero rate, expandable to full results. Not required for v1.
+
+### 6. Code Quality Rules
 
 - **No `any` types** if using TypeScript (currently JS, but keep code type-safe in spirit)
 - **No `console.log`** in production code. Use it only for debugging, then remove.
@@ -393,13 +605,55 @@ function getRate(date) {
 
 - **TOU boundaries come from `planConfig.touSchedules`, not hardcoded constants.** The engine is data-driven: `getScheduleForDay(date, planConfig)` returns the correct block array for the plan and day type. Don't reintroduce hardcoded hour constants — read from the schedule blocks instead.
 
-### 6. Git Practices
+### 7. Git Practices
 
 - **Commit after each green test.** Small, frequent commits.
 - **Commit message format:** `feat: add rate engine getCurrentPeriod function`
   - Prefixes: `feat:`, `fix:`, `test:`, `refactor:`, `docs:`, `chore:`
 - **One feature per branch** if working on multiple stories
 - **Never commit failing tests** to main
+
+### 8. Claude Code Guidance
+
+#### Prefer General Tools
+
+Claude Code works best with bash and file editing — general tools it already knows well. Do not add custom tool wrappers, orchestration scripts, or scaffolding that pre-decides what Claude should do. Trust Claude to compose `read file → run tests → edit → run tests` into the right sequence for each task. This project's stack (Vite, Vitest, React, Tailwind) is deliberately mainstream — no exotic tooling.
+
+#### Filter Output, Don't Flood Context
+
+When running tests or builds, pipe output through filters so only relevant information enters the context window:
+
+```bash
+# Good: show only failures and summary
+npm test -- --run 2>&1 | tail -30
+
+# Good: show only failing test names
+npm test -- --run 2>&1 | grep -E "FAIL|✗|Error"
+
+# Bad: dump entire verbose test output into context
+npm test -- --run --reporter=verbose
+```
+
+The same applies to build output, linting, and any command that produces large output. Filter to what matters for the current task.
+
+#### Action Boundaries
+
+**Always pause and confirm before:**
+- Modifying `ratePlans.json` — rate data changes must be validated against tariff PDFs before committing. A wrong rate silently breaks every cost calculation.
+- Changing season month ranges — these are plan-specific and easy to cross-contaminate (EV-B uses May–Oct, others use Jun–Sep).
+- Touching the `pgeDelivery` / `pgeGeneration` / `cce` schema structure — the v2.0 three-field separation was a deliberate bug-prevention decision. Collapsing or renaming these fields reintroduces the class of bugs v2.0 was designed to eliminate.
+- Deleting or renaming test files — tests are the project's safety net.
+
+**Proceed without asking:**
+- Adding or editing test files (more tests = better)
+- Refactoring component internals without changing props or external behavior
+- Updating README, comments, or CLAUDE.md documentation
+- Adding new CSS custom properties to the palette (as long as they follow the naming convention in section 5.1)
+- Creating new components in `src/components/` that follow existing patterns
+
+#### Maintenance: Prune This File Over Time
+
+CLAUDE.md should **shrink** as Claude gets smarter, not grow. After completing a batch of stories, revisit and ask: *what can I stop telling Claude?* If Claude consistently follows a rule without being reminded, that rule is dead weight consuming context tokens. Remove it. The guidance that remains should be the stuff that's genuinely non-obvious — rate data quirks, plan-specific gotchas, and project-specific design decisions that can't be inferred from the code alone.
 
 ## Build Order (Recommended)
 
@@ -417,7 +671,11 @@ Follow this sequence. Each step builds on the previous.
 1. **Charging tips** — Contextual recommendations
 1. **Footer & explanation** — Rate footnote with sources
 1. **SEO metadata** — Title, description, OG tags
-1. **Final polish** — Responsive tweaks, accessibility audit, performance check
+1. **Two-panel layout** — Implement the NerdWallet split-panel layout (section 5.3), moving existing components into left/right panels
+1. **Donut chart** — Rate component breakdown visualization (section 5.6)
+1. **Rate breakdown table** — Collapsible per-period detail (section 5.6)
+1. **Brand theming** — Apply full color palette, typography, and styling patterns (sections 5.1–5.2, 5.6)
+1. **Final polish** — Responsive tweaks, mobile stacking, accessibility audit, performance check
 
 ## Running the Project
 
@@ -452,3 +710,6 @@ npm run preview
 1. **Rates are for CCA (3CE) customers, not PG&E bundled customers.** We use PG&E delivery + 3CE generation. The bundled totals on the tariff sheet are for non-CCA customers.
 1. **The PCIA vintage matters.** Buellton's 3CE enrollment vintage is 2021, so the PCIA is $0.05264/kWh. Different vintages have different PCIA rates.
 1. **Charging to 80% vs 100%.** Show both options. Many EV owners charge to 80% for battery longevity.
+1. **Colors must come from the palette.** Never introduce a hex value that isn't defined in the CSS custom properties (section 5.1). If you need a new shade, add it to the palette first with a semantic name.
+1. **Serif font is only for hero numbers.** `DM Serif Display` is used exclusively for large, glanceable numeric values (rate per kWh, cost estimates). All other text — labels, hints, buttons, body copy — uses `DM Sans`. Mixing serif into body text breaks the visual hierarchy.
+1. **Results panel is always dark.** The right panel always uses `--color-ink` background with light text. Never render white-background cards or light-themed components inside it. Use `--color-ink-light` for elevated card surfaces within the dark panel.

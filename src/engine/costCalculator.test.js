@@ -9,7 +9,14 @@ const evbRaw  = ratePlans.ratePlans['EV-B'];
 
 // Build effective planConfig with pre-computed combined rates (bundled provider)
 function buildEffectiveConfig(planConfig) {
-  if (!planConfig.touPeriods) return planConfig;
+  if (!planConfig.touPeriods) {
+    // Tiered plan (E-1): compute flat tier-1 rate, mirroring getEffectiveConfig in App.jsx
+    const r = planConfig.rates;
+    const delivery = r.pgeDelivery.tier1;
+    const generation = r.pgeGeneration.allUsage;
+    const combined = r.pgeTotalBundled.tier1;
+    return { ...planConfig, _flatRate: { combined, delivery, generation } };
+  }
   const seasons = Object.keys(planConfig.rates.pgeDelivery);
   const rates = Object.fromEntries(
     seasons.map(season => [
@@ -143,5 +150,34 @@ describe('calcChargeSummary — EV2-A', () => {
     const { to80, to100 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 100, 7.7, ev2aConfig);
     expect(to80).toBeNull();
     expect(to100).toBeNull();
+  });
+});
+
+// E-1 bundled tier1 rates: combined=0.32561, delivery=0.19706, generation=0.12855
+const e1Config = buildEffectiveConfig(ratePlans.ratePlans['E-1']);
+
+describe('calcChargeCost — E-1 tiered', () => {
+  it('calculates cost using flat tier-1 rate (any hour, same result)', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T14:00:00-08:00'), 45, 7.7, e1Config);
+    expect(totalCost).toBeCloseTo(45 * 0.32561, 2);
+  });
+
+  it('same flat rate at peak hour as off-peak hour', () => {
+    const { totalCost: costPeak } = calcChargeCost(new Date('2026-01-15T17:00:00-08:00'), 20, 7.7, e1Config);
+    const { totalCost: costOffPeak } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 20, 7.7, e1Config);
+    expect(costPeak).toBeCloseTo(costOffPeak, 4);
+  });
+});
+
+describe('calcChargeSummary — E-1 tiered', () => {
+  it('returns non-zero costNow for 20% starting charge', () => {
+    const { to80 } = calcChargeSummary(new Date('2026-01-15T14:00:00-08:00'), 60, 20, 7.7, e1Config);
+    expect(to80.costNow).toBeGreaterThan(0);
+    expect(to80.costNow).toBeCloseTo(36 * 0.32561, 2);
+  });
+
+  it('savings is 0 since all hours cost the same', () => {
+    const { to80 } = calcChargeSummary(new Date('2026-01-15T17:00:00-08:00'), 60, 20, 7.7, e1Config);
+    expect(to80.savings).toBeCloseTo(0, 2);
   });
 });
