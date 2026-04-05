@@ -1,0 +1,23 @@
+{
+  "cities": [
+    { "id": "buellton",   "name": "Buellton",   "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "solvang",    "name": "Solvang",    "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "santa-ynez", "name": "Santa Ynez", "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "los-olivos", "name": "Los Olivos", "serviceAreaId": "pge-3ce-sbco" }
+  ],
+  "serviceAreas": {
+    "pge-3ce-sbco": {
+      "name": "PG&E + 3CE (Santa Barbara County)",
+      "utility": "PG&E",
+      "cca": "3CE",
+      "shortLabel": "PG&E + 3CE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in the Santa Ynez Valley are served by 3CE for generation. PG&E handles delivery for all customers.",
+      "providers": [
+        { "value": "pge", "label": "PG&E Bundled" },
+        { "value": "3ce", "label": "3CE (CCA)" }
+      ]
+    }
+  }
+}

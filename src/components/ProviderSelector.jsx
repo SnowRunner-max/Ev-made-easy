@@ -3,11 +3,12 @@
  * The hidden select keeps data-testid="provider-select" so existing tests that use
  * fireEvent.change / .value / getAllByRole('option') continue to pass.
  */
-export default function ProviderSelector({ provider, onChange }) {
-  const options = [
-    { value: 'pge', label: 'PG&E Bundled' },
-    { value: '3ce', label: '3CE (CCA)' },
-  ];
+const DEFAULT_OPTIONS = [
+  { value: 'pge', label: 'PG&E Bundled' },
+  { value: '3ce', label: '3CE (CCA)' },
+];
+
+export default function ProviderSelector({ provider, onChange, options = DEFAULT_OPTIONS }) {
 
   return (
     <div>

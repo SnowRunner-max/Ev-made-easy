@@ -30,6 +30,33 @@ describe('App — structure', () => {
   });
 });
 
+describe('App — city picker', () => {
+  it('renders city-select defaulting to Buellton', () => {
+    render(<App />);
+    expect(screen.getByTestId('city-select')).toBeInTheDocument();
+    expect(screen.getByTestId('city-select').value).toBe('buellton');
+  });
+
+  it('has four city options', () => {
+    render(<App />);
+    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(4);
+  });
+
+  it('switching city updates header text', () => {
+    render(<App />);
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Buellton, CA');
+    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'solvang' } });
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Solvang, CA');
+  });
+
+  it('switching city within same service area preserves planId', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
+    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'santa-ynez' } });
+    expect(screen.getByTestId('plan-select').value).toBe('E-ELEC');
+  });
+});
+
 describe('App — plan selector', () => {
   it('defaults to EV2-A', () => {
     render(<App />);

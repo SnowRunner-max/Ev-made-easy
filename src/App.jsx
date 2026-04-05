@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import ratePlans from './data/ratePlans.json';
+import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
 import { calcChargeSummary } from './engine/costCalculator';
+import CityPicker from './components/CityPicker';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
 import RateDisplay from './components/RateDisplay';
@@ -11,6 +13,11 @@ import DonutChart from './components/DonutChart';
 import ChargingTip from './components/ChargingTip';
 import Footer from './components/Footer';
 import { PERIOD_DISPLAY } from './engine/rateEngine';
+
+/** Static registry mapping serviceAreaId → imported rate plan data */
+const RATE_PLAN_REGISTRY = {
+  'pge-3ce-sbco': ratePlans,
+};
 
 const CUSTOM_ID = 'custom';
 
@@ -67,6 +74,7 @@ const PLAN_HINTS = {
 };
 
 export default function App() {
+  const [cityId, setCityId] = useState('buellton');
   const [planId, setPlanId] = useState('EV2-A');
   const [provider, setProvider] = useState('pge');
 
@@ -78,7 +86,22 @@ export default function App() {
   // Rate breakdown toggle
   const [breakdownOpen, setBreakdownOpen] = useState(false);
 
-  const planConfig = ratePlans.ratePlans[planId];
+  // Derive city, service area, and rate plans from cityId
+  const city = serviceAreasData.cities.find(c => c.id === cityId);
+  const serviceArea = serviceAreasData.serviceAreas[city.serviceAreaId];
+  const ratePlansData = RATE_PLAN_REGISTRY[city.serviceAreaId];
+
+  function handleCityChange(newCityId) {
+    const newCity = serviceAreasData.cities.find(c => c.id === newCityId);
+    setCityId(newCityId);
+    if (newCity.serviceAreaId !== city.serviceAreaId) {
+      const newArea = serviceAreasData.serviceAreas[newCity.serviceAreaId];
+      setPlanId(newArea.defaultPlanId);
+      setProvider(newArea.defaultProvider);
+    }
+  }
+
+  const planConfig = ratePlansData.ratePlans[planId];
 
   if (!planConfig) {
     return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
@@ -112,9 +135,9 @@ export default function App() {
           <span className="font-serif text-[18px] text-white tracking-[-0.3px]">EV Made Easy</span>
         </div>
         <div className="text-xs text-pewter flex items-center gap-1.5 hidden sm:flex">
-          <span>Buellton, CA</span>
+          <span>{city.name}, CA</span>
           <span className="w-1 h-1 rounded-full bg-paprika" />
-          <span>PG&E + 3CE</span>
+          <span>{serviceArea.shortLabel}</span>
           <span className="w-1 h-1 rounded-full bg-paprika" />
           <span>Updated Mar 2026</span>
         </div>
@@ -129,6 +152,22 @@ export default function App() {
         {/* ════ LEFT PANEL: Inputs ════ */}
         <div className="bg-white border-r border-pewter-light max-[860px]:border-r-0 max-[860px]:border-b px-10 py-9 max-[860px]:px-5 max-[860px]:py-6">
 
+          {/* Location section */}
+          <section className="mb-7">
+            <div className="text-[11px] uppercase tracking-[2px] text-paprika font-semibold mb-4">
+              Location
+            </div>
+            <label className="block text-[13px] font-semibold text-[var(--text-primary)] mb-1.5">
+              Your city
+            </label>
+            <CityPicker cityId={cityId} cities={serviceAreasData.cities} onChange={handleCityChange} />
+            <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
+              {serviceArea.shortLabel} service territory
+            </p>
+          </section>
+
+          <hr className="border-t border-pewter-light my-6" />
+
           {/* Rate Plan section */}
           <section className="mb-7">
             <div className="text-[11px] uppercase tracking-[2px] text-paprika font-semibold mb-4">
@@ -137,7 +176,7 @@ export default function App() {
             <label className="block text-[13px] font-semibold text-[var(--text-primary)] mb-1.5">
               Select your plan
             </label>
-            <PlanSelector planId={planId} onChange={id => { setPlanId(id); }} />
+            <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => { setPlanId(id); }} />
             <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
               {PLAN_HINTS[planId]}
             </p>
@@ -147,9 +186,9 @@ export default function App() {
                 <label className="block text-[13px] font-semibold text-[var(--text-primary)] mb-1.5">
                   Generation provider
                 </label>
-                <ProviderSelector provider={provider} onChange={setProvider} />
+                <ProviderSelector provider={provider} onChange={setProvider} options={serviceArea.providers} />
                 <p className="text-xs text-[var(--text-muted)] mt-1.5 leading-relaxed">
-                  Most Buellton residents are served by 3CE for generation. PG&E handles delivery for all customers.
+                  {serviceArea.providerHint}
                 </p>
               </div>
             )}
@@ -227,7 +266,7 @@ export default function App() {
       </div>
 
       {/* ── Footer ── */}
-      <Footer planConfig={effectivePlanConfig} globalMetadata={ratePlans._metadata} />
+      <Footer planConfig={effectivePlanConfig} globalMetadata={ratePlansData._metadata} city={city} serviceArea={serviceArea} />
     </div>
   );
 }
