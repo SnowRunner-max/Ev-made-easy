@@ -36,6 +36,7 @@
 
     "EV2-A": {
       "name": "Home Charging EV2-A",
+      "selectorLabel": "EV2-A — Home Charging (Standard EV)",
       "scheduleCode": "EV2",
       "rateDesignation": "EV2-A",
       "category": "EV Rate",
@@ -100,6 +101,7 @@
 
     "E-ELEC": {
       "name": "Electric Home Rate Plan (E-ELEC)",
+      "selectorLabel": "E-ELEC — Electric Home Rate",
       "scheduleCode": "E-ELEC",
       "rateDesignation": "E-ELEC",
       "category": "EV Rate",
@@ -164,6 +166,7 @@
 
     "EV-B": {
       "name": "EV Rate B (Separately Metered)",
+      "selectorLabel": "EV-B — Separately Metered EV (2nd meter required)",
       "scheduleCode": "EV",
       "rateDesignation": "EV-B",
       "category": "EV Rate",
@@ -233,6 +236,7 @@
 
     "E-TOU-C": {
       "name": "Time-of-Use (Peak 4–9pm Every Day)",
+      "selectorLabel": "E-TOU-C — Peak 4–9pm Every Day",
       "scheduleCode": "E-TOU-C",
       "rateDesignation": "E-TOU-C",
       "category": "Residential TOU",
@@ -295,6 +299,7 @@
 
     "E-TOU-D": {
       "name": "Time-of-Use (Peak 5–8pm Weekdays)",
+      "selectorLabel": "E-TOU-D — Peak 5–8pm Weekdays Only",
       "scheduleCode": "E-TOU-D",
       "rateDesignation": "E-TOU-D",
       "category": "Residential TOU",
@@ -351,6 +356,7 @@
 
     "E-1": {
       "name": "Residential Tiered Rate (E-1)",
+      "selectorLabel": "E-1 — Standard Residential (Tiered)",
       "scheduleCode": "E-1",
       "rateDesignation": "E-1",
       "category": "Tiered (Non-TOU)",

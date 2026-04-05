@@ -1,4 +1,25 @@
-export default function PlanSelector({ planId, onChange }) {
+const CATEGORY_ORDER = ['EV Rate', 'Residential TOU', 'Tiered (Non-TOU)'];
+const CATEGORY_LABELS = {
+  'EV Rate': 'EV Rates',
+  'Residential TOU': 'Residential TOU Rates',
+  'Tiered (Non-TOU)': 'Tiered (Non-TOU) Rates',
+};
+
+export default function PlanSelector({ planId, plans, onChange }) {
+  // Group plans by category
+  const grouped = {};
+  for (const [id, plan] of Object.entries(plans)) {
+    const cat = plan.category;
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push({ id, label: plan.selectorLabel || `${plan.rateDesignation} — ${plan.name}` });
+  }
+
+  // Sort categories by defined order, unknowns at end
+  const sortedCategories = Object.keys(grouped).sort(
+    (a, b) => (CATEGORY_ORDER.indexOf(a) === -1 ? 99 : CATEGORY_ORDER.indexOf(a))
+           - (CATEGORY_ORDER.indexOf(b) === -1 ? 99 : CATEGORY_ORDER.indexOf(b))
+  );
+
   return (
     <select
       data-testid="plan-select"
@@ -11,18 +32,13 @@ export default function PlanSelector({ planId, onChange }) {
         backgroundPosition: 'right 12px center',
       }}
     >
-      <optgroup label="EV Rates">
-        <option value="EV2-A">EV2-A — Home Charging (Standard EV)</option>
-        <option value="E-ELEC">E-ELEC — Electric Home Rate</option>
-        <option value="EV-B">EV-B — Separately Metered EV (2nd meter required)</option>
-      </optgroup>
-      <optgroup label="Residential TOU Rates">
-        <option value="E-TOU-C">E-TOU-C — Peak 4–9pm Every Day</option>
-        <option value="E-TOU-D">E-TOU-D — Peak 5–8pm Weekdays Only</option>
-      </optgroup>
-      <optgroup label="Tiered (Non-TOU) Rates">
-        <option value="E-1">E-1 — Standard Residential (Tiered)</option>
-      </optgroup>
+      {sortedCategories.map(category => (
+        <optgroup key={category} label={CATEGORY_LABELS[category] || category}>
+          {grouped[category].map(p => (
+            <option key={p.id} value={p.id}>{p.label}</option>
+          ))}
+        </optgroup>
+      ))}
     </select>
   );
 }

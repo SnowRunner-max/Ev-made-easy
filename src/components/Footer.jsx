@@ -62,7 +62,7 @@ function TieredRateTable({ rates, provider }) {
   );
 }
 
-export default function Footer({ planConfig, globalMetadata }) {
+export default function Footer({ planConfig, globalMetadata, city, serviceArea }) {
   const [expanded, setExpanded] = useState(false);
   const { rates, touPeriods, seasons, fixedCharges } = planConfig;
 
@@ -77,7 +77,7 @@ export default function Footer({ planConfig, globalMetadata }) {
       className="border-t border-pewter-light bg-white px-10 py-5 text-xs text-[var(--text-muted)] max-w-[1120px] mx-auto w-full"
     >
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-[var(--text-muted)]">{planConfig.name} · Buellton, CA · PG&amp;E + 3CE</p>
+        <p className="text-[var(--text-muted)]">{planConfig.name} · {city?.name ?? 'Buellton'}, CA · {serviceArea?.shortLabel ?? 'PG&E + 3CE'}</p>
         <button
           data-testid="footer-toggle"
           onClick={() => setExpanded(e => !e)}
@@ -93,7 +93,7 @@ export default function Footer({ planConfig, globalMetadata }) {
           <section>
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">All-in rates ($/kWh)</h3>
             <p className="text-[var(--text-muted)] mb-1">
-              {planConfig._displayProvider} · Buellton, CA (Santa Barbara County)
+              {planConfig._displayProvider} · {city?.name ?? 'Buellton'}, CA
             </p>
             {touPeriods ? (
               <RateTable rates={rates} seasons={seasons} />
@@ -126,8 +126,8 @@ export default function Footer({ planConfig, globalMetadata }) {
           <section>
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Effective dates</h3>
             <ul className="space-y-0.5">
-              <li>PG&E delivery rates: {globalMetadata?.pgeEffectiveDate} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>3CE generation rates: {globalMetadata?.cceRateSheetDate}</li>
+              <li>{serviceArea?.utility ?? 'PG&E'} delivery rates: {globalMetadata?.pgeEffectiveDate} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
+              <li>{serviceArea?.cca ?? '3CE'} generation rates: {globalMetadata?.cceRateSheetDate}</li>
             </ul>
           </section>
 
@@ -149,8 +149,8 @@ export default function Footer({ planConfig, globalMetadata }) {
           <section>
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Sources</h3>
             <ul className="space-y-0.5 list-disc list-inside">
-              <li>PG&E Tariff Schedule {planConfig.tariffSource} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>3CE 3Cchoice Generation Rate Sheet (effective {globalMetadata?.cceRateSheetDate})</li>
+              <li>{serviceArea?.utility ?? 'PG&E'} Tariff Schedule {planConfig.tariffSource} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
+              <li>{serviceArea?.cca ?? '3CE'} 3Cchoice Generation Rate Sheet (effective {globalMetadata?.cceRateSheetDate})</li>
             </ul>
           </section>
 
