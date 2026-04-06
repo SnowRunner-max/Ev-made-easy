@@ -363,17 +363,22 @@ function getPacificHour(date) {
 - **Use the brand color palette** via CSS custom properties and Tailwind's `bg-[var(--color)]` syntax, or extend `tailwind.config.js` with the brand tokens defined in section 5 below.
 - **Avoid arbitrary hex values** (`bg-[#1a2b3c]`) — always reference a named CSS variable or Tailwind config token. If a color isn't in the palette, it shouldn't be in the app.
 - **Use `max-w-[1120px]`** on the main layout container to match the two-panel design width.
+- **No 1px structural borders.** Use `bg-grey-light/40` surface containers or background-color shifts to visually separate sections in the Input Laboratory. Reserve `border` and `divide-*` utilities for interactive elements only (toggle button groups, focus rings).
 - **Dark mode is not required for v1** but avoid hardcoding white backgrounds — use `bg-[var(--off-white)]` or the Tailwind equivalent so dark mode can be added later.
 
 ### 5. UI/UX Design System
 
-This section defines the visual design language for the entire app. The design is modeled after NerdWallet's mortgage calculator pattern — a two-panel layout with inputs on the left and a persistent, live-updating results panel on the right.
+This section defines the visual design language for the entire app. The design follows **"The Editorial Engineer"** creative direction — Organic Brutalism: bold, high-contrast typography and rigid information architecture softened by a warm palette and layered depth. The interface feels intentional and asymmetric, not generic SaaS dashboard.
 
-**Visual reference:** See `/docs/ev-made-easy-redesign.html` for the interactive prototype that demonstrates every element described below.
+The split-view system has two named zones: the light-themed **"Energy Price by Rate"** panel (left) where users configure their inputs, and the high-contrast dark **"Energy Pricing"** panel (right) where cost output is displayed. The app is named **"ChargeRate"**.
+
+**Visual reference:** See `design_system/` folder — `template-monolith.png` + `example.html` (desktop), `example_detail.html` (Cost Facts view), `example_mobile.html` + `template-mobile.png` (mobile).
 
 #### 5.1 Color Palette — Brand Tokens
 
 All colors are defined as CSS custom properties in `index.css` (or a `theme.css` file imported by `index.css`). Every color used in the app must come from this palette. No rogue hex values.
+
+**The "No-Line" Rule:** Traditional 1px solid borders are prohibited for structural sectioning. Define section edges through background shifts (e.g., `surface-container-low` against a `surface` background) or tonal transitions (Vanilla Custard → Alabaster Grey). The only exception is interactive elements (input focus rings, toggle button groups) where a ghost border at 15% opacity is acceptable for accessibility.
 
 ```css
 :root {
@@ -425,82 +430,91 @@ colors: {
 
 #### 5.2 Typography
 
-- **Body font:** `'DM Sans'` — clean, modern sans-serif. Used for all UI text, labels, form elements, and body copy.
-- **Display font:** `'DM Serif Display'` — warm serif with character. Used **only** for hero numbers (the rate `$0.23/kWh`, the cost estimate `$8.12`) and the app title in the top bar.
-- **Never mix serif into body text, labels, or buttons.** Serif is reserved for big, glanceable numbers.
+- **Display font:** `'Space Grotesk'` — geometric, modern, automotive feel. Used for hero numbers (the rate `$0.41/kWh`, cost estimates `$22.40`), the app title ("Volt & Ember"), and top-level section headers in the Results Monolith. Treated as editorial elements — large scale contrasts make data feel authoritative.
+- **Body font:** `'Inter'` — neutral, highly legible. Used for all labels, hints, form elements, body copy, and data labels. Handles the heavy lifting of information-dense sections.
+- **Never use Space Grotesk for body text, hints, or buttons.** Display font is reserved for big, glanceable numbers and structural headers.
 
 Load both fonts via Google Fonts in `index.html`:
 ```html
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 ```
 
 Tailwind config:
 ```javascript
 fontFamily: {
-  sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-  serif: ['"DM Serif Display"', 'Georgia', 'serif'],
+  display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+  sans:    ['"Inter"', 'system-ui', 'sans-serif'],
 }
 ```
 
 Usage pattern:
 ```jsx
-{/* Hero number — serif */}
-<span className="font-serif text-5xl tracking-tight">$0.23</span>
+{/* Hero number — display (Space Grotesk) */}
+<span className="font-display text-5xl tracking-tight">$0.41</span>
 
-{/* Everything else — sans (default, no class needed) */}
+{/* Section header in Results Monolith — display, smaller */}
+<h2 className="font-display text-2xl font-bold text-white">$22.40</h2>
+
+{/* Everything else — sans/Inter (default, no class needed) */}
 <label className="text-sm font-semibold">Current charge</label>
 ```
 
-#### 5.3 Layout — Two-Panel (NerdWallet Pattern)
+#### 5.3 Layout — Input Laboratory + Results Monolith
 
-The app uses a **split-panel layout** inspired by NerdWallet's mortgage calculator:
+The app uses a **split-panel layout** with two named zones:
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  Top Bar (sticky, dark: --color-ink)                     │
-├──────────────────────────────────┬───────────────────────┤
-│  LEFT PANEL (inputs)             │  RIGHT PANEL (results)│
-│  Background: --color-white       │  Background: --color- │
-│  Scrolls normally                │  ink                  │
-│                                  │  position: sticky     │
-│  • Plan selector                 │  top: topbar height   │
-│  • Provider toggle               │                       │
-│  • Vehicle selector              │  • Rate badge (period)│
-│  • Charge slider                 │  • Hero rate number   │
-│  • Season toggle                 │  • Countdown          │
-│  • Timeline (24h bar)            │  • Donut chart        │
-│  • Charging tip                  │  • Cost cards (80/100)│
-│                                  │  • Rate breakdown     │
-├──────────────────────────────────┴───────────────────────┤
-│  Footer (collapsible, full-width)                        │
+│  Top Bar (sticky, dark: --color-ink)  "Volt & Ember"     │
+├─────────────────────────────────┬────────────────────────┤
+│  INPUT LABORATORY (left)        │  RESULTS MONOLITH      │
+│  Background: --color-white      │  Background: --color-  │
+│  Scrolls normally               │  ink                   │
+│                                 │  position: sticky      │
+│  ┌─────────────┬─────────────┐  │  top: topbar height    │
+│  │ LOCATION &  │ CONFIGURA-  │  │                        │
+│  │ UTILITY     │ TION        │  │  • Current Energy Rate │
+│  │ • CityPicker│ • Rate Plan │  │  • Hero rate number    │
+│  │ • Provider  │ • Vehicle   │  │  • Countdown           │
+│  │   toggle    │   search    │  │  • Cost cards (80/100) │
+│  └─────────────┴─────────────┘  │  • Cost Distribution   │
+│  • Current Charge % slider      │    donut               │
+│  • Today's Rate Schedule        │  • FLIP FOR BREAKDOWN  │
+│    (Timeline 24h bar)           │    button (sticky)     │
+│  • Charging tip                 │                        │
+├─────────────────────────────────┴────────────────────────┤
+│  Footer (full-width)                                     │
 └──────────────────────────────────────────────────────────┘
 ```
 
 **Layout rules:**
 - Desktop: `grid-template-columns: 1fr 380px` with `max-width: 1120px` centered.
-- The right panel is `position: sticky; top: [topbar height]; height: calc(100vh - [topbar height]); overflow-y: auto;` — it stays visible as the user scrolls the left panel.
-- **Mobile (< 860px):** Stack vertically — inputs first, results below. Results panel becomes static (not sticky). The grid collapses to a single column.
-- The left panel has a white background. The right panel has an Ink Black background with white/grey/apricot text.
-- A `1px solid var(--color-grey-light)` border separates the two panels on desktop.
+- The Results Monolith is `position: sticky; top: [topbar height]; height: calc(100vh - [topbar height]); overflow-y: auto;` — stays visible as user scrolls the Input Laboratory.
+- **Mobile (< 860px):** Stack vertically — Input Laboratory first, Results Monolith below. Monolith becomes static (not sticky). Grid collapses to single column.
+- Input Laboratory: white background. Results Monolith: Ink Black background with white/grey/apricot text.
+- **No border between panels** — the color contrast between white and Ink Black creates the visual separation. Do not add a `border` or `divide` utility here.
+- Input Laboratory sub-grid: Two equal columns on desktop — "Location & Utility" | "Configuration" — that collapse to single column on mobile. Sections are separated by background shifts, not borders.
 
 #### 5.4 Component-to-Panel Mapping
 
-Every existing React component belongs to exactly one panel. This mapping must be preserved during the redesign:
+Every React component belongs to exactly one zone. The Results Monolith has two render states: **Summary view** (default) and **Cost Facts view** (toggled by "FLIP FOR BREAKDOWN").
 
-| Component          | Panel          | Notes                                               |
-|--------------------|----------------|-----------------------------------------------------|
-| `PlanSelector`     | Left (inputs)  | `<select>` with optgroups. Add `.form-hint` text below explaining the selected plan. |
-| `ProviderSelector` | Left (inputs)  | Render as a toggle-button group, not a `<select>`. Two buttons: "PG&E Bundled" / "3CE (CCA)". |
-| Vehicle select     | Left (inputs)  | Part of `Calculator.jsx`. The vehicle `<select>` and custom kWh input. |
-| Charge slider      | Left (inputs)  | Part of `Calculator.jsx`. The charge % slider with large serif display of current value. |
-| Season toggle      | Left (inputs)  | **New control.** Toggle-button group for Summer/Winter preview. Default to current season. |
-| `Timeline`         | Left (inputs)  | The 24-hour segmented bar with current-time marker. Include legend below. |
-| `ChargingTip`      | Left (inputs)  | Color-coded tip box at bottom of left panel. |
-| `RateDisplay`      | Right (results)| Rate badge (period indicator with pulse dot), hero rate number, season label, countdown. |
-| Donut chart        | Right (results)| **New component.** Shows delivery/generation/CCA proportions for the current rate. |
-| Cost cards         | Right (results)| From `Calculator.jsx` — the "Charge to 80%" and "Charge to 100%" output cards. |
-| Rate breakdown     | Right (results)| **New component.** Collapsible table showing per-period delivery/generation/total rates. Hidden by default (progressive disclosure). |
-| `Footer`           | Below both     | Full-width, collapsible. Same content as current Footer. |
+| Component          | Zone / Section              | Notes                                               |
+|--------------------|-----------------------------|-----------------------------------------------------|
+| `CityPicker`       | Input Lab — Location & Utility | City or zip search input with search icon. Filled input style, no visible border. |
+| `ProviderSelector` | Input Lab — Location & Utility | Toggle-button group: "PG&E Bundled" / "3CE (CCA)". Active = paprika bg. |
+| `PlanSelector`     | Input Lab — Configuration   | `<select>` with optgroups. Form-hint text below explains selected plan. |
+| Vehicle select     | Input Lab — Configuration   | Part of `Calculator.jsx`. Vehicle search input + custom kWh fallback. |
+| Charge slider      | Input Lab — (full width)    | Thick track + large tactile thumb. Large `font-display` percentage display above. |
+| Season toggle      | Input Lab — (full width)    | Toggle-button group for Summer/Winter preview. Default to current season. |
+| `Timeline`         | Input Lab — (full width)    | "Today's Rate Schedule" 24-hour segmented bar with current-time marker + legend. |
+| `ChargingTip`      | Input Lab — (full width)    | Color-coded tip box at bottom of Input Laboratory. |
+| `RateDisplay`      | Results Monolith — Summary  | "Current Energy Rate" label, period badge, hero rate number (`font-display text-5xl`), countdown. |
+| Cost cards         | Results Monolith — Summary  | "CHARGE TO 80%" and "CHARGE TO 100%" dark cards with `font-display` cost values. |
+| Donut chart        | Results Monolith — Summary  | "COST DISTRIBUTION" section. SVG stroke-dasharray donut. Two segments: Delivery % (paprika) + Generation % (apricot). Legend shows percentages, not dollar values. |
+| "FLIP FOR BREAKDOWN" button | Results Monolith — Summary | Full-width paprika pill button, sticky at bottom. Toggles `showCostFacts` state in App. |
+| Cost Facts view    | Results Monolith — Cost Facts | Alternate render state (not a separate component). Nutrition-label style. Shows PG&E Delivery total + Generation total + combined rate for the 80% charge scenario. "BACK TO SUMMARY" button returns. Detailed line items (Transmission, Distribution, etc.) deferred to a future planning tool. |
+| `Footer`           | Below both                  | Full-width. Same content as current Footer. |
 
 #### 5.5 Four UX Principles
 
@@ -508,9 +522,9 @@ These are not suggestions — they are **rules** enforced during development and
 
 **Principle 1: Instant feedback.** Every input change (dropdown, slider, toggle) must immediately update the results panel. No "Calculate" button. No loading spinners for local computation. `useState` + derived values, not async flows.
 
-**Principle 2: Progressive disclosure.** The default view shows only what a first-time visitor needs: vehicle, charge level, plan, and the resulting cost. Advanced details (rate component breakdown, per-period tables, BSC amounts) live behind a clearly labeled toggle — always accessible, never shown by default. Test: a user who has never seen a PG&E bill should understand the default view.
+**Principle 2: Progressive disclosure.** The default Summary view shows only what a first-time visitor needs: vehicle, charge level, plan, and the resulting cost. Advanced bill details (itemized PG&E delivery line items — Transmission, Distribution, Public Purpose Programs, Nuclear Decommissioning, Wildfire Fund, CTC — plus 3CE Generation and Taxes & Fees) live behind the "FLIP FOR BREAKDOWN" button. Tapping it replaces the Summary view with the Cost Facts view; "BACK TO SUMMARY" returns to Summary. Always accessible, never shown by default. Test: a user who has never seen a PG&E bill should understand the Summary view.
 
-**Principle 3: One hero number.** The current per-kWh rate (e.g., `$0.23/kWh`) is the single most visually prominent element on the page — `font-serif text-5xl` on the dark results panel. Everything else (donut chart, cost cards, timeline) exists to explain and contextualize that one number. Do not compete with it visually.
+**Principle 3: One hero number.** The current per-kWh rate (e.g., `$0.41/kWh`) is the single most visually prominent element on the page — `font-display text-5xl` on the dark Results Monolith. Everything else (donut chart, cost cards, timeline) exists to explain and contextualize that one number. Do not compete with it visually.
 
 **Principle 4: Contextual education.** Every input field has a brief, plain-English `.form-hint` below it. Not a tooltip, not a modal — inline text visible at a glance. Examples:
 - Plan selector: "For customers with an EV, battery storage, or heat pump. Whole-house metering."
@@ -519,54 +533,74 @@ These are not suggestions — they are **rules** enforced during development and
 
 #### 5.6 Component Styling Patterns
 
-**Form inputs (left panel):**
-- Labels: `text-sm font-semibold text-[var(--text-primary)]`
-- Selects: Full-width, `border-[1.5px] border-grey-light rounded-lg`, focus state uses `ring-2 ring-paprika/15 border-paprika`
-- Hints: `text-xs text-[var(--text-muted)]` below the input
+**Form inputs (Input Laboratory):**
+- Labels: `text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]` (floating above the field)
+- Input/Select: Filled style — `bg-grey-light/40 rounded-[0.25rem] px-3 py-2 text-sm` — no visible border at rest
+- Focus state: `outline-none ring-1 ring-paprika/20 bg-white transition-colors` — ghost ring only
+- Hints: `text-xs text-[var(--text-muted)] mt-1` below the input
 
 **Toggle buttons (provider, season):**
-- A flex row of buttons inside a `border rounded-lg overflow-hidden` container
+- A flex row of buttons inside a `rounded-lg overflow-hidden bg-grey-light/40` container (no hard border)
 - Active button: `bg-paprika text-white font-semibold`
-- Inactive button: `bg-white text-[var(--text-secondary)]`, hover `bg-off-white`
+- Inactive button: `bg-transparent text-[var(--text-secondary)]`, hover `bg-white/60`
 
-**Section dividers (left panel):**
-- `<hr>` with `border-grey-light my-6`
-- Optional section labels: `text-[11px] uppercase tracking-widest text-paprika font-semibold`
+**Section organization (Input Laboratory):**
+- Section title labels: `text-[11px] uppercase tracking-widest text-paprika font-semibold mb-3`
+- Sections separated by background shift (e.g., `bg-grey-light/30` card wrapping a sub-group) — no `<hr>` dividers
 
-**Results panel cards (right panel):**
+**Results Monolith cards (Summary view):**
 - Background: `bg-ink-light`
-- Border: `border border-white/[0.06] rounded-xl`
+- Border: `border border-white/[0.06] rounded-xl` (very subtle — this is acceptable; it's not structural sectioning)
 - Header: `text-xs uppercase tracking-wide text-grey`
-- Value: `font-serif text-2xl` (white)
+- Value: `font-display text-2xl font-bold text-white`
 - Detail: `text-xs text-[var(--text-muted)]`
 
-**Rate badge (right panel):**
+**Rate badge (Results Monolith):**
 - Pill shape: `rounded-full px-3 py-1`
 - Contains a small pulsing dot + period label
 - Off-peak: green dot + green text on green/20 bg
 - Part-peak: apricot dot + apricot text on apricot/20 bg
 - Peak: red dot + red text on red/25 bg
 
-**Donut chart (right panel):**
-- CSS `conic-gradient` on a `border-radius: 50%` div — no charting library needed.
-- Three segments: Paprika (delivery), Apricot (PG&E generation or 3CE generation depending on provider), Custard (CCA generation when provider=3CE).
-- Inner cutout via a `::after` pseudo-element with `bg-ink`.
-- Legend to the right of the donut with colored dots + labels + values.
+**Donut chart (Results Monolith — COST DISTRIBUTION):**
+- SVG path with `stroke-dasharray` — two segments only. No charting library needed.
+- Segment 1: Paprika (`#CF5C36`) — PG&E Delivery percentage.
+- Segment 2: Apricot (`#EFC88B`) — Generation percentage.
+- Circle uses `r=15.9155` so circumference ≈ 100, making `stroke-dasharray="${pct}, 100"` directly map to percentages.
+- Center label: `"100%"` in `font-display text-lg font-bold`.
+- Legend to the right: colored dots + labels + percentage values (no dollar values in legend).
 
-**Charging tip (left panel):**
-- `rounded-xl border px-4 py-3 text-sm`
-- Off-peak: `bg-green-bg border-green-border text-[#1a5e3a]`
-- Part-peak: `bg-amber-bg border-amber-border text-[#7a5614]`
-- Peak: `bg-red-bg border-red-border text-[#8a2720]`
+**FLIP FOR BREAKDOWN button (Results Monolith — sticky bottom):**
+- Full-width, `bg-paprika hover:bg-paprika-hover rounded-xl py-3`
+- Text: `font-display text-sm uppercase tracking-widest text-white`
+- Sticky at the bottom of the Results Monolith: `sticky bottom-0`
+- On click: toggles `showCostFacts` state (managed in App.jsx)
+
+**Cost Facts view (Results Monolith — alternate state):**
+- Same dark `bg-ink` background
+- Title: `font-display text-2xl font-bold text-white` ("COST FACTS")
+- Sub-header metadata: `text-xs text-grey` (season, kWh delivered, date)
+- Section headers (`PG&E DELIVERY`, `3CE GENERATION`, `TAXES & FEES`): `text-xs uppercase tracking-widest text-grey mt-4 mb-1`
+- Line items: `flex justify-between text-sm text-white py-0.5`
+- Total row: `font-display text-lg font-bold text-white border-t border-white/10 pt-2 mt-2`
+- "BACK TO SUMMARY" button: same full-width paprika pill style as FLIP button
+
+**Charging tip (Input Laboratory):**
+- `rounded-xl px-4 py-3 text-sm` — no explicit border (use bg color for definition)
+- Off-peak: `bg-[var(--color-green-bg)] text-[#1a5e3a]`
+- Part-peak: `bg-[var(--color-amber-bg)] text-[#7a5614]`
+- Peak: `bg-[var(--color-red-bg)] text-[#8a2720]`
 
 #### 5.7 Mobile Adaptations
 
 - **Breakpoint:** `860px` (use `@media (max-width: 860px)` or Tailwind `max-md:`)
-- Below breakpoint: single-column stack. Left panel content first, results panel below.
-- Results panel becomes `position: static` (not sticky), full-width, same dark background.
+- Below breakpoint: single-column stack. Input Laboratory content first, Results Monolith below as a static block.
+- Results Monolith becomes `position: static`, full-width, same dark `bg-ink` background.
 - Hero rate font size reduces from `text-5xl` to `text-4xl`.
 - Donut chart + legend stack vertically (centered).
-- Future enhancement: mobile sticky footer bar showing just the hero rate, expandable to full results. Not required for v1.
+- **Mobile sticky header:** A dark bar (`bg-ink`) stays pinned below the nav bar showing total estimated cost (`font-display text-2xl`) + SESSION kWh. SESSION = kWh needed to charge to 80% from the current slider position.
+- **Bottom tab bar:** Three tabs sticky at the bottom of the screen — `Calculator | History | Account` — `bg-ink text-xs` with a paprika underline on the active tab. History and Account are stubs in v1 (show empty state).
+- "FLIP FOR BREAKDOWN" works identically on mobile — full-width button taps to Cost Facts view within the Results Monolith block.
 
 ### 6. Code Quality Rules
 
@@ -671,7 +705,7 @@ Follow this sequence. Each step builds on the previous.
 1. **Charging tips** — Contextual recommendations
 1. **Footer & explanation** — Rate footnote with sources
 1. **SEO metadata** — Title, description, OG tags
-1. **Two-panel layout** — Implement the NerdWallet split-panel layout (section 5.3), moving existing components into left/right panels
+1. **Two-panel layout** — Implement the Input Laboratory + Results Monolith split-panel layout (section 5.3), moving existing components into their designated zones
 1. **Donut chart** — Rate component breakdown visualization (section 5.6)
 1. **Rate breakdown table** — Collapsible per-period detail (section 5.6)
 1. **Brand theming** — Apply full color palette, typography, and styling patterns (sections 5.1–5.2, 5.6)
@@ -711,5 +745,6 @@ npm run preview
 1. **The PCIA vintage matters.** Buellton's 3CE enrollment vintage is 2021, so the PCIA is $0.05264/kWh. Different vintages have different PCIA rates.
 1. **Charging to 80% vs 100%.** Show both options. Many EV owners charge to 80% for battery longevity.
 1. **Colors must come from the palette.** Never introduce a hex value that isn't defined in the CSS custom properties (section 5.1). If you need a new shade, add it to the palette first with a semantic name.
-1. **Serif font is only for hero numbers.** `DM Serif Display` is used exclusively for large, glanceable numeric values (rate per kWh, cost estimates). All other text — labels, hints, buttons, body copy — uses `DM Sans`. Mixing serif into body text breaks the visual hierarchy.
-1. **Results panel is always dark.** The right panel always uses `--color-ink` background with light text. Never render white-background cards or light-themed components inside it. Use `--color-ink-light` for elevated card surfaces within the dark panel.
+1. **Display font is only for hero numbers and structural headers.** `Space Grotesk` is used exclusively for large, glanceable numeric values (rate per kWh, cost estimates) and top-level section headers in the Results Monolith. All other text — labels, hints, buttons, body copy, data labels — uses `Inter`. Mixing Space Grotesk into body text breaks the editorial hierarchy.
+1. **Results Monolith is always dark.** The right panel always uses `--color-ink` background with light text. Never render white-background cards or light-themed components inside it. Use `--color-ink-light` for elevated card surfaces within the dark panel.
+1. **No 1px borders for structural separation.** Use background color shifts or tonal transitions to define sections within the Input Laboratory. A `border border-grey-light` on an interactive element (toggle group, focused input) is fine; using it to draw a dividing line between two layout sections is not.

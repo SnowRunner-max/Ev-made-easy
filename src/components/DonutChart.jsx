@@ -1,8 +1,8 @@
 import { useCurrentRate } from '../hooks/useCurrentRate';
 
 /**
- * CSS conic-gradient donut chart showing the delivery/generation split
- * for the current rate period. Rendered in the dark results panel.
+ * SVG donut chart showing delivery/generation split as percentages.
+ * Uses stroke-dasharray on a circle with circumference ≈ 100 for easy % mapping.
  */
 export default function DonutChart({ planConfig }) {
   const { period, season } = useCurrentRate(planConfig);
@@ -13,35 +13,61 @@ export default function DonutChart({ planConfig }) {
   if (!rateData) return null;
 
   const { delivery, generation, combined } = rateData;
-  const deliveryDeg  = Math.round((delivery / combined) * 360);
-  const generationDeg = 360 - deliveryDeg;
-
-  const gradient = `conic-gradient(#CF5C36 0deg ${deliveryDeg}deg, #EFC88B ${deliveryDeg}deg 360deg)`;
+  const delivPct = Math.round((delivery / combined) * 100);
+  const genPct   = 100 - delivPct;
 
   return (
-    <div className="flex items-center gap-6 py-6 border-t border-white/[0.08] border-b border-b-white/[0.08] mb-6">
-      {/* Donut */}
-      <div className="relative flex-shrink-0 w-[100px] h-[100px] rounded-full" style={{ background: gradient }}>
-        {/* Inner cutout */}
-        <div className="absolute inset-[24px] rounded-full bg-ink" />
+    <div className="py-6 border-t border-white/[0.08] border-b border-b-white/[0.08] mb-6">
+      <div className="text-[10px] font-bold uppercase tracking-[2px] text-pewter/60 mb-4">
+        Cost Distribution
       </div>
+      <div className="flex items-center gap-6">
+        {/* SVG donut */}
+        <div className="relative flex-shrink-0 w-[96px] h-[96px]">
+          <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+            {/* Track */}
+            <path
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="rgba(255,255,255,0.06)"
+              strokeWidth="4"
+            />
+            {/* Delivery segment (paprika) */}
+            <path
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#CF5C36"
+              strokeWidth="4"
+              strokeDasharray={`${delivPct}, 100`}
+            />
+            {/* Generation segment (apricot) */}
+            <path
+              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+              fill="none"
+              stroke="#EFC88B"
+              strokeWidth="4"
+              strokeDasharray={`${genPct}, 100`}
+              strokeDashoffset={`-${delivPct}`}
+            />
+          </svg>
+          {/* Center label */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="font-display text-lg font-bold text-white">100%</span>
+          </div>
+        </div>
 
-      {/* Legend */}
-      <div className="flex-1 space-y-2">
-        <div className="flex items-center gap-2 text-xs">
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-paprika flex-shrink-0" />
-          <span className="text-pewter flex-1">PG&E Delivery</span>
-          <span className="font-semibold text-white tabular-nums">${delivery.toFixed(4)}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs">
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-apricot flex-shrink-0" />
-          <span className="text-pewter flex-1">Generation</span>
-          <span className="font-semibold text-white tabular-nums">${generation.toFixed(4)}</span>
-        </div>
-        <div className="flex items-center gap-2 text-xs pt-1 border-t border-white/[0.08]">
-          <span className="w-2.5 h-2.5 rounded-[3px] flex-shrink-0" />
-          <span className="text-pewter flex-1">Total</span>
-          <span className="font-semibold text-white tabular-nums">${combined.toFixed(4)}</span>
+        {/* Legend */}
+        <div className="flex-1 space-y-2.5">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-paprika flex-shrink-0" />
+            <span className="text-[11px] text-pewter flex-1">PG&E Delivery</span>
+            <span className="text-[11px] font-semibold text-white tabular-nums">{delivPct}%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-apricot flex-shrink-0" />
+            <span className="text-[11px] text-pewter flex-1">Generation</span>
+            <span className="text-[11px] font-semibold text-white tabular-nums">{genPct}%</span>
+          </div>
         </div>
       </div>
     </div>

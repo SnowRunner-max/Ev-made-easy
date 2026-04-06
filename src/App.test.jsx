@@ -18,7 +18,7 @@ describe('App — structure', () => {
 
   it('header includes app title', () => {
     render(<App />);
-    expect(screen.getByTestId('app-header')).toHaveTextContent(/EV Made Easy/i);
+    expect(screen.getByTestId('app-header')).toHaveTextContent(/ChargeRate/i);
   });
 
   it('renders rate badge, timeline, calculator, charging tip', () => {

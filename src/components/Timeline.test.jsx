@@ -57,9 +57,9 @@ describe('Timeline — EV2-A', () => {
     expect(screen.getByTestId('segment-peak-2')).toHaveTextContent('$0.54');
   });
 
-  it('peak segment has red color', () => {
+  it('peak segment is marked as peak period', () => {
     render(<Timeline planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('segment-peak-2').className).toMatch(/red/);
+    expect(screen.getByTestId('segment-peak-2')).toHaveAttribute('data-period', 'peak');
   });
 
   it('marker at 50% at noon', () => {
