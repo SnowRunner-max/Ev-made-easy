@@ -19,11 +19,11 @@ export default function RateDisplay({ planConfig }) {
           No TOU Pricing
         </div>
         <div className="text-xs uppercase tracking-[2px] text-apricot font-medium mb-1">
-          Current Rate
+          Current Energy Rate
         </div>
         <div
           data-testid="rate-value"
-          className="font-serif text-5xl tracking-tight leading-none text-white mb-1"
+          className="font-display text-5xl tracking-tight leading-none text-white mb-1"
         >
           Tiered Rate
         </div>
@@ -52,14 +52,14 @@ export default function RateDisplay({ planConfig }) {
 
       {/* Label */}
       <div className="text-xs uppercase tracking-[2px] text-apricot font-medium mb-1">
-        Current Rate
+        Current Energy Rate
       </div>
 
       {/* Hero rate number */}
       <div
         data-testid="rate-value"
         aria-label={`Current rate: $${rate.toFixed(2)} per kWh, ${periodLabel}`}
-        className="font-serif tracking-tight leading-none text-white mb-1"
+        className="font-display tracking-tight leading-none text-white mb-1"
         style={{ fontSize: '56px', letterSpacing: '-2px' }}
       >
         ${rate.toFixed(2)}

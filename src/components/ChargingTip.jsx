@@ -68,7 +68,7 @@ export default function ChargingTip({ planConfig }) {
   return (
     <div
       data-testid="charging-tip"
-      className={`w-full rounded-xl border px-4 py-3.5 text-sm leading-relaxed ${PERIOD_COLORS[period].tip}`}
+      className={`w-full rounded-xl px-4 py-3.5 text-sm leading-relaxed ${PERIOD_COLORS[period].tip}`}
     >
       <p data-testid="tip-message">{message}</p>
     </div>

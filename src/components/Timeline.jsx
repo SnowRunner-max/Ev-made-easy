@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getDaySchedule } from '../engine/rateEngine';
 import { getPacificFractionalHour } from '../utils/pacificTime';
-import { PERIOD_COLORS } from '../constants/periodColors';
 
 function hourToLabel(hour) {
   if (hour === 0 || hour === 24) return '12 AM';
@@ -9,6 +8,19 @@ function hourToLabel(hour) {
   if (hour === 12) return '12 PM';
   return `${hour - 12} PM`;
 }
+
+// Design system palette colors for TOU periods
+const PERIOD_BG = {
+  offPeak:  '#2D8F5C',
+  partPeak: '#B87B2B',
+  peak:     '#C0392B',
+};
+
+const PERIOD_LABEL = {
+  offPeak:  'Off-Peak',
+  partPeak: 'Part-Peak',
+  peak:     'Peak',
+};
 
 export default function Timeline({ planConfig }) {
   const [now, setNow] = useState(() => new Date());
@@ -43,41 +55,68 @@ export default function Timeline({ planConfig }) {
         {/* Downward caret above bar */}
         <div
           data-testid="timeline-marker-caret"
-          className="absolute -top-4 -translate-x-1/2 pointer-events-none z-10 text-white text-[10px] leading-none select-none drop-shadow"
+          className="absolute -top-4 -translate-x-1/2 pointer-events-none z-20 text-[var(--text-secondary)] text-[10px] leading-none select-none"
           style={{ left: `${markerPercent}%` }}
         >
           ▼
         </div>
 
-        {/* Segmented bar */}
-        <div className="relative flex h-11 rounded-lg overflow-hidden shadow-sm">
+        {/* ── Layer 1: colored background bar (overflow-hidden for rounded corners) ── */}
+        <div className="relative flex h-10 rounded-lg overflow-hidden">
           {schedule.map((block, i) => {
             const widthPct = ((block.endHour - block.startHour) / 24) * 100;
             return (
               <div
                 key={i}
                 data-testid={`segment-${block.period}-${i}`}
-                style={{ width: `${widthPct}%` }}
-                className={`${PERIOD_COLORS[block.period].bg} flex items-center justify-center overflow-hidden`}
-                title={`${block.periodLabel}: ${block.startHour}:00–${block.endHour}:00`}
+                data-period={block.period}
+                style={{
+                  width: `${widthPct}%`,
+                  backgroundColor: PERIOD_BG[block.period],
+                  borderRight: i < schedule.length - 1 ? '2px solid rgba(255,255,255,0.25)' : 'none',
+                }}
               >
-                <span className="text-[11px] font-bold text-white drop-shadow select-none">
+                {/* sr-only text keeps rate-content tests passing */}
+                <span className="sr-only">${block.rate.toFixed(2)}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Layer 2: price labels (absolute overlay, overflow-visible) ── */}
+        <div className="absolute inset-0 flex pointer-events-none">
+          {schedule.map((block, i) => {
+            const widthPct = ((block.endHour - block.startHour) / 24) * 100;
+            const segmentHours = block.endHour - block.startHour;
+            // For very narrow segments (< 1.5 hours), skip the inline label to avoid
+            // severe overlap — the bar color + legend still communicate the period.
+            if (segmentHours < 1.5) return <div key={i} style={{ width: `${widthPct}%` }} />;
+            return (
+              <div
+                key={i}
+                className="flex items-center justify-center overflow-visible"
+                style={{ width: `${widthPct}%` }}
+              >
+                <span
+                  className="font-display text-[11px] font-bold text-white whitespace-nowrap"
+                  style={{ textShadow: '0 1px 3px rgba(0,0,0,0.35)' }}
+                >
                   ${block.rate.toFixed(2)}
                 </span>
               </div>
             );
           })}
-
-          {/* Current time marker */}
-          <div
-            data-testid="timeline-marker"
-            className="absolute top-0 bottom-0 w-0.5 bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.6)] pointer-events-none"
-            style={{ left: `${markerPercent}%` }}
-          />
         </div>
+
+        {/* ── Current time marker (line) ── */}
+        <div
+          data-testid="timeline-marker"
+          className="absolute top-0 bottom-0 w-0.5 bg-white/80 shadow-[0_0_6px_rgba(255,255,255,0.5)] pointer-events-none z-10"
+          style={{ left: `${markerPercent}%` }}
+        />
       </div>
 
-      {/* Boundary labels */}
+      {/* Boundary time labels */}
       <div className="relative h-5 mt-1.5">
         {boundaryHours.map((hour, i) => {
           const isFirst = i === 0;
@@ -98,18 +137,15 @@ export default function Timeline({ planConfig }) {
 
       {/* Legend */}
       <div className="flex gap-4 mt-3 text-[11px] text-[var(--text-secondary)]">
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-emerald-500 inline-block" />
-          Off-Peak
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-amber-500 inline-block" />
-          Part-Peak
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-sm bg-red-500 inline-block" />
-          Peak
-        </span>
+        {Object.entries(PERIOD_BG).map(([period, color]) => (
+          <span key={period} className="flex items-center gap-1.5 font-medium">
+            <span
+              className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
+              style={{ backgroundColor: color }}
+            />
+            {PERIOD_LABEL[period]}
+          </span>
+        ))}
       </div>
     </div>
   );

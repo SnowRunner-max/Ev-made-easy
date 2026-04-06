@@ -25,19 +25,18 @@ export default function ProviderSelector({ provider, onChange, options = DEFAULT
       {/* Visible toggle buttons */}
       <div
         data-testid="provider-toggle"
-        className="flex border-[1.5px] border-pewter-light rounded-lg overflow-hidden"
+        className="flex p-1 bg-surface-container rounded-lg overflow-hidden"
       >
-        {options.map((opt, i) => (
+        {options.map(opt => (
           <button
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
             className={[
-              'flex-1 py-2.5 px-4 text-sm font-medium transition-colors',
-              i > 0 ? 'border-l border-pewter-light' : '',
+              'flex-1 py-2 px-4 rounded text-xs font-bold transition-all',
               provider === opt.value
-                ? 'bg-paprika text-white font-semibold'
-                : 'bg-white text-[var(--text-secondary)] hover:bg-offwhite',
+                ? 'bg-white shadow-sm text-paprika'
+                : 'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
             ].join(' ')}
           >
             {opt.label}
