@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Volt &amp; Ember - EV Charging Calculator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;family=Inter:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#dec0b7",
+                      "on-error": "#ffffff",
+                      "surface-container-high": "#e6e8ea",
+                      "primary-fixed": "#ffdbd0",
+                      "outline": "#8b716a",
+                      "on-secondary": "#ffffff",
+                      "background": "#f8f9fb",
+                      "surface": "#f8f9fb",
+                      "on-background": "#191c1e",
+                      "tertiary-container": "#8f6f3b",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#ffdeac",
+                      "on-secondary-fixed-variant": "#45455a",
+                      "secondary-container": "#dfddf8",
+                      "primary": "#a13a17",
+                      "primary-fixed-dim": "#ffb59e",
+                      "tertiary-fixed-dim": "#e7c184",
+                      "surface-variant": "#e1e3e5",
+                      "surface-dim": "#d8dadc",
+                      "on-secondary-fixed": "#1a1a2d",
+                      "on-secondary-container": "#616077",
+                      "on-surface-variant": "#57423b",
+                      "inverse-on-surface": "#eff1f3",
+                      "error": "#ba1a1a",
+                      "surface-container": "#eceef0",
+                      "secondary-fixed-dim": "#c6c4de",
+                      "secondary": "#5d5c73",
+                      "on-tertiary-fixed": "#281900",
+                      "on-primary-fixed": "#3a0b00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#832602",
+                      "surface-bright": "#f8f9fb",
+                      "on-tertiary-fixed-variant": "#5c4211",
+                      "primary-container": "#c1522d",
+                      "inverse-surface": "#2e3133",
+                      "on-error-container": "#93000a",
+                      "surface-container-highest": "#e1e3e5",
+                      "tertiary": "#745725",
+                      "surface-tint": "#a43d19",
+                      "on-tertiary-container": "#fffbff",
+                      "on-tertiary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "surface-container-low": "#f2f4f6",
+                      "inverse-primary": "#ffb59e",
+                      "secondary-fixed": "#e2e0fb",
+                      "on-primary-container": "#fffbff",
+                      "on-surface": "#191c1e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline": ["Space Grotesk"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #a13a17;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(161, 58, 23, 0.2);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface antialiased pb-24">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-6 py-4 z-50 bg-[#fdfcfb] dark:bg-[#050517] docked full-width top-0 bg-gradient-to-b from-[#eceef0] to-transparent dark:from-[#1a1a2e] flat no shadows fixed">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Close up professional headshot of a person with friendly expression and clean studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV8-IospaEmWsNeuc6-i7f_SQTnNj_bzTePMtlXIOGXca7Y8Gi8M2kyajsmRYK3ZpALJmQX69TPRQipvSB-Q7ok3mtmpZtul5LcjaWIymmQeYbKrItjDgBuZIbuthqPL9lfXjuItQmUFJZS8R57SL1mVLQEpIwvP5jpAPLk8SWPLqVgOKDjLKWYWcNZRvC14Jn5YdreLl3Wxw9TfpTUTg2-EjimetCEkDpBcUnH8nx2M2vGT6XmFW4WbPcIUAfzNLqOp9Bi6Vho0bt"/>
+</div>
+<h1 class="text-xl font-bold text-[#050517] dark:text-[#fdfcfb] font-['Space_Grotesk'] tracking-tight">Volt &amp; Ember</h1>
+</div>
+<button class="text-[#a13a17] dark:text-[#cf5c36] hover:opacity-80 transition-opacity Active: scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<main class="pt-20 px-4 flex flex-col gap-8">
+<!-- Input Laboratory Section -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">01 / Process</span>
+<h2 class="font-headline text-3xl font-bold tracking-tight">Input Laboratory</h2>
+</div>
+<!-- Location & Utility -->
+<div class="bg-surface-container-low rounded-xl p-5 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="font-headline font-bold text-sm uppercase tracking-wider text-secondary">Location &amp; Utility</h3>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="location_on">location_on</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="relative">
+<label class="absolute -top-2 left-3 bg-surface-container-low px-1 text-[10px] font-bold text-outline uppercase tracking-wider">Zip Code</label>
+<input class="w-full bg-surface-container-highest border-none rounded-lg p-4 font-headline font-bold text-lg focus:ring-2 focus:ring-primary/20 transition-all" type="text" value="90210"/>
+</div>
+<div class="flex items-center justify-between p-1 bg-surface-container-highest rounded-full">
+<button class="flex-1 py-2 px-4 rounded-full text-xs font-bold bg-primary text-white shadow-sm transition-all">Standard</button>
+<button class="flex-1 py-2 px-4 rounded-full text-xs font-bold text-secondary hover:bg-surface-container transition-all">Choice</button>
+</div>
+</div>
+</div>
+<!-- Configuration -->
+<div class="bg-surface-container-low rounded-xl p-5 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="font-headline font-bold text-sm uppercase tracking-wider text-secondary">Configuration</h3>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="settings_input_component">settings_input_component</span>
+</div>
+<div class="flex flex-col gap-4">
+<div class="relative">
+<label class="absolute -top-2 left-3 bg-surface-container-low px-1 text-[10px] font-bold text-outline uppercase tracking-wider">Rate Plan</label>
+<div class="w-full bg-surface-container-highest rounded-lg p-4 flex justify-between items-center">
+<span class="font-medium">TOU-EV-1 (Time of Use)</span>
+<span class="material-symbols-outlined text-primary" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div class="relative">
+<label class="absolute -top-2 left-3 bg-surface-container-low px-1 text-[10px] font-bold text-outline uppercase tracking-wider">Vehicle Type</label>
+<div class="w-full bg-surface-container-highest rounded-lg p-4 flex justify-between items-center">
+<span class="font-medium">Tesla Model Y LR</span>
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Current Charge Section -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">02 / Current Status</span>
+<h2 class="font-headline text-3xl font-bold tracking-tight">Current Charge %</h2>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant/15 rounded-2xl p-8 flex flex-col items-center gap-8 shadow-sm">
+<div class="relative flex items-center justify-center">
+<!-- Donut representation -->
+<div class="w-48 h-48 rounded-full border-[12px] border-surface-container flex items-center justify-center relative">
+<div class="absolute inset-0 rounded-full border-[12px] border-primary" style="clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%);"></div>
+<div class="text-center">
+<span class="block font-headline text-6xl font-bold text-primary">45%</span>
+<span class="text-[10px] font-bold text-secondary uppercase tracking-widest">Available</span>
+</div>
+</div>
+</div>
+<input class="w-full h-2 bg-surface-container rounded-lg appearance-none cursor-pointer range-slider" max="100" min="0" type="range" value="45"/>
+<div class="flex justify-between w-full text-[10px] font-bold text-outline uppercase tracking-wider">
+<span>0% Empty</span>
+<span>100% Full</span>
+</div>
+</div>
+</section>
+<!-- Today's Rate Schedule -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">03 / Market View</span>
+<h2 class="font-headline text-3xl font-bold tracking-tight">Today's Rate Schedule</h2>
+</div>
+<div class="bg-surface-container-low rounded-xl p-5 overflow-hidden">
+<div class="flex h-12 w-full rounded-lg overflow-hidden mb-4">
+<div class="h-full w-[30%] bg-tertiary-container opacity-40"></div>
+<div class="h-full w-[20%] bg-primary"></div>
+<div class="h-full w-[15%] bg-error"></div>
+<div class="h-full w-[35%] bg-tertiary-container opacity-40"></div>
+</div>
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<span class="text-xs font-bold">Peak</span>
+</div>
+<span class="text-[10px] text-secondary">4pm - 9pm</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-xs font-bold">Mid-Peak</span>
+</div>
+<span class="text-[10px] text-secondary">1pm - 4pm</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary-container opacity-40"></div>
+<span class="text-xs font-bold">Off-Peak</span>
+</div>
+<span class="text-[10px] text-secondary">9pm - 1pm</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Results Monolith -->
+<section class="flex flex-col gap-6 mt-4">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white">04 / Analysis</span>
+</div>
+<div class="bg-[#050517] text-white rounded-[2rem] p-8 flex flex-col gap-8 shadow-2xl relative overflow-hidden">
+<!-- Abstract light pattern background -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary opacity-10 blur-[100px] pointer-events-none"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-bold text-outline-variant uppercase tracking-[0.2em]">Current Energy Rate</span>
+<div class="flex items-baseline gap-1">
+<span class="font-headline text-5xl font-bold">$0.32</span>
+<span class="text-lg font-medium text-outline-variant">/kWh</span>
+</div>
+</div>
+<div class="bg-primary/20 border border-primary/30 rounded-full px-4 py-2 flex flex-col items-center">
+<span class="text-[8px] font-bold text-primary uppercase tracking-widest">Next Shift</span>
+<span class="font-headline font-bold text-sm">02:44:12</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 relative z-10">
+<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+<span class="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Charge to 80%</span>
+<span class="font-headline text-3xl font-bold text-primary-fixed">$14.28</span>
+<span class="text-[10px] text-outline-variant">+32 kWh added</span>
+</div>
+<div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 flex flex-col gap-1">
+<span class="text-[9px] font-bold text-outline-variant uppercase tracking-widest">Charge to 100%</span>
+<span class="font-headline text-3xl font-bold text-primary-fixed">$22.40</span>
+<span class="text-[10px] text-outline-variant">+51 kWh added</span>
+</div>
+</div>
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-5 rounded-full font-headline font-bold text-sm tracking-[0.2em] uppercase shadow-lg Active:scale-95 transition-all relative z-10">
+                    FLIP FOR BREAKDOWN
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#fdfcfb]/60 dark:bg-[#050517]/60 backdrop-blur-xl shadow-[0_-4px_24px_rgba(0,0,0,0.04)] border-t border-[#050517]/5">
+<a class="flex flex-col items-center justify-center bg-[#a13a17] text-white rounded-xl px-4 py-1.5 Active: scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="calculate">calculate</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Calculator</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#5d5c73] dark:text-[#94a3b8] px-4 py-1.5 hover:text-[#a13a17] dark:hover:text-[#cf5c36] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#5d5c73] dark:text-[#94a3b8] px-4 py-1.5 hover:text-[#a13a17] dark:hover:text-[#cf5c36] transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] text-[10px] font-medium uppercase tracking-widest mt-1">Account</span>
+</a>
+</nav>
+</body></html>
