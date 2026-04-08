@@ -37,9 +37,9 @@ describe('App — city picker', () => {
     expect(screen.getByTestId('city-select').value).toBe('buellton');
   });
 
-  it('has four city options', () => {
+  it('has fifteen city options (4 existing + 11 new CCA territories)', () => {
     render(<App />);
-    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(4);
+    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(15);
   });
 
   it('switching city updates header text', () => {
@@ -105,5 +105,64 @@ describe('App — provider selector', () => {
     render(<App />);
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-1' } });
     expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+  });
+});
+
+describe('App — CCA tier selector', () => {
+  it('tier selector hidden when provider is pge', () => {
+    render(<App />);
+    expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
+  });
+
+  it('tier selector appears when CCA provider selected', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    expect(screen.getByTestId('tier-select')).toBeInTheDocument();
+  });
+
+  it('tier selector shows 3CE tiers (3cchoice, 3cprime)', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    const tierSelect = screen.getByTestId('tier-select');
+    const options = tierSelect.querySelectorAll('option');
+    expect(options).toHaveLength(2);
+    expect(options[0].value).toBe('3cchoice');
+    expect(options[1].value).toBe('3cprime');
+  });
+
+  it('switching tier changes the displayed rate', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    const before = screen.getByTestId('rate-value').textContent;
+    fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
+    expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
+  });
+
+  it('tier resets to default when switching CCA provider', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
+    // Switch city to a different service area (San José), which resets provider + tier
+    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'san-jose' } });
+    // Provider should reset to pge, tier select should be hidden
+    expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
+  });
+
+  it('KCCP service area shows tier selector hidden (single tier)', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'king-city' } });
+    // KCCP defaults to E-TOU-C plan — switch provider to kccp
+    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: 'kccp' } });
+    // KCCP has only 1 tier → tier selector should not appear
+    expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
+  });
+
+  it('KCCP provider option absent on EV2-A plan (no KCCP EV2-A rates)', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'king-city' } });
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV2-A' } });
+    // Provider select should only have PG&E (no KCCP option for EV2-A)
+    const opts = screen.getByTestId('provider-select').querySelectorAll('option');
+    expect([...opts].map(o => o.value)).not.toContain('kccp');
   });
 });

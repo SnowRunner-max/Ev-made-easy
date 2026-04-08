@@ -7,6 +7,7 @@ import { useCurrentRate } from './hooks/useCurrentRate';
 import CityPicker from './components/CityPicker';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
+import TierSelector from './components/TierSelector';
 import RateDisplay from './components/RateDisplay';
 import Timeline from './components/Timeline';
 import { VehicleInputs, CostOutput } from './components/Calculator';
@@ -16,12 +17,23 @@ import Footer from './components/Footer';
 
 /** Static registry mapping serviceAreaId → imported rate plan data */
 const RATE_PLAN_REGISTRY = {
-  'pge-3ce-sbco': ratePlans,
+  'pge-3ce-sbco':    ratePlans,
+  'pge-sjce-scc':    ratePlans,
+  'pge-pce-smc':     ratePlans,
+  'pge-scp-son':     ratePlans,
+  'pge-ava-eba':     ratePlans,
+  'pge-svce-sv':     ratePlans,
+  'pge-mce-mar':     ratePlans,
+  'pge-rcea-hum':    ratePlans,
+  'pge-vce-yol':     ratePlans,
+  'pge-pioneer-pla': ratePlans,
+  'pge-cpsf-sf':     ratePlans,
+  'pge-kccp-mon':    ratePlans,
 };
 
 const CUSTOM_ID = 'custom';
 
-function buildRateMatrix(v2Rates, provider) {
+function buildRateMatrix(v2Rates, provider, ccaTier) {
   const seasons = Object.keys(v2Rates.pgeDelivery);
   return Object.fromEntries(
     seasons.map(season => [
@@ -29,30 +41,51 @@ function buildRateMatrix(v2Rates, provider) {
       Object.fromEntries(
         Object.keys(v2Rates.pgeDelivery[season]).map(period => {
           const delivery = v2Rates.pgeDelivery[season][period];
-          const cce = v2Rates.cce[season][period];
-          const bundled = v2Rates.pgeTotalBundled[season][period];
-          const combined = provider === 'pge' ? bundled : delivery + cce;
-          return [period, { combined, delivery, generation: cce }];
+          const bundled  = v2Rates.pgeTotalBundled[season][period];
+          let generation, combined;
+          if (provider === 'pge') {
+            generation = v2Rates.pgeGeneration[season][period];
+            combined   = bundled;
+          } else {
+            const ccaEntry = v2Rates.ccaGeneration[provider];
+            const tier = ccaTier ?? ccaEntry.defaultTier;
+            generation = ccaEntry.tiers[tier][season][period];
+            combined   = delivery + generation;
+          }
+          return [period, { combined, delivery, generation }];
         })
-      )
+      ),
     ])
   );
 }
 
-function getEffectiveConfig(planConfig, provider) {
-  const providerLabel = provider === 'pge'
-    ? 'PG&E Bundled Service'
-    : 'Central Coast Community Energy (3CE) — 3Cchoice';
+function getEffectiveConfig(planConfig, provider, ccaTier) {
+  let providerLabel;
+  if (provider === 'pge') {
+    providerLabel = 'PG&E Bundled Service';
+  } else {
+    const ccaEntry = planConfig.rates.ccaGeneration[provider];
+    const activeTier = ccaTier ?? ccaEntry.defaultTier;
+    providerLabel = `${ccaEntry.name} — ${ccaEntry.tiers[activeTier].label}`;
+  }
 
   if (!planConfig.touPeriods) {
     const r = planConfig.rates;
     const delivery = r.pgeDelivery.tier1;
-    const generation = provider === 'pge' ? r.pgeGeneration.allUsage : r.cce.allUsage;
-    const combined = provider === 'pge' ? r.pgeTotalBundled.tier1 : delivery + generation;
+    let generation, combined;
+    if (provider === 'pge') {
+      generation = r.pgeGeneration.allUsage;
+      combined   = r.pgeTotalBundled.tier1;
+    } else {
+      const ccaEntry = r.ccaGeneration[provider];
+      const tier = ccaTier ?? ccaEntry.defaultTier;
+      generation = ccaEntry.tiers[tier].allUsage;
+      combined   = delivery + generation;
+    }
     return { ...planConfig, _displayProvider: providerLabel, _flatRate: { combined, delivery, generation } };
   }
 
-  const rates = buildRateMatrix(planConfig.rates, provider);
+  const rates = buildRateMatrix(planConfig.rates, provider, ccaTier);
   return { ...planConfig, rates, _displayProvider: providerLabel };
 }
 
@@ -69,6 +102,7 @@ export default function App() {
   const [cityId, setCityId] = useState('buellton');
   const [planId, setPlanId] = useState('EV2-A');
   const [provider, setProvider] = useState('pge');
+  const [ccaTier, setCcaTier] = useState(null); // null = use CCA's defaultTier
   const [selectedVehicleId, setSelectedVehicleId] = useState(vehiclesData.vehicles[0].id);
   const [customKwh, setCustomKwh] = useState('');
   const [currentPct, setCurrentPct] = useState(20);
@@ -77,6 +111,35 @@ export default function App() {
   const city = serviceAreasData.cities.find(c => c.id === cityId);
   const serviceArea = serviceAreasData.serviceAreas[city.serviceAreaId];
   const ratePlansData = RATE_PLAN_REGISTRY[city.serviceAreaId];
+  const planConfig = ratePlansData.ratePlans[planId];
+
+  if (!planConfig) {
+    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
+  }
+
+  // Derive available provider options for the current plan
+  const providerOptions = [
+    { value: 'pge', label: 'PG&E Bundled' },
+    ...serviceArea.ccas
+      .filter(ccaId => planConfig.rates.ccaGeneration?.[ccaId] != null)
+      .map(ccaId => {
+        const ccaData = planConfig.rates.ccaGeneration[ccaId];
+        return { value: ccaId, label: `${ccaData.name} (CCA)` };
+      }),
+  ];
+
+  // If current provider was filtered out (plan doesn't support it), fall back to pge
+  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : 'pge';
+
+  // Derive tier options for the selected CCA
+  const ccaEntry = effectiveProvider !== 'pge'
+    ? planConfig.rates.ccaGeneration[effectiveProvider]
+    : null;
+  const tierOptions = ccaEntry
+    ? Object.entries(ccaEntry.tiers).map(([value, tier]) => ({ value, label: tier.label }))
+    : [];
+  const effectiveTier = ccaEntry ? (ccaTier ?? ccaEntry.defaultTier) : null;
+  const showTierSelector = ccaEntry != null && tierOptions.length > 1;
 
   function handleCityChange(newCityId) {
     const newCity = serviceAreasData.cities.find(c => c.id === newCityId);
@@ -85,16 +148,16 @@ export default function App() {
       const newArea = serviceAreasData.serviceAreas[newCity.serviceAreaId];
       setPlanId(newArea.defaultPlanId);
       setProvider(newArea.defaultProvider);
+      setCcaTier(null);
     }
   }
 
-  const planConfig = ratePlansData.ratePlans[planId];
-
-  if (!planConfig) {
-    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
+  function handleProviderChange(newProvider) {
+    setProvider(newProvider);
+    setCcaTier(null); // reset tier when switching CCA
   }
 
-  const effectivePlanConfig = getEffectiveConfig(planConfig, provider);
+  const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier);
   const supportsProviderToggle = !!planConfig.touPeriods;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
@@ -188,8 +251,18 @@ export default function App() {
                 {supportsProviderToggle && (
                   <div className="space-y-1.5">
                     <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Provider</span>
-                    <ProviderSelector provider={provider} onChange={setProvider} options={serviceArea.providers} />
+                    <ProviderSelector provider={effectiveProvider} onChange={handleProviderChange} options={providerOptions} />
                     <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{serviceArea.providerHint}</p>
+                  </div>
+                )}
+                {supportsProviderToggle && showTierSelector && (
+                  <div className="space-y-1.5">
+                    <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Tier</span>
+                    <TierSelector
+                      tier={effectiveTier}
+                      options={tierOptions}
+                      onChange={setCcaTier}
+                    />
                   </div>
                 )}
               </div>
@@ -308,7 +381,13 @@ export default function App() {
       </div>
 
       {/* ── Footer ── */}
-      <Footer planConfig={effectivePlanConfig} globalMetadata={ratePlansData._metadata} city={city} serviceArea={serviceArea} />
+      <Footer
+        planConfig={effectivePlanConfig}
+        globalMetadata={ratePlansData._metadata}
+        city={city}
+        serviceArea={serviceArea}
+        provider={effectiveProvider}
+      />
 
       {/* ── Mobile bottom tab bar ── */}
       <nav className="max-[860px]:flex hidden fixed bottom-0 left-0 right-0 bg-ink border-t border-white/10 z-20 pb-safe">
@@ -401,6 +480,8 @@ function CostFacts({ planConfig, summary }) {
   const totalCost = summary.to80.costNow;
   const costPerKwh = rateData.combined;
 
+  const isCCA = planConfig._displayProvider && !planConfig._displayProvider.startsWith('PG&E Bundled');
+
   return (
     <div className="flex-1 overflow-y-auto">
       {/* Nutrition label container */}
@@ -448,7 +529,7 @@ function CostFacts({ planConfig, summary }) {
           </div>
           <div className="border-b-4 border-white mb-2" />
           <div className="flex justify-between text-[11px] border-b border-white/20 py-1.5 text-white/70">
-            <span>{planConfig._displayProvider?.includes('3CE') ? '3CE Generation' : 'PG&E Generation'}</span>
+            <span>{isCCA ? planConfig._displayProvider : 'PG&E Generation'}</span>
             <span className="font-medium text-white">${(rateData.generation).toFixed(4)}/kWh</span>
           </div>
         </div>

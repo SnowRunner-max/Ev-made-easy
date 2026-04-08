@@ -33,12 +33,13 @@ function RateTable({ rates, seasons }) {
   );
 }
 
-function TieredRateTable({ rates, provider }) {
-  const delivery = rates.pgeDelivery;
-  const cce = rates.cce;
-  const bundled = rates.pgeTotalBundled;
-  const combined1 = provider === 'pge' ? bundled.tier1 : delivery.tier1 + cce.allUsage;
-  const combined2 = provider === 'pge' ? bundled.tier2 : delivery.tier2 + cce.allUsage;
+function TieredRateTable({ planConfig }) {
+  // Use the pre-computed _flatRate for generation; compute both tiers from raw delivery
+  const r = planConfig.rates;
+  const flatRate = planConfig._flatRate;
+  const generation = flatRate ? flatRate.generation : r.pgeGeneration.allUsage;
+  const combined1 = r.pgeDelivery.tier1 + generation;
+  const combined2 = r.pgeDelivery.tier2 + generation;
 
   return (
     <table className="w-full text-xs border-collapse mt-2">
@@ -62,14 +63,20 @@ function TieredRateTable({ rates, provider }) {
   );
 }
 
-export default function Footer({ planConfig, globalMetadata, city, serviceArea }) {
+export default function Footer({ planConfig, globalMetadata, city, serviceArea, provider }) {
   const [expanded, setExpanded] = useState(false);
   const { rates, touPeriods, seasons, fixedCharges } = planConfig;
 
   const bsc = fixedCharges?.type === 'incomeBasedBSC' ? fixedCharges.baseServicesCharge : null;
   const dmc = fixedCharges?.type === 'flatMeterCharge' ? fixedCharges.meterCharge : null;
 
-  const isCCA = planConfig._displayProvider?.includes('3CE') || planConfig._displayProvider?.includes('Community Energy');
+  const isCCA = provider != null ? provider !== 'pge' : (
+    planConfig._displayProvider ? !planConfig._displayProvider.startsWith('PG&E Bundled') : false
+  );
+
+  const ccaName = isCCA && planConfig._displayProvider
+    ? planConfig._displayProvider.split(' — ')[0]
+    : (serviceArea?.cca ?? '3CE');
 
   return (
     <footer
@@ -98,7 +105,7 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea }
             {touPeriods ? (
               <RateTable rates={rates} seasons={seasons} />
             ) : (
-              <TieredRateTable rates={rates} provider={isCCA ? '3ce' : 'pge'} />
+              <TieredRateTable planConfig={planConfig} />
             )}
           </section>
 
@@ -127,7 +134,7 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea }
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Effective dates</h3>
             <ul className="space-y-0.5">
               <li>{serviceArea?.utility ?? 'PG&E'} delivery rates: {globalMetadata?.pgeEffectiveDate} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>{serviceArea?.cca ?? '3CE'} generation rates: {globalMetadata?.cceRateSheetDate}</li>
+              <li>{ccaName} generation rates: {globalMetadata?.cceRateSheetDate}</li>
             </ul>
           </section>
 
@@ -150,7 +157,7 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea }
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Sources</h3>
             <ul className="space-y-0.5 list-disc list-inside">
               <li>{serviceArea?.utility ?? 'PG&E'} Tariff Schedule {planConfig.tariffSource} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>{serviceArea?.cca ?? '3CE'} 3Cchoice Generation Rate Sheet (effective {globalMetadata?.cceRateSheetDate})</li>
+              <li>{ccaName} Generation Rate Sheet (effective {globalMetadata?.cceRateSheetDate})</li>
             </ul>
           </section>
 

@@ -11,9 +11,9 @@ describe('CityPicker', () => {
     expect(screen.getByTestId('city-select')).toBeInTheDocument();
   });
 
-  it('has four city options', () => {
+  it('has fifteen city options (4 original + 11 new CCA territories)', () => {
     render(<CityPicker cityId="buellton" cities={cities} onChange={() => {}} />);
-    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(4);
+    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(15);
   });
 
   it('shows the selected city', () => {

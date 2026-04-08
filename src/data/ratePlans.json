@@ -1,9 +1,8 @@
 {
   "_metadata": {
-    "version": "2.0.0",
-    "description": "PG&E delivery + 3CE generation rate data for Buellton, CA (Santa Barbara County)",
+    "version": "2.1.0",
+    "description": "PG&E delivery + multi-CCA generation rate data. Schema v2.1: ccaGeneration replaces the old cce key. Each rate plan's rates.ccaGeneration maps CCA IDs to their generation rates for that plan.",
     "territory": "PG&E",
-    "cca": "Central Coast Community Energy (3CE)",
     "baselineTerritory": "P",
     "pgeAdviceLetter": "7846-E",
     "pgeEffectiveDate": "2026-03-01",
@@ -24,11 +23,17 @@
     "notes": [
       "All energy rates are $/kWh unless otherwise noted.",
       "delivery = totalBundled - pgeGeneration (per tariff UNBUNDLING tables).",
-      "CCA combined rate = delivery + cce generation (3Cchoice tier).",
+      "CCA combined rate = pgeDelivery + ccaGeneration[provider].tiers[tier][season][period].",
       "PGE bundled rate = delivery + pgeGeneration = totalBundled.",
       "PCIA and Franchise Fee are flat per-kWh charges billed separately by PG&E to CCA customers, not embedded in the TOU energy rates.",
       "Base Services Charge (BSC) is a daily fixed charge, not included in per-kWh rates. Show in UI footnote only.",
-      "Baseline Credit (E-TOU-C only) is applied to usage within baseline allowance; not embedded in the per-kWh rates shown here."
+      "Baseline Credit (E-TOU-C only) is applied to usage within baseline allowance; not embedded in the per-kWh rates shown here.",
+      "Schema v2.1: ccaGeneration replaces the old cce key. Separation prevents double-counting CCA rates (was v1 bug).",
+      "Ava (EBCE) rates include System Fees ($0.05115/kWh) embedded — do not add PCIA/FF on top for Ava.",
+      "Pioneer rates are blended flat rates with no TOU differentiation — same value applied to all periods and seasons.",
+      "KCCP rates are blended with no TOU differentiation and are only available for E-1 and E-TOU-C.",
+      "RCEA EV-B rates sourced from EV-A schedule (EV-A was eliminated Nov 30 2025; EV-B is the successor plan).",
+      "SVCE rates use TOU-specific April 2025 table (not the blended 2026 table)."
     ]
   },
 
@@ -79,10 +84,186 @@
           "summer": { "peak": 0.53809, "partPeak": 0.42760, "offPeak": 0.22558 },
           "winter": { "peak": 0.41099, "partPeak": 0.39428, "offPeak": 0.22558 }
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "summer": { "peak": 0.17641, "partPeak": 0.13214, "offPeak": 0.09141 },
-          "winter": { "peak": 0.12010, "partPeak": 0.10774, "offPeak": 0.08449 }
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": { "peak": 0.17641, "partPeak": 0.13214, "offPeak": 0.09141 },
+                "winter": { "peak": 0.12010, "partPeak": 0.10774, "offPeak": 0.08449 }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": { "peak": 0.18441, "partPeak": 0.14014, "offPeak": 0.09941 },
+                "winter": { "peak": 0.12810, "partPeak": 0.11574, "offPeak": 0.09249 }
+              }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": {
+                "label": "GreenSource (Standard)",
+                "summer": { "peak": 0.19494, "partPeak": 0.15434, "offPeak": 0.11566 },
+                "winter": { "peak": 0.14101, "partPeak": 0.13036, "offPeak": 0.10492 }
+              },
+              "totalgreen": {
+                "label": "TotalGreen (100% Renewable)",
+                "summer": { "peak": 0.20494, "partPeak": 0.16434, "offPeak": 0.12566 },
+                "winter": { "peak": 0.15101, "partPeak": 0.14036, "offPeak": 0.11492 }
+              }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": {
+                "label": "ECOplus (Standard)",
+                "summer": { "peak": 0.18277, "partPeak": 0.14253, "offPeak": 0.10551 },
+                "winter": { "peak": 0.13159, "partPeak": 0.12035, "offPeak": 0.09922 }
+              },
+              "eco100": {
+                "label": "ECO100 (100% Renewable)",
+                "summer": { "peak": 0.19777, "partPeak": 0.15753, "offPeak": 0.12051 },
+                "winter": { "peak": 0.14659, "partPeak": 0.13535, "offPeak": 0.11422 }
+              }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": {
+                "label": "CleanStart (Standard)",
+                "summer": { "peak": 0.20123, "partPeak": 0.15707, "offPeak": 0.11694 },
+                "winter": { "peak": 0.14499, "partPeak": 0.13259, "offPeak": 0.10995 }
+              },
+              "evergreen": {
+                "label": "EverGreen (100% Renewable)",
+                "summer": { "peak": 0.22623, "partPeak": 0.18207, "offPeak": 0.14194 },
+                "winter": { "peak": 0.16999, "partPeak": 0.15759, "offPeak": 0.13495 }
+              }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice": {
+                "label": "Bright Choice (Standard)",
+                "summer": { "peak": 0.12615, "partPeak": 0.08166, "offPeak": 0.04073 },
+                "winter": { "peak": 0.06956, "partPeak": 0.05714, "offPeak": 0.03377 }
+              },
+              "renewable100": {
+                "label": "Renewable 100 (100% Renewable)",
+                "summer": { "peak": 0.14454, "partPeak": 0.09983, "offPeak": 0.05869 },
+                "winter": { "peak": 0.08767, "partPeak": 0.07518, "offPeak": 0.05170 }
+              }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": {
+                "label": "GreenStart (Standard)",
+                "summer": { "peak": 0.19614, "partPeak": 0.15322, "offPeak": 0.11372 },
+                "winter": { "peak": 0.14154, "partPeak": 0.12955, "offPeak": 0.10701 }
+              },
+              "greenprime": {
+                "label": "GreenPrime (100% Renewable)",
+                "summer": { "peak": 0.21314, "partPeak": 0.17022, "offPeak": 0.13072 },
+                "winter": { "peak": 0.15854, "partPeak": 0.14655, "offPeak": 0.12401 }
+              }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": {
+                "label": "Light Green (Standard)",
+                "summer": { "peak": 0.18060, "partPeak": 0.14362, "offPeak": 0.11008 },
+                "winter": { "peak": 0.13330, "partPeak": 0.12384, "offPeak": 0.10406 }
+              },
+              "deepgreen": {
+                "label": "Deep Green (100% Renewable)",
+                "summer": { "peak": 0.19310, "partPeak": 0.15612, "offPeak": 0.12258 },
+                "winter": { "peak": 0.14580, "partPeak": 0.13634, "offPeak": 0.11656 }
+              }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "tiers": {
+              "repower": {
+                "label": "REpower (Standard)",
+                "summer": { "peak": 0.20335, "partPeak": 0.15886, "offPeak": 0.11793 },
+                "winter": { "peak": 0.14676, "partPeak": 0.13433, "offPeak": 0.11097 }
+              },
+              "repowerplus": {
+                "label": "REpower+ (100% Renewable)",
+                "summer": { "peak": 0.21335, "partPeak": 0.16886, "offPeak": 0.12793 },
+                "winter": { "peak": 0.15676, "partPeak": 0.14433, "offPeak": 0.12097 }
+              }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": {
+                "label": "Standard Green",
+                "summer": { "peak": 0.22786, "partPeak": 0.18538, "offPeak": 0.14630 },
+                "winter": { "peak": 0.17383, "partPeak": 0.16197, "offPeak": 0.13966 }
+              },
+              "ultragreen": {
+                "label": "UltraGreen (100% Renewable)",
+                "summer": { "peak": 0.24286, "partPeak": 0.20038, "offPeak": 0.16130 },
+                "winter": { "peak": 0.18883, "partPeak": 0.17697, "offPeak": 0.15466 }
+              }
+            }
+          },
+          "pioneer": {
+            "name": "Pioneer Community Energy",
+            "defaultTier": "placer",
+            "note": "Flat blended rates — same value applied across all TOU periods and seasons.",
+            "tiers": {
+              "placer": {
+                "label": "Placer County (2026)",
+                "summer": { "peak": 0.10417, "partPeak": 0.10417, "offPeak": 0.10417 },
+                "winter": { "peak": 0.10417, "partPeak": 0.10417, "offPeak": 0.10417 }
+              },
+              "general": {
+                "label": "All Territories (2025)",
+                "summer": { "peak": 0.12637, "partPeak": 0.12637, "offPeak": 0.12637 },
+                "winter": { "peak": 0.12637, "partPeak": 0.12637, "offPeak": 0.12637 }
+              }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green": {
+                "label": "Green (Standard)",
+                "summer": { "peak": 0.18506, "partPeak": 0.14322, "offPeak": 0.10472 },
+                "winter": { "peak": 0.13183, "partPeak": 0.12015, "offPeak": 0.09818 }
+              },
+              "supergreen": {
+                "label": "SuperGreen (100% Renewable)",
+                "summer": { "peak": 0.19506, "partPeak": 0.15322, "offPeak": 0.11472 },
+                "winter": { "peak": 0.14183, "partPeak": 0.13015, "offPeak": 0.10818 }
+              }
+            }
+          }
         }
       },
       "fixedCharges": {
@@ -144,10 +325,186 @@
           "summer": { "peak": 0.55214, "partPeak": 0.39026, "offPeak": 0.33358 },
           "winter": { "peak": 0.32063, "partPeak": 0.29854, "offPeak": 0.28468 }
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "summer": { "peak": 0.25035, "partPeak": 0.15223, "offPeak": 0.10758 },
-          "winter": { "peak": 0.08984, "partPeak": 0.07007, "offPeak": 0.05685 }
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": { "peak": 0.25035, "partPeak": 0.15223, "offPeak": 0.10758 },
+                "winter": { "peak": 0.08984, "partPeak": 0.07007, "offPeak": 0.05685 }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": { "peak": 0.25835, "partPeak": 0.16023, "offPeak": 0.11558 },
+                "winter": { "peak": 0.09784, "partPeak": 0.07807, "offPeak": 0.06485 }
+              }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": {
+                "label": "GreenSource (Standard)",
+                "summer": { "peak": 0.25467, "partPeak": 0.16583, "offPeak": 0.12540 },
+                "winter": { "peak": 0.10933, "partPeak": 0.09142, "offPeak": 0.07946 }
+              },
+              "totalgreen": {
+                "label": "TotalGreen (100% Renewable)",
+                "summer": { "peak": 0.26467, "partPeak": 0.17583, "offPeak": 0.13540 },
+                "winter": { "peak": 0.11933, "partPeak": 0.10142, "offPeak": 0.08946 }
+              }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": {
+                "label": "ECOplus (Standard)",
+                "summer": { "peak": 0.25184, "partPeak": 0.16264, "offPeak": 0.12205 },
+                "winter": { "peak": 0.10592, "partPeak": 0.08795, "offPeak": 0.07593 }
+              },
+              "eco100": {
+                "label": "ECO100 (100% Renewable)",
+                "summer": { "peak": 0.26684, "partPeak": 0.17764, "offPeak": 0.13705 },
+                "winter": { "peak": 0.12092, "partPeak": 0.10295, "offPeak": 0.09093 }
+              }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": {
+                "label": "CleanStart (Standard)",
+                "summer": { "peak": 0.27801, "partPeak": 0.17971, "offPeak": 0.13489 },
+                "winter": { "peak": 0.11704, "partPeak": 0.09718, "offPeak": 0.08390 }
+              },
+              "evergreen": {
+                "label": "EverGreen (100% Renewable)",
+                "summer": { "peak": 0.30301, "partPeak": 0.20471, "offPeak": 0.15989 },
+                "winter": { "peak": 0.14204, "partPeak": 0.12218, "offPeak": 0.10890 }
+              }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice": {
+                "label": "Bright Choice (Standard)",
+                "summer": { "peak": 0.20047, "partPeak": 0.10185, "offPeak": 0.05698 },
+                "winter": { "peak": 0.03915, "partPeak": 0.01928, "offPeak": 0.00599 }
+              },
+              "renewable100": {
+                "label": "Renewable 100 (100% Renewable)",
+                "summer": { "peak": 0.21923, "partPeak": 0.12012, "offPeak": 0.07502 },
+                "winter": { "peak": 0.05710, "partPeak": 0.03713, "offPeak": 0.02378 }
+              }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": {
+                "label": "GreenStart (Standard)",
+                "summer": { "peak": 0.26981, "partPeak": 0.17466, "offPeak": 0.13137 },
+                "winter": { "peak": 0.11416, "partPeak": 0.09499, "offPeak": 0.08218 }
+              },
+              "greenprime": {
+                "label": "GreenPrime (100% Renewable)",
+                "summer": { "peak": 0.28681, "partPeak": 0.19166, "offPeak": 0.14837 },
+                "winter": { "peak": 0.13116, "partPeak": 0.11199, "offPeak": 0.09918 }
+              }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": {
+                "label": "Light Green (Standard)",
+                "summer": { "peak": 0.25886, "partPeak": 0.17114, "offPeak": 0.13072 },
+                "winter": { "peak": 0.11524, "partPeak": 0.09718, "offPeak": 0.08514 }
+              },
+              "deepgreen": {
+                "label": "Deep Green (100% Renewable)",
+                "summer": { "peak": 0.27136, "partPeak": 0.18364, "offPeak": 0.14322 },
+                "winter": { "peak": 0.12774, "partPeak": 0.10968, "offPeak": 0.09764 }
+              }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "tiers": {
+              "repower": {
+                "label": "REpower (Standard)",
+                "summer": { "peak": 0.27970, "partPeak": 0.18109, "offPeak": 0.13621 },
+                "winter": { "peak": 0.11838, "partPeak": 0.09851, "offPeak": 0.08523 }
+              },
+              "repowerplus": {
+                "label": "REpower+ (100% Renewable)",
+                "summer": { "peak": 0.28970, "partPeak": 0.19109, "offPeak": 0.14621 },
+                "winter": { "peak": 0.12838, "partPeak": 0.10851, "offPeak": 0.09523 }
+              }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": {
+                "label": "Standard Green",
+                "summer": { "peak": 0.30076, "partPeak": 0.20661, "offPeak": 0.16376 },
+                "winter": { "peak": 0.14674, "partPeak": 0.12777, "offPeak": 0.11508 }
+              },
+              "ultragreen": {
+                "label": "UltraGreen (100% Renewable)",
+                "summer": { "peak": 0.31576, "partPeak": 0.22161, "offPeak": 0.17876 },
+                "winter": { "peak": 0.16174, "partPeak": 0.14277, "offPeak": 0.13008 }
+              }
+            }
+          },
+          "pioneer": {
+            "name": "Pioneer Community Energy",
+            "defaultTier": "placer",
+            "note": "Flat blended rates — same value applied across all TOU periods and seasons.",
+            "tiers": {
+              "placer": {
+                "label": "Placer County (2026)",
+                "summer": { "peak": 0.10019, "partPeak": 0.10019, "offPeak": 0.10019 },
+                "winter": { "peak": 0.10019, "partPeak": 0.10019, "offPeak": 0.10019 }
+              },
+              "general": {
+                "label": "All Territories (2025)",
+                "summer": { "peak": 0.12412, "partPeak": 0.12412, "offPeak": 0.12412 },
+                "winter": { "peak": 0.12412, "partPeak": 0.12412, "offPeak": 0.12412 }
+              }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green": {
+                "label": "Green (Standard)",
+                "summer": { "peak": 0.24328, "partPeak": 0.15767, "offPeak": 0.11871 },
+                "winter": { "peak": 0.10323, "partPeak": 0.08598, "offPeak": 0.07445 }
+              },
+              "supergreen": {
+                "label": "SuperGreen (100% Renewable)",
+                "summer": { "peak": 0.25328, "partPeak": 0.16767, "offPeak": 0.12871 },
+                "winter": { "peak": 0.11323, "partPeak": 0.09598, "offPeak": 0.08445 }
+              }
+            }
+          }
         }
       },
       "fixedCharges": {
@@ -216,10 +573,170 @@
           "summer": { "peak": 0.62131, "partPeak": 0.37720, "offPeak": 0.26465 },
           "winter": { "peak": 0.43878, "partPeak": 0.30677, "offPeak": 0.23504 }
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "summer": { "peak": 0.28399, "partPeak": 0.14195, "offPeak": 0.09604 },
-          "winter": { "peak": 0.09146, "partPeak": 0.06686, "offPeak": 0.06686 }
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": { "peak": 0.28399, "partPeak": 0.14195, "offPeak": 0.09604 },
+                "winter": { "peak": 0.09146, "partPeak": 0.06686, "offPeak": 0.06686 }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": { "peak": 0.29199, "partPeak": 0.14995, "offPeak": 0.10404 },
+                "winter": { "peak": 0.09946, "partPeak": 0.07486, "offPeak": 0.07486 }
+              }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": {
+                "label": "GreenSource (Standard)",
+                "summer": { "peak": 0.27606, "partPeak": 0.14810, "offPeak": 0.11172 },
+                "winter": { "peak": 0.10760, "partPeak": 0.08057, "offPeak": 0.08557 }
+              },
+              "totalgreen": {
+                "label": "TotalGreen (100% Renewable)",
+                "summer": { "peak": 0.28606, "partPeak": 0.15810, "offPeak": 0.12172 },
+                "winter": { "peak": 0.11760, "partPeak": 0.09057, "offPeak": 0.09557 }
+              }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": {
+                "label": "ECOplus (Standard)",
+                "summer": { "peak": 0.28668, "partPeak": 0.15755, "offPeak": 0.11581 },
+                "winter": { "peak": 0.11165, "partPeak": 0.08929, "offPeak": 0.08929 }
+              },
+              "eco100": {
+                "label": "ECO100 (100% Renewable)",
+                "summer": { "peak": 0.30168, "partPeak": 0.17255, "offPeak": 0.13081 },
+                "winter": { "peak": 0.12665, "partPeak": 0.10429, "offPeak": 0.10429 }
+              }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": {
+                "label": "CleanStart (Standard)",
+                "summer": { "peak": 0.31616, "partPeak": 0.17391, "offPeak": 0.12809 },
+                "winter": { "peak": 0.12260, "partPeak": 0.09841, "offPeak": 0.09877 }
+              },
+              "evergreen": {
+                "label": "EverGreen (100% Renewable)",
+                "summer": { "peak": 0.34116, "partPeak": 0.19891, "offPeak": 0.15309 },
+                "winter": { "peak": 0.14760, "partPeak": 0.12341, "offPeak": 0.12377 }
+              }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice": {
+                "label": "Bright Choice (Standard)",
+                "summer": { "peak": 0.23428, "partPeak": 0.09152, "offPeak": 0.04537 },
+                "winter": { "peak": 0.04078, "partPeak": 0.01605, "offPeak": 0.01605 }
+              },
+              "renewable100": {
+                "label": "Renewable 100 (100% Renewable)",
+                "summer": { "peak": 0.25321, "partPeak": 0.10974, "offPeak": 0.06336 },
+                "winter": { "peak": 0.05874, "partPeak": 0.03389, "offPeak": 0.03389 }
+              }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": {
+                "label": "GreenStart (Standard)",
+                "summer": { "peak": 0.30697, "partPeak": 0.16924, "offPeak": 0.12471 },
+                "winter": { "peak": 0.12028, "partPeak": 0.09642, "offPeak": 0.09642 }
+              },
+              "greenprime": {
+                "label": "GreenPrime (100% Renewable)",
+                "summer": { "peak": 0.32397, "partPeak": 0.18624, "offPeak": 0.14171 },
+                "winter": { "peak": 0.13728, "partPeak": 0.11342, "offPeak": 0.11342 }
+              }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": {
+                "label": "Light Green (Standard)",
+                "summer": { "peak": 0.25628, "partPeak": 0.13846, "offPeak": 0.10062 },
+                "winter": { "peak": 0.09718, "partPeak": 0.07654, "offPeak": 0.07654 }
+              },
+              "deepgreen": {
+                "label": "Deep Green (100% Renewable)",
+                "summer": { "peak": 0.26878, "partPeak": 0.15096, "offPeak": 0.11312 },
+                "winter": { "peak": 0.10968, "partPeak": 0.08904, "offPeak": 0.08904 }
+              }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "note": "EV-B rates sourced from EV-A schedule (EV-A was eliminated Nov 30 2025; EV-B is the successor plan).",
+            "tiers": {
+              "repower": {
+                "label": "REpower (Standard)",
+                "summer": { "peak": 0.31822, "partPeak": 0.17547, "offPeak": 0.12932 },
+                "winter": { "peak": 0.12472, "partPeak": 0.10000, "offPeak": 0.10000 }
+              },
+              "repowerplus": {
+                "label": "REpower+ (100% Renewable)",
+                "summer": { "peak": 0.32822, "partPeak": 0.18547, "offPeak": 0.13932 },
+                "winter": { "peak": 0.13472, "partPeak": 0.11000, "offPeak": 0.11000 }
+              }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": {
+                "label": "Standard Green",
+                "summer": { "peak": 0.35964, "partPeak": 0.22335, "offPeak": 0.17928 },
+                "winter": { "peak": 0.17490, "partPeak": 0.15129, "offPeak": 0.15129 }
+              },
+              "ultragreen": {
+                "label": "UltraGreen (100% Renewable)",
+                "summer": { "peak": 0.37464, "partPeak": 0.23835, "offPeak": 0.19428 },
+                "winter": { "peak": 0.18990, "partPeak": 0.16629, "offPeak": 0.16629 }
+              }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green": {
+                "label": "Green (Standard)",
+                "summer": { "peak": 0.32631, "partPeak": 0.16580, "offPeak": 0.11392 },
+                "winter": { "peak": 0.10935, "partPeak": 0.08156, "offPeak": 0.08156 }
+              },
+              "supergreen": {
+                "label": "SuperGreen (100% Renewable)",
+                "summer": { "peak": 0.33631, "partPeak": 0.17580, "offPeak": 0.12392 },
+                "winter": { "peak": 0.11935, "partPeak": 0.09156, "offPeak": 0.09156 }
+              }
+            }
+          }
         }
       },
       "fixedCharges": {
@@ -271,10 +788,198 @@
           "summer": { "peak": 0.52240, "offPeak": 0.39940 },
           "winter": { "peak": 0.39757, "offPeak": 0.36757 }
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "summer": { "peak": 0.19573, "offPeak": 0.09376 },
-          "winter": { "peak": 0.12572, "offPeak": 0.09930 }
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": { "peak": 0.19573, "offPeak": 0.09376 },
+                "winter": { "peak": 0.12572, "offPeak": 0.09930 }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": { "peak": 0.20373, "offPeak": 0.10176 },
+                "winter": { "peak": 0.13372, "offPeak": 0.10730 }
+              }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": {
+                "label": "GreenSource (Standard)",
+                "summer": { "peak": 0.20132, "offPeak": 0.12219 },
+                "winter": { "peak": 0.14500, "offPeak": 0.11958 }
+              },
+              "totalgreen": {
+                "label": "TotalGreen (100% Renewable)",
+                "summer": { "peak": 0.21132, "offPeak": 0.13219 },
+                "winter": { "peak": 0.15500, "offPeak": 0.12958 }
+              }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": {
+                "label": "ECOplus (Standard)",
+                "summer": { "peak": 0.18948, "offPeak": 0.11478 },
+                "winter": { "peak": 0.13543, "offPeak": 0.11142 }
+              },
+              "eco100": {
+                "label": "ECO100 (100% Renewable)",
+                "summer": { "peak": 0.20448, "offPeak": 0.12978 },
+                "winter": { "peak": 0.15043, "offPeak": 0.12642 }
+              }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": {
+                "label": "CleanStart (Standard)",
+                "summer": { "peak": 0.21985, "offPeak": 0.11746 },
+                "winter": { "peak": 0.14975, "offPeak": 0.12322 }
+              },
+              "evergreen": {
+                "label": "EverGreen (100% Renewable)",
+                "summer": { "peak": 0.24485, "offPeak": 0.14246 },
+                "winter": { "peak": 0.17475, "offPeak": 0.14822 }
+              }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice": {
+                "label": "Bright Choice (Standard)",
+                "summer": { "peak": 0.14557, "offPeak": 0.04309 },
+                "winter": { "peak": 0.07521, "offPeak": 0.04866 }
+              },
+              "renewable100": {
+                "label": "Renewable 100 (100% Renewable)",
+                "summer": { "peak": 0.16406, "offPeak": 0.06106 },
+                "winter": { "peak": 0.09334, "offPeak": 0.06666 }
+              }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": {
+                "label": "GreenStart (Standard)",
+                "summer": { "peak": 0.20329, "offPeak": 0.12361 },
+                "winter": { "peak": 0.14564, "offPeak": 0.12003 }
+              },
+              "greenprime": {
+                "label": "GreenPrime (100% Renewable)",
+                "summer": { "peak": 0.22029, "offPeak": 0.14061 },
+                "winter": { "peak": 0.16264, "offPeak": 0.13703 }
+              }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": {
+                "label": "Light Green (Standard)",
+                "summer": { "peak": 0.16770, "offPeak": 0.12384 },
+                "winter": { "peak": 0.12814, "offPeak": 0.11610 }
+              },
+              "deepgreen": {
+                "label": "Deep Green (100% Renewable)",
+                "summer": { "peak": 0.18020, "offPeak": 0.13634 },
+                "winter": { "peak": 0.14064, "offPeak": 0.12860 }
+              }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "tiers": {
+              "repower": {
+                "label": "REpower (Standard)",
+                "summer": { "peak": 0.21076, "offPeak": 0.12817 },
+                "winter": { "peak": 0.15101, "offPeak": 0.12446 }
+              },
+              "repowerplus": {
+                "label": "REpower+ (100% Renewable)",
+                "summer": { "peak": 0.22076, "offPeak": 0.13817 },
+                "winter": { "peak": 0.16101, "offPeak": 0.13446 }
+              }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": {
+                "label": "Standard Green",
+                "summer": { "peak": 0.24507, "offPeak": 0.14722 },
+                "winter": { "peak": 0.17789, "offPeak": 0.15254 }
+              },
+              "ultragreen": {
+                "label": "UltraGreen (100% Renewable)",
+                "summer": { "peak": 0.26007, "offPeak": 0.16222 },
+                "winter": { "peak": 0.19289, "offPeak": 0.16754 }
+              }
+            }
+          },
+          "pioneer": {
+            "name": "Pioneer Community Energy",
+            "defaultTier": "placer",
+            "note": "Flat blended rates — same value applied across all TOU periods and seasons.",
+            "tiers": {
+              "placer": {
+                "label": "Placer County (2026)",
+                "summer": { "peak": 0.11373, "offPeak": 0.11373 },
+                "winter": { "peak": 0.11373, "offPeak": 0.11373 }
+              },
+              "general": {
+                "label": "All Territories (2025)",
+                "summer": { "peak": 0.13591, "offPeak": 0.13591 },
+                "winter": { "peak": 0.13591, "offPeak": 0.13591 }
+              }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green": {
+                "label": "Green (Standard)",
+                "summer": { "peak": 0.16273, "offPeak": 0.11447 },
+                "winter": { "peak": 0.11869, "offPeak": 0.10513 }
+              },
+              "supergreen": {
+                "label": "SuperGreen (100% Renewable)",
+                "summer": { "peak": 0.17273, "offPeak": 0.12447 },
+                "winter": { "peak": 0.12869, "offPeak": 0.11513 }
+              }
+            }
+          },
+          "kccp": {
+            "name": "King City Community Power",
+            "defaultTier": "singletier",
+            "note": "Blended flat rate only — no TOU or tier differentiation.",
+            "tiers": {
+              "singletier": {
+                "label": "KCCP Standard",
+                "summer": { "peak": 0.06985, "offPeak": 0.06985 },
+                "winter": { "peak": 0.06985, "offPeak": 0.06985 }
+              }
+            }
+          }
         }
       },
       "baselineCredit": {
@@ -334,10 +1039,186 @@
           "summer": { "peak": 0.47708, "offPeak": 0.34212 },
           "winter": { "peak": 0.38747, "offPeak": 0.34886 }
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "summer": { "peak": 0.19419, "offPeak": 0.09028 },
-          "winter": { "peak": 0.15372, "offPeak": 0.11900 }
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": { "peak": 0.19419, "offPeak": 0.09028 },
+                "winter": { "peak": 0.15372, "offPeak": 0.11900 }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": { "peak": 0.20219, "offPeak": 0.09828 },
+                "winter": { "peak": 0.16172, "offPeak": 0.12700 }
+              }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": {
+                "label": "GreenSource (Standard)",
+                "summer": { "peak": 0.20560, "offPeak": 0.11260 },
+                "winter": { "peak": 0.16939, "offPeak": 0.13831 }
+              },
+              "totalgreen": {
+                "label": "TotalGreen (100% Renewable)",
+                "summer": { "peak": 0.21560, "offPeak": 0.12260 },
+                "winter": { "peak": 0.17939, "offPeak": 0.14831 }
+              }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": {
+                "label": "ECOplus (Standard)",
+                "summer": { "peak": 0.19814, "offPeak": 0.10368 },
+                "winter": { "peak": 0.16136, "offPeak": 0.12979 }
+              },
+              "eco100": {
+                "label": "ECO100 (100% Renewable)",
+                "summer": { "peak": 0.21314, "offPeak": 0.11868 },
+                "winter": { "peak": 0.17636, "offPeak": 0.14479 }
+              }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": {
+                "label": "CleanStart (Standard)",
+                "summer": { "peak": 0.21856, "offPeak": 0.11428 },
+                "winter": { "peak": 0.17814, "offPeak": 0.14325 }
+              },
+              "evergreen": {
+                "label": "EverGreen (100% Renewable)",
+                "summer": { "peak": 0.24356, "offPeak": 0.13928 },
+                "winter": { "peak": 0.20314, "offPeak": 0.16825 }
+              }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice": {
+                "label": "Bright Choice (Standard)",
+                "summer": { "peak": 0.14402, "offPeak": 0.03958 },
+                "winter": { "peak": 0.10335, "offPeak": 0.06845 }
+              },
+              "renewable100": {
+                "label": "Renewable 100 (100% Renewable)",
+                "summer": { "peak": 0.16250, "offPeak": 0.05754 },
+                "winter": { "peak": 0.12163, "offPeak": 0.08655 }
+              }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": {
+                "label": "GreenStart (Standard)",
+                "summer": { "peak": 0.21253, "offPeak": 0.11177 },
+                "winter": { "peak": 0.17330, "offPeak": 0.13962 }
+              },
+              "greenprime": {
+                "label": "GreenPrime (100% Renewable)",
+                "summer": { "peak": 0.22953, "offPeak": 0.12877 },
+                "winter": { "peak": 0.19030, "offPeak": 0.15662 }
+              }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": {
+                "label": "Light Green (Standard)",
+                "summer": { "peak": 0.19264, "offPeak": 0.10664 },
+                "winter": { "peak": 0.15910, "offPeak": 0.13072 }
+              },
+              "deepgreen": {
+                "label": "Deep Green (100% Renewable)",
+                "summer": { "peak": 0.20514, "offPeak": 0.11914 },
+                "winter": { "peak": 0.17160, "offPeak": 0.14322 }
+              }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "tiers": {
+              "repower": {
+                "label": "REpower (Standard)",
+                "summer": { "peak": 0.22034, "offPeak": 0.11591 },
+                "winter": { "peak": 0.17968, "offPeak": 0.14477 }
+              },
+              "repowerplus": {
+                "label": "REpower+ (100% Renewable)",
+                "summer": { "peak": 0.23034, "offPeak": 0.12591 },
+                "winter": { "peak": 0.18968, "offPeak": 0.15477 }
+              }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": {
+                "label": "Standard Green",
+                "summer": { "peak": 0.24408, "offPeak": 0.14437 },
+                "winter": { "peak": 0.20526, "offPeak": 0.17193 }
+              },
+              "ultragreen": {
+                "label": "UltraGreen (100% Renewable)",
+                "summer": { "peak": 0.25908, "offPeak": 0.15937 },
+                "winter": { "peak": 0.22026, "offPeak": 0.18693 }
+              }
+            }
+          },
+          "pioneer": {
+            "name": "Pioneer Community Energy",
+            "defaultTier": "placer",
+            "note": "Flat blended rates — same value applied across all TOU periods and seasons.",
+            "tiers": {
+              "placer": {
+                "label": "Placer County (2026)",
+                "summer": { "peak": 0.11282, "offPeak": 0.11282 },
+                "winter": { "peak": 0.11282, "offPeak": 0.11282 }
+              },
+              "general": {
+                "label": "All Territories (2025)",
+                "summer": { "peak": 0.13504, "offPeak": 0.13504 },
+                "winter": { "peak": 0.13504, "offPeak": 0.13504 }
+              }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green": {
+                "label": "Green (Standard)",
+                "summer": { "peak": 0.18219, "offPeak": 0.09098 },
+                "winter": { "peak": 0.14667, "offPeak": 0.11619 }
+              },
+              "supergreen": {
+                "label": "SuperGreen (100% Renewable)",
+                "summer": { "peak": 0.19219, "offPeak": 0.10098 },
+                "winter": { "peak": 0.15667, "offPeak": 0.12619 }
+              }
+            }
+          }
         }
       },
       "fixedCharges": {
@@ -380,9 +1261,106 @@
           "tier2": 0.40702,
           "note": "Tier 2 applies to usage from 101% to over 400% of baseline (same rate for both ranges)."
         },
-        "cce": {
-          "tier": "3Cchoice",
-          "allUsage": 0.11725
+        "ccaGeneration": {
+          "3ce": {
+            "name": "Central Coast Community Energy",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": { "label": "3Cchoice (Standard)", "allUsage": 0.11725 },
+              "3cprime":  { "label": "3Cprime (100% Renewable)", "allUsage": 0.12525 }
+            }
+          },
+          "sjce": {
+            "name": "San José Clean Energy",
+            "defaultTier": "greensource",
+            "tiers": {
+              "greensource": { "label": "GreenSource (Standard)", "allUsage": 0.13565 },
+              "totalgreen":  { "label": "TotalGreen (100% Renewable)", "allUsage": 0.14565 }
+            }
+          },
+          "pce": {
+            "name": "Peninsula Clean Energy",
+            "defaultTier": "ecoplus",
+            "tiers": {
+              "ecoplus": { "label": "ECOplus (Standard)", "allUsage": 0.12797 },
+              "eco100":  { "label": "ECO100 (100% Renewable)", "allUsage": 0.14297 }
+            }
+          },
+          "scp": {
+            "name": "Sonoma Clean Power",
+            "defaultTier": "cleanstart",
+            "tiers": {
+              "cleanstart": { "label": "CleanStart (Standard)", "allUsage": 0.14141 },
+              "evergreen":  { "label": "EverGreen (100% Renewable)", "allUsage": 0.16641 }
+            }
+          },
+          "ava": {
+            "name": "Ava Community Energy",
+            "defaultTier": "brightchoice",
+            "note": "Rates include System Fees ($0.05115/kWh embedded). Do not add PCIA/FF on top.",
+            "tiers": {
+              "brightchoice":  { "label": "Bright Choice (Standard)", "allUsage": 0.06670 },
+              "renewable100": { "label": "Renewable 100 (100% Renewable)", "allUsage": 0.08479 }
+            }
+          },
+          "svce": {
+            "name": "Silicon Valley Clean Energy",
+            "defaultTier": "greenstart",
+            "note": "TOU-specific rates (April 2025 table).",
+            "tiers": {
+              "greenstart": { "label": "GreenStart (Standard)", "allUsage": 0.13768 },
+              "greenprime": { "label": "GreenPrime (100% Renewable)", "allUsage": 0.15468 }
+            }
+          },
+          "mce": {
+            "name": "MCE Clean Energy",
+            "defaultTier": "lightgreen",
+            "tiers": {
+              "lightgreen": { "label": "Light Green (Standard)", "allUsage": 0.12814 },
+              "deepgreen":  { "label": "Deep Green (100% Renewable)", "allUsage": 0.14064 }
+            }
+          },
+          "rcea": {
+            "name": "Redwood Coast Energy Authority",
+            "defaultTier": "repower",
+            "tiers": {
+              "repower":    { "label": "REpower (Standard)", "allUsage": 0.14276 },
+              "repowerplus": { "label": "REpower+ (100% Renewable)", "allUsage": 0.15276 }
+            }
+          },
+          "vce": {
+            "name": "Valley Clean Energy",
+            "defaultTier": "standardgreen",
+            "tiers": {
+              "standardgreen": { "label": "Standard Green", "allUsage": 0.17001 },
+              "ultragreen":    { "label": "UltraGreen (100% Renewable)", "allUsage": 0.18501 }
+            }
+          },
+          "pioneer": {
+            "name": "Pioneer Community Energy",
+            "defaultTier": "placer",
+            "note": "Flat blended rates.",
+            "tiers": {
+              "placer":  { "label": "Placer County (2026)", "allUsage": 0.11570 },
+              "general": { "label": "All Territories (2025)", "allUsage": 0.13768 }
+            }
+          },
+          "cpsf": {
+            "name": "CleanPowerSF",
+            "defaultTier": "green",
+            "tiers": {
+              "green":      { "label": "Green (Standard)", "allUsage": 0.11377 },
+              "supergreen": { "label": "SuperGreen (100% Renewable)", "allUsage": 0.12377 }
+            }
+          },
+          "kccp": {
+            "name": "King City Community Power",
+            "defaultTier": "singletier",
+            "note": "Single blended rate, 100% renewable.",
+            "tiers": {
+              "singletier": { "label": "KCCP Standard", "allUsage": 0.07514 }
+            }
+          }
         }
       },
       "baselineCredit": null,

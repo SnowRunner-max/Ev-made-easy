@@ -1,9 +1,20 @@
 {
   "cities": [
-    { "id": "buellton",   "name": "Buellton",   "serviceAreaId": "pge-3ce-sbco" },
-    { "id": "solvang",    "name": "Solvang",    "serviceAreaId": "pge-3ce-sbco" },
-    { "id": "santa-ynez", "name": "Santa Ynez", "serviceAreaId": "pge-3ce-sbco" },
-    { "id": "los-olivos", "name": "Los Olivos", "serviceAreaId": "pge-3ce-sbco" }
+    { "id": "buellton",       "name": "Buellton",       "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "solvang",        "name": "Solvang",        "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "santa-ynez",     "name": "Santa Ynez",     "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "los-olivos",     "name": "Los Olivos",     "serviceAreaId": "pge-3ce-sbco" },
+    { "id": "san-jose",       "name": "San José",       "serviceAreaId": "pge-sjce-scc" },
+    { "id": "redwood-city",   "name": "Redwood City",   "serviceAreaId": "pge-pce-smc" },
+    { "id": "santa-rosa",     "name": "Santa Rosa",     "serviceAreaId": "pge-scp-son" },
+    { "id": "oakland",        "name": "Oakland",        "serviceAreaId": "pge-ava-eba" },
+    { "id": "sunnyvale",      "name": "Sunnyvale",      "serviceAreaId": "pge-svce-sv" },
+    { "id": "san-rafael",     "name": "San Rafael",     "serviceAreaId": "pge-mce-mar" },
+    { "id": "eureka",         "name": "Eureka",         "serviceAreaId": "pge-rcea-hum" },
+    { "id": "davis",          "name": "Davis",          "serviceAreaId": "pge-vce-yol" },
+    { "id": "roseville",      "name": "Roseville",      "serviceAreaId": "pge-pioneer-pla" },
+    { "id": "san-francisco",  "name": "San Francisco",  "serviceAreaId": "pge-cpsf-sf" },
+    { "id": "king-city",      "name": "King City",      "serviceAreaId": "pge-kccp-mon" }
   ],
   "serviceAreas": {
     "pge-3ce-sbco": {
@@ -14,10 +25,117 @@
       "defaultPlanId": "EV2-A",
       "defaultProvider": "pge",
       "providerHint": "Most residents in the Santa Ynez Valley are served by 3CE for generation. PG&E handles delivery for all customers.",
-      "providers": [
-        { "value": "pge", "label": "PG&E Bundled" },
-        { "value": "3ce", "label": "3CE (CCA)" }
-      ]
+      "ccas": ["3ce"]
+    },
+    "pge-sjce-scc": {
+      "name": "PG&E + SJCE (Santa Clara County)",
+      "utility": "PG&E",
+      "cca": "SJCE",
+      "shortLabel": "PG&E + SJCE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in San José are served by San José Clean Energy for generation. PG&E handles delivery for all customers.",
+      "ccas": ["sjce"]
+    },
+    "pge-pce-smc": {
+      "name": "PG&E + PCE (San Mateo County)",
+      "utility": "PG&E",
+      "cca": "PCE",
+      "shortLabel": "PG&E + PCE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in San Mateo County are served by Peninsula Clean Energy for generation. PG&E handles delivery for all customers.",
+      "ccas": ["pce"]
+    },
+    "pge-scp-son": {
+      "name": "PG&E + SCP (Sonoma County)",
+      "utility": "PG&E",
+      "cca": "SCP",
+      "shortLabel": "PG&E + SCP",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Sonoma County are served by Sonoma Clean Power for generation. PG&E handles delivery for all customers.",
+      "ccas": ["scp"]
+    },
+    "pge-ava-eba": {
+      "name": "PG&E + Ava (East Bay)",
+      "utility": "PG&E",
+      "cca": "Ava",
+      "shortLabel": "PG&E + Ava",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Oakland and the East Bay are served by Ava Community Energy for generation. Note: Ava rates include System Fees. PG&E handles delivery for all customers.",
+      "ccas": ["ava"]
+    },
+    "pge-svce-sv": {
+      "name": "PG&E + SVCE (Silicon Valley)",
+      "utility": "PG&E",
+      "cca": "SVCE",
+      "shortLabel": "PG&E + SVCE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Sunnyvale and nearby Silicon Valley cities are served by Silicon Valley Clean Energy for generation. PG&E handles delivery for all customers.",
+      "ccas": ["svce"]
+    },
+    "pge-mce-mar": {
+      "name": "PG&E + MCE (Marin County)",
+      "utility": "PG&E",
+      "cca": "MCE",
+      "shortLabel": "PG&E + MCE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Marin County are served by MCE Clean Energy for generation. PG&E handles delivery for all customers.",
+      "ccas": ["mce"]
+    },
+    "pge-rcea-hum": {
+      "name": "PG&E + RCEA (Humboldt County)",
+      "utility": "PG&E",
+      "cca": "RCEA",
+      "shortLabel": "PG&E + RCEA",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Humboldt County are served by Redwood Coast Energy Authority for generation. PG&E handles delivery for all customers.",
+      "ccas": ["rcea"]
+    },
+    "pge-vce-yol": {
+      "name": "PG&E + VCE (Yolo County)",
+      "utility": "PG&E",
+      "cca": "VCE",
+      "shortLabel": "PG&E + VCE",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Davis and Yolo County are served by Valley Clean Energy for generation. PG&E handles delivery for all customers.",
+      "ccas": ["vce"]
+    },
+    "pge-pioneer-pla": {
+      "name": "PG&E + Pioneer (Placer County)",
+      "utility": "PG&E",
+      "cca": "Pioneer",
+      "shortLabel": "PG&E + Pioneer",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in Roseville and Placer County are served by Pioneer Community Energy for generation. Pioneer uses flat blended rates. PG&E handles delivery for all customers.",
+      "ccas": ["pioneer"]
+    },
+    "pge-cpsf-sf": {
+      "name": "PG&E + CleanPowerSF (San Francisco)",
+      "utility": "PG&E",
+      "cca": "CleanPowerSF",
+      "shortLabel": "PG&E + CleanPowerSF",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "Most residents in San Francisco are served by CleanPowerSF for generation. PG&E handles delivery for all customers.",
+      "ccas": ["cpsf"]
+    },
+    "pge-kccp-mon": {
+      "name": "PG&E + KCCP (Monterey County)",
+      "utility": "PG&E",
+      "cca": "KCCP",
+      "shortLabel": "PG&E + KCCP",
+      "defaultPlanId": "E-TOU-C",
+      "defaultProvider": "pge",
+      "providerHint": "Residents in King City area are served by King City Community Power. KCCP rates are only available for E-1 and E-TOU-C plans. PG&E handles delivery for all customers.",
+      "ccas": ["kccp"]
     }
   }
 }
