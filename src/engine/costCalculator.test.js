@@ -24,9 +24,39 @@ function buildEffectiveConfig(planConfig) {
       Object.fromEntries(
         Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
           const delivery = planConfig.rates.pgeDelivery[season][period];
-          const cce = planConfig.rates.cce[season][period];
+          const generation = planConfig.rates.pgeGeneration[season][period];
           const combined = planConfig.rates.pgeTotalBundled[season][period];
-          return [period, { combined, delivery, generation: cce }];
+          return [period, { combined, delivery, generation }];
+        })
+      ),
+    ])
+  );
+  return { ...planConfig, rates };
+}
+
+// Build effective planConfig with 3CE 3cchoice generation rates
+function buildCCAConfig(planConfig, ccaId = '3ce', tierId = null) {
+  if (!planConfig.touPeriods) {
+    const r = planConfig.rates;
+    const ccaEntry = r.ccaGeneration[ccaId];
+    const tier = tierId ?? ccaEntry.defaultTier;
+    const delivery = r.pgeDelivery.tier1;
+    const generation = ccaEntry.tiers[tier].allUsage;
+    const combined = delivery + generation;
+    return { ...planConfig, _flatRate: { combined, delivery, generation } };
+  }
+  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const rates = Object.fromEntries(
+    seasons.map(season => [
+      season,
+      Object.fromEntries(
+        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
+          const ccaEntry = planConfig.rates.ccaGeneration[ccaId];
+          const tier = tierId ?? ccaEntry.defaultTier;
+          const delivery = planConfig.rates.pgeDelivery[season][period];
+          const generation = ccaEntry.tiers[tier][season][period];
+          const combined = delivery + generation;
+          return [period, { combined, delivery, generation }];
         })
       ),
     ])
@@ -179,5 +209,75 @@ describe('calcChargeSummary — E-1 tiered', () => {
   it('savings is 0 since all hours cost the same', () => {
     const { to80 } = calcChargeSummary(new Date('2026-01-15T17:00:00-08:00'), 60, 20, 7.7, e1Config);
     expect(to80.savings).toBeCloseTo(0, 2);
+  });
+});
+
+// ── CCA generation rate tests ────────────────────────────────────────────────
+
+describe('ccaGeneration — EV2-A with 3CE 3cchoice vs 3cprime', () => {
+  const ev2aRaw = ratePlans.ratePlans['EV2-A'];
+  const ev2a3cchoice = buildCCAConfig(ev2aRaw, '3ce', '3cchoice');
+  const ev2a3cprime  = buildCCAConfig(ev2aRaw, '3ce', '3cprime');
+
+  it('3cchoice winter off-peak generation = 0.08449', () => {
+    // delivery=0.13012, generation=0.08449, combined=0.21461
+    const r = ev2a3cchoice.rates.winter.offPeak;
+    expect(r.generation).toBeCloseTo(0.08449, 4);
+    expect(r.combined).toBeCloseTo(0.13012 + 0.08449, 4);
+  });
+
+  it('3cprime winter off-peak generation = 0.09249 (higher than 3cchoice)', () => {
+    const r = ev2a3cprime.rates.winter.offPeak;
+    expect(r.generation).toBeCloseTo(0.09249, 4);
+    expect(r.generation).toBeGreaterThan(ev2a3cchoice.rates.winter.offPeak.generation);
+  });
+
+  it('tier switch from 3cchoice to 3cprime raises combined rate', () => {
+    const before = ev2a3cchoice.rates.summer.peak.combined;
+    const after  = ev2a3cprime.rates.summer.peak.combined;
+    expect(after).toBeGreaterThan(before);
+    expect(after - before).toBeCloseTo(0.18441 - 0.17641, 4);
+  });
+});
+
+describe('ccaGeneration — EV2-A with SJCE vs 3CE', () => {
+  const ev2aRaw = ratePlans.ratePlans['EV2-A'];
+  const ev2aSjce = buildCCAConfig(ev2aRaw, 'sjce', 'greensource');
+  const ev2a3ce  = buildCCAConfig(ev2aRaw, '3ce', '3cchoice');
+
+  it('SJCE greensource summer peak generation = 0.19494', () => {
+    expect(ev2aSjce.rates.summer.peak.generation).toBeCloseTo(0.19494, 4);
+  });
+
+  it('SJCE and 3CE give different generation rates for the same plan', () => {
+    expect(ev2aSjce.rates.summer.peak.generation).not.toBeCloseTo(
+      ev2a3ce.rates.summer.peak.generation, 3
+    );
+  });
+
+  it('SJCE combined = delivery + sjce generation', () => {
+    const delivery = ratePlans.ratePlans['EV2-A'].rates.pgeDelivery.summer.peak;
+    const gen = ratePlans.ratePlans['EV2-A'].rates.ccaGeneration.sjce.tiers.greensource.summer.peak;
+    expect(ev2aSjce.rates.summer.peak.combined).toBeCloseTo(delivery + gen, 4);
+  });
+});
+
+describe('ccaGeneration — E-1 flat rate with multiple CCAs', () => {
+  const e1Raw = ratePlans.ratePlans['E-1'];
+
+  it('3CE 3cchoice allUsage = 0.11725', () => {
+    const cfg = buildCCAConfig(e1Raw, '3ce', '3cchoice');
+    expect(cfg._flatRate.generation).toBeCloseTo(0.11725, 4);
+  });
+
+  it('SJCE greensource allUsage = 0.13565', () => {
+    const cfg = buildCCAConfig(e1Raw, 'sjce', 'greensource');
+    expect(cfg._flatRate.generation).toBeCloseTo(0.13565, 4);
+  });
+
+  it('KCCP singletier allUsage = 0.07514 (lowest rate)', () => {
+    const cfg = buildCCAConfig(e1Raw, 'kccp', 'singletier');
+    expect(cfg._flatRate.generation).toBeCloseTo(0.07514, 4);
+    expect(cfg._flatRate.combined).toBeCloseTo(0.19706 + 0.07514, 4);
   });
 });

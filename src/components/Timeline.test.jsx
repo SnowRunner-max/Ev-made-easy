@@ -12,9 +12,9 @@ function buildEffectiveConfig(planConfig) {
       Object.fromEntries(
         Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
           const delivery = planConfig.rates.pgeDelivery[season][period];
-          const cce = planConfig.rates.cce[season][period];
+          const generation = planConfig.rates.pgeGeneration[season][period];
           const combined = planConfig.rates.pgeTotalBundled[season][period];
-          return [period, { combined, delivery, generation: cce }];
+          return [period, { combined, delivery, generation }];
         })
       ),
     ])

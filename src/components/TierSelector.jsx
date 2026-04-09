@@ -1,15 +1,20 @@
-export default function TierSelector({ tier, onChange }) {
+export default function TierSelector({ tier, options, onChange }) {
   return (
     <div className="mt-0.5">
-      <label className="text-xs text-gray-500 block mb-0.5">3CE tier</label>
       <select
         data-testid="tier-select"
         value={tier}
         onChange={e => onChange(e.target.value)}
-        className="text-sm bg-white border border-gray-300 rounded-md px-2 py-1 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full px-3 py-2.5 text-sm text-[var(--text-primary)] bg-surface-container-highest border-none rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-paprika/20 cursor-pointer transition-colors font-medium"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236B6B7B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 12px center',
+        }}
       >
-        <option value="3cchoice">3Cchoice (Standard)</option>
-        <option value="3cprime">3Cprime (100% Renewable)</option>
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
+        ))}
       </select>
     </div>
   );
