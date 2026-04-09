@@ -4,7 +4,7 @@ import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
 import { calcChargeSummary } from './engine/costCalculator';
 import { useCurrentRate } from './hooks/useCurrentRate';
-import CityPicker from './components/CityPicker';
+import LocationInput from './components/LocationInput';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
 import TierSelector from './components/TierSelector';
@@ -29,6 +29,7 @@ const RATE_PLAN_REGISTRY = {
   'pge-pioneer-pla': ratePlans,
   'pge-cpsf-sf':     ratePlans,
   'pge-kccp-mon':    ratePlans,
+  'pge-only':        ratePlans,
 };
 
 const CUSTOM_ID = 'custom';
@@ -99,7 +100,11 @@ const PLAN_HINTS = {
 };
 
 export default function App() {
-  const [cityId, setCityId] = useState('buellton');
+  const [locationResult, setLocationResult] = useState({
+    serviceAreaId: 'pge-3ce-sbco',
+    displayLabel: 'Buellton, CA',
+    zip: '93427',
+  });
   const [planId, setPlanId] = useState('EV2-A');
   const [provider, setProvider] = useState('pge');
   const [ccaTier, setCcaTier] = useState(null); // null = use CCA's defaultTier
@@ -108,9 +113,8 @@ export default function App() {
   const [currentPct, setCurrentPct] = useState(20);
   const [showCostFacts, setShowCostFacts] = useState(false);
 
-  const city = serviceAreasData.cities.find(c => c.id === cityId);
-  const serviceArea = serviceAreasData.serviceAreas[city.serviceAreaId];
-  const ratePlansData = RATE_PLAN_REGISTRY[city.serviceAreaId];
+  const serviceArea = serviceAreasData.serviceAreas[locationResult.serviceAreaId];
+  const ratePlansData = RATE_PLAN_REGISTRY[locationResult.serviceAreaId];
   const planConfig = ratePlansData.ratePlans[planId];
 
   if (!planConfig) {
@@ -141,15 +145,18 @@ export default function App() {
   const effectiveTier = ccaEntry ? (ccaTier ?? ccaEntry.defaultTier) : null;
   const showTierSelector = ccaEntry != null && tierOptions.length > 1;
 
-  function handleCityChange(newCityId) {
-    const newCity = serviceAreasData.cities.find(c => c.id === newCityId);
-    setCityId(newCityId);
-    if (newCity.serviceAreaId !== city.serviceAreaId) {
-      const newArea = serviceAreasData.serviceAreas[newCity.serviceAreaId];
+  function handleLocationResolved(resolved) {
+    if (resolved.serviceAreaId !== locationResult.serviceAreaId) {
+      const newArea = serviceAreasData.serviceAreas[resolved.serviceAreaId];
       setPlanId(newArea.defaultPlanId);
       setProvider(newArea.defaultProvider);
       setCcaTier(null);
     }
+    setLocationResult(resolved);
+  }
+
+  function handleLocationCleared() {
+    // Intentionally empty — app stays on last valid location while user retypes
   }
 
   function handleProviderChange(newProvider) {
@@ -195,7 +202,7 @@ export default function App() {
         {/* Right: selected city */}
         <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full">
           <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
-            {city.name}, CA
+            {locationResult.displayLabel}
           </span>
         </div>
       </header>
@@ -245,8 +252,11 @@ export default function App() {
               </label>
               <div className="bg-surface-container-high p-5 rounded-xl space-y-5">
                 <div className="space-y-1.5">
-                  <span className="text-xs text-[var(--text-secondary)] font-semibold">City</span>
-                  <CityPicker cityId={cityId} cities={serviceAreasData.cities} onChange={handleCityChange} />
+                  <span className="text-xs text-[var(--text-secondary)] font-semibold">Location</span>
+                  <LocationInput
+                    onLocationResolved={handleLocationResolved}
+                    onLocationCleared={handleLocationCleared}
+                  />
                 </div>
                 {supportsProviderToggle && (
                   <div className="space-y-1.5">
@@ -384,7 +394,7 @@ export default function App() {
       <Footer
         planConfig={effectivePlanConfig}
         globalMetadata={ratePlansData._metadata}
-        city={city}
+        city={{ name: locationResult.displayLabel.replace(', CA', ''), serviceAreaId: locationResult.serviceAreaId }}
         serviceArea={serviceArea}
         provider={effectiveProvider}
       />

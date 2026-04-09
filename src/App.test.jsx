@@ -1,6 +1,23 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import App from './App';
+
+// Capture callbacks so tests can simulate location resolution
+let capturedOnResolved;
+let capturedOnCleared;
+
+vi.mock('./components/LocationInput', () => ({
+  default: ({ onLocationResolved, onLocationCleared }) => {
+    capturedOnResolved = onLocationResolved;
+    capturedOnCleared = onLocationCleared;
+    return (
+      <div>
+        <input data-testid="location-input" readOnly />
+        <div data-testid="location-status" role="status" aria-live="polite" />
+      </div>
+    );
+  },
+}));
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -30,30 +47,46 @@ describe('App — structure', () => {
   });
 });
 
-describe('App — city picker', () => {
-  it('renders city-select defaulting to Buellton', () => {
+describe('App — location input', () => {
+  it('renders location-input', () => {
     render(<App />);
-    expect(screen.getByTestId('city-select')).toBeInTheDocument();
-    expect(screen.getByTestId('city-select').value).toBe('buellton');
+    expect(screen.getByTestId('location-input')).toBeInTheDocument();
   });
 
-  it('has fifteen city options (4 existing + 11 new CCA territories)', () => {
-    render(<App />);
-    expect(screen.getByTestId('city-select').querySelectorAll('option')).toHaveLength(15);
-  });
-
-  it('switching city updates header text', () => {
+  it('header shows Buellton, CA by default', () => {
     render(<App />);
     expect(screen.getByTestId('app-header')).toHaveTextContent('Buellton, CA');
-    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'solvang' } });
-    expect(screen.getByTestId('app-header')).toHaveTextContent('Solvang, CA');
   });
 
-  it('switching city within same service area preserves planId', () => {
+  it('resolving a new location updates the header display label', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-scp-son', displayLabel: 'Santa Rosa, CA', zip: '95401' }));
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Santa Rosa, CA');
+  });
+
+  it('resolving a location in a different service area resets planId and provider', () => {
     render(<App />);
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
-    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'santa-ynez' } });
+    // Resolve to San José (different service area)
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-sjce-scc', displayLabel: 'San José, CA', zip: '95110' }));
+    expect(screen.getByTestId('plan-select').value).toBe('EV2-A');
+  });
+
+  it('resolving a location in the same service area preserves planId', () => {
+    render(<App />);
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
+    // Resolve to Solvang — same pge-3ce-sbco service area as Buellton
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-3ce-sbco', displayLabel: 'Solvang, CA', zip: '93463' }));
     expect(screen.getByTestId('plan-select').value).toBe('E-ELEC');
+  });
+
+  it('clearing location preserves last-known location in header', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-scp-son', displayLabel: 'Santa Rosa, CA', zip: '95401' }));
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Santa Rosa, CA');
+    act(() => capturedOnCleared());
+    // Still shows Santa Rosa — app stays functional on last resolved location
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Santa Rosa, CA');
   });
 });
 
@@ -138,19 +171,19 @@ describe('App — CCA tier selector', () => {
     expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
   });
 
-  it('tier resets to default when switching CCA provider', () => {
+  it('tier resets to default when switching to a different service area', () => {
     render(<App />);
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
-    // Switch city to a different service area (San José), which resets provider + tier
-    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'san-jose' } });
+    // Switch location to San José (different service area) — resets provider + tier
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-sjce-scc', displayLabel: 'San José, CA', zip: '95110' }));
     // Provider should reset to pge, tier select should be hidden
     expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
   });
 
   it('KCCP service area shows tier selector hidden (single tier)', () => {
     render(<App />);
-    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'king-city' } });
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-kccp-mon', displayLabel: 'King City, CA', zip: '93930' }));
     // KCCP defaults to E-TOU-C plan — switch provider to kccp
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: 'kccp' } });
     // KCCP has only 1 tier → tier selector should not appear
@@ -159,7 +192,7 @@ describe('App — CCA tier selector', () => {
 
   it('KCCP provider option absent on EV2-A plan (no KCCP EV2-A rates)', () => {
     render(<App />);
-    fireEvent.change(screen.getByTestId('city-select'), { target: { value: 'king-city' } });
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-kccp-mon', displayLabel: 'King City, CA', zip: '93930' }));
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV2-A' } });
     // Provider select should only have PG&E (no KCCP option for EV2-A)
     const opts = screen.getByTestId('provider-select').querySelectorAll('option');

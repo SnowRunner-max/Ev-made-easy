@@ -136,6 +136,16 @@
       "defaultProvider": "pge",
       "providerHint": "Residents in King City area are served by King City Community Power. KCCP rates are only available for E-1 and E-TOU-C plans. PG&E handles delivery for all customers.",
       "ccas": ["kccp"]
+    },
+    "pge-only": {
+      "name": "PG&E (Direct Service)",
+      "utility": "PG&E",
+      "cca": null,
+      "shortLabel": "PG&E Direct",
+      "defaultPlanId": "EV2-A",
+      "defaultProvider": "pge",
+      "providerHint": "This area is served directly by PG&E with no Community Choice Aggregator.",
+      "ccas": []
     }
   }
 }
