@@ -11,15 +11,17 @@ function hourToLabel(hour) {
 
 // Design system palette colors for TOU periods
 const PERIOD_BG = {
-  offPeak:  '#2D8F5C',
-  partPeak: '#B87B2B',
-  peak:     '#C0392B',
+  offPeak:      '#2D8F5C',
+  partPeak:     '#B87B2B',
+  peak:         '#C0392B',
+  superOffPeak: '#3B82F6',
 };
 
 const PERIOD_LABEL = {
-  offPeak:  'Off-Peak',
-  partPeak: 'Part-Peak',
-  peak:     'Peak',
+  offPeak:      'Off-Peak',
+  partPeak:     'Part-Peak',
+  peak:         'Peak',
+  superOffPeak: 'Super Off-Peak',
 };
 
 export default function Timeline({ planConfig }) {

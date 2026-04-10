@@ -1,0 +1,337 @@
+{
+  "_metadata": {
+    "version": "3.0.0",
+    "territory": "SCE",
+    "sceAdviceLetter": "UNKNOWN — validate against tariff PDF",
+    "sceEffectiveDate": "2026-01-01",
+    "cpaRateSheetDate": "2026-02-01",
+    "holidays": [
+      "New Year's Day",
+      "Presidents' Day",
+      "Memorial Day",
+      "Independence Day",
+      "Labor Day",
+      "Veterans Day",
+      "Thanksgiving Day",
+      "Christmas Day"
+    ],
+    "cpaSurchargeRate": 0.02433,
+    "notes": [
+      "delivery + generation = totalBundled (±0.00001) — utility-agnostic field names (schema v3.0).",
+      "⚠️ ESTIMATED RATES: delivery/generation split estimated from weighted average ratios. Validate all values against SCE tariff PDFs before merging.",
+      "CCA combined rate = delivery + ccaGeneration[provider].tiers[tier][season][period] + cpaSurchargeRate.",
+      "TOU-D-4-9PM winter has 3 periods (midPeak, offPeak, superOffPeak). Summer has 2 (peak, offPeak).",
+      "TOU-D-PRIME summer weekday peak ($0.59) differs from weekend mid-peak ($0.40). Engine may need day-type awareness for accurate summer modeling. Weekday rate used as canonical 'peak'.",
+      "EV-2 was omitted — no current residential EV-2 tariff found; TOU-D-PRIME is SCE's current EV rate plan.",
+      "CPA generation rates are BLENDED AVERAGES from the SCE/CPA joint comparison page, not TOU-differentiated. Verify whether CPA charges flat vs TOU generation rates.",
+      "3CE SCE-territory rates are approximated from PGE-territory rates — validate against 3cenergy.org/wp-content/uploads/2025/04/Residential-SCE-Website-Rate-Sheet-v2-2025.04.01.pdf before use.",
+      "TOU-D-4-9PM includes a ~$0.10/kWh baseline credit on off-peak usage up to monthly baseline allowance. Rates are PRE-credit (gross). TOU-D-PRIME has NO baseline credit."
+    ]
+  },
+  "ratePlans": {
+    "TOU-D-4-9PM": {
+      "name": "TOU-D-4-9PM",
+      "selectorLabel": "TOU-D-4-9PM",
+      "scheduleCode": "TOU-D-4-9PM",
+      "rateDesignation": "Time-of-Use (Peak 4–9 PM)",
+      "category": "tou",
+      "status": "current",
+      "description": "SCE residential TOU plan with a 4–9 PM peak window every day. Winter adds a super off-peak period (midnight–8 AM). Includes a baseline credit on off-peak usage (pre-credit rates shown).",
+      "eligibility": "Standard SCE residential customers",
+      "meteringScope": "whole-home",
+      "seasons": {
+        "summer": {
+          "months": [6, 7, 8, 9],
+          "label": "Summer (Jun–Sep)"
+        },
+        "winter": {
+          "months": [10, 11, 12, 1, 2, 3, 4, 5],
+          "label": "Winter (Oct–May)"
+        }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "offPeak": { "label": "All other hours (midnight–4pm, 9pm–midnight)" }
+        },
+        "winter": {
+          "midPeak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "08:00", "days": "all", "label": "Midnight–8am every day" },
+          "offPeak": { "label": "All other hours (8am–4pm, 9pm–midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": {
+            "peak": 0.39904,
+            "offPeak": 0.23394
+          },
+          "winter": {
+            "midPeak": 0.35089,
+            "offPeak": 0.25461,
+            "superOffPeak": 0.22704
+          }
+        },
+        "generation": {
+          "summer": {
+            "peak": 0.18096,
+            "offPeak": 0.10606
+          },
+          "winter": {
+            "midPeak": 0.15911,
+            "offPeak": 0.11539,
+            "superOffPeak": 0.10296
+          }
+        },
+        "totalBundled": {
+          "summer": {
+            "peak": 0.58000,
+            "offPeak": 0.34000
+          },
+          "winter": {
+            "midPeak": 0.51000,
+            "offPeak": 0.37000,
+            "superOffPeak": 0.33000
+          }
+        },
+        "ccaGeneration": {
+          "cpa": {
+            "name": "Clean Power Alliance",
+            "defaultTier": "clean-power",
+            "tiers": {
+              "lean-power": {
+                "label": "Lean Power (~38% renewable)",
+                "summer": {
+                  "peak": 0.08958,
+                  "offPeak": 0.08958
+                },
+                "winter": {
+                  "midPeak": 0.08958,
+                  "offPeak": 0.08958,
+                  "superOffPeak": 0.08958
+                }
+              },
+              "clean-power": {
+                "label": "Clean Power (~50% renewable)",
+                "summer": {
+                  "peak": 0.09709,
+                  "offPeak": 0.09709
+                },
+                "winter": {
+                  "midPeak": 0.09709,
+                  "offPeak": 0.09709,
+                  "superOffPeak": 0.09709
+                }
+              },
+              "green-power": {
+                "label": "Green Power (100% renewable)",
+                "summer": {
+                  "peak": 0.11961,
+                  "offPeak": 0.11961
+                },
+                "winter": {
+                  "midPeak": 0.11961,
+                  "offPeak": 0.11961,
+                  "superOffPeak": 0.11961
+                }
+              }
+            }
+          },
+          "sce-3ce-sb": {
+            "name": "Central Coast Community Energy (SCE territory)",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": {
+                  "peak": 0.17641,
+                  "offPeak": 0.09141
+                },
+                "winter": {
+                  "midPeak": 0.12010,
+                  "offPeak": 0.08449,
+                  "superOffPeak": 0.08449
+                }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": {
+                  "peak": 0.18441,
+                  "offPeak": 0.09941
+                },
+                "winter": {
+                  "midPeak": 0.12810,
+                  "offPeak": 0.09249,
+                  "superOffPeak": 0.09249
+                }
+              }
+            }
+          }
+        }
+      },
+      "fixedCharges": {
+        "baselineCredit": {
+          "label": "Baseline credit on off-peak usage (up to monthly baseline allowance)",
+          "note": "~$0.10/kWh credit applied to qualifying off-peak usage. Rates above are pre-credit (gross). See SCE tariff for baseline allowance by climate zone."
+        }
+      }
+    },
+    "TOU-D-PRIME": {
+      "name": "TOU-D-PRIME",
+      "selectorLabel": "TOU-D-PRIME (EV Plan)",
+      "scheduleCode": "TOU-D-PRIME",
+      "rateDesignation": "Time-of-Use (EV — Peak 4–9 PM, Super Off-Peak overnight)",
+      "category": "tou-ev",
+      "status": "current",
+      "description": "SCE's dedicated EV rate plan. Deep overnight super off-peak discount incentivizes off-peak charging. 4–9 PM peak every day both seasons. Summer weekday peak ($0.59) differs from weekend mid-peak ($0.40) — weekday rate used as canonical peak; engine may need day-type awareness for precise weekend modeling.",
+      "eligibility": "Residential customers with an electric vehicle",
+      "meteringScope": "whole-home",
+      "seasons": {
+        "summer": {
+          "months": [6, 7, 8, 9],
+          "label": "Summer (Jun–Sep)"
+        },
+        "winter": {
+          "months": [10, 11, 12, 1, 2, 3, 4, 5],
+          "label": "Winter (Oct–May)"
+        }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day (weekday rate; weekend is $0.40 mid-peak — see notes)" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight–6am every day" },
+          "offPeak": { "label": "All other hours (6am–4pm, 9pm–midnight)" }
+        },
+        "winter": {
+          "midPeak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "09:00", "days": "weekdays", "label": "Midnight–9am weekdays" },
+          "offPeak": { "label": "All other hours (9am–4pm weekdays, 9pm–midnight; all hours on weekends outside midPeak)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": {
+            "peak": 0.41418,
+            "superOffPeak": 0.18252,
+            "offPeak": 0.18252
+          },
+          "winter": {
+            "midPeak": 0.39315,
+            "superOffPeak": 0.16848,
+            "offPeak": 0.16848
+          }
+        },
+        "generation": {
+          "summer": {
+            "peak": 0.17582,
+            "superOffPeak": 0.07748,
+            "offPeak": 0.07748
+          },
+          "winter": {
+            "midPeak": 0.16685,
+            "superOffPeak": 0.07152,
+            "offPeak": 0.07152
+          }
+        },
+        "totalBundled": {
+          "summer": {
+            "peak": 0.59000,
+            "superOffPeak": 0.26000,
+            "offPeak": 0.26000
+          },
+          "winter": {
+            "midPeak": 0.56000,
+            "superOffPeak": 0.24000,
+            "offPeak": 0.24000
+          }
+        },
+        "ccaGeneration": {
+          "cpa": {
+            "name": "Clean Power Alliance",
+            "defaultTier": "clean-power",
+            "tiers": {
+              "lean-power": {
+                "label": "Lean Power (~38% renewable)",
+                "summer": {
+                  "peak": 0.08882,
+                  "superOffPeak": 0.08882,
+                  "offPeak": 0.08882
+                },
+                "winter": {
+                  "midPeak": 0.08882,
+                  "superOffPeak": 0.08882,
+                  "offPeak": 0.08882
+                }
+              },
+              "clean-power": {
+                "label": "Clean Power (~50% renewable)",
+                "summer": {
+                  "peak": 0.09658,
+                  "superOffPeak": 0.09658,
+                  "offPeak": 0.09658
+                },
+                "winter": {
+                  "midPeak": 0.09658,
+                  "superOffPeak": 0.09658,
+                  "offPeak": 0.09658
+                }
+              },
+              "green-power": {
+                "label": "Green Power (100% renewable)",
+                "summer": {
+                  "peak": 0.11985,
+                  "superOffPeak": 0.11985,
+                  "offPeak": 0.11985
+                },
+                "winter": {
+                  "midPeak": 0.11985,
+                  "superOffPeak": 0.11985,
+                  "offPeak": 0.11985
+                }
+              }
+            }
+          },
+          "sce-3ce-sb": {
+            "name": "Central Coast Community Energy (SCE territory)",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": {
+                  "peak": 0.17641,
+                  "superOffPeak": 0.09141,
+                  "offPeak": 0.09141
+                },
+                "winter": {
+                  "midPeak": 0.12010,
+                  "superOffPeak": 0.08449,
+                  "offPeak": 0.08449
+                }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": {
+                  "peak": 0.18441,
+                  "superOffPeak": 0.09941,
+                  "offPeak": 0.09941
+                },
+                "winter": {
+                  "midPeak": 0.12810,
+                  "superOffPeak": 0.09249,
+                  "offPeak": 0.09249
+                }
+              }
+            }
+          }
+        }
+      },
+      "fixedCharges": {
+        "dailyBaseCharge": {
+          "amountPerDay": 0.79,
+          "label": "Daily Base Charge",
+          "note": "$0.79/day fixed charge. Show in footer, not as per-kWh adder. No baseline credit on this plan."
+        }
+      }
+    }
+  }
+}

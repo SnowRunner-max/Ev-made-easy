@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useLocationLookup } from '../hooks/useLocationLookup';
 import serviceAreasData from '../data/serviceAreas.json';
+import UtilityPicker from './UtilityPicker';
 
 const ERROR_MESSAGES = {
   invalid_input: 'Enter a valid zipcode or California city name',
-  not_ca:        'PG&E only serves California',
-  not_pge:       'This area is served by a different utility, not PG&E',
-  multi_utility: 'Multiple utilities serve this area — select your utility',
+  not_ca:        'Only California locations are supported',
+  not_supported: 'This area is not yet supported',
 };
 
 export default function LocationInput({ onLocationResolved, onLocationCleared }) {
-  const { inputValue, status, errorCode, resolved, setInput, clearInput } = useLocationLookup();
+  const { inputValue, status, errorCode, resolved, result, setInput, clearInput } = useLocationLookup();
 
   useEffect(() => {
     if (status === 'valid' && resolved) {
@@ -94,8 +94,23 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
           !isError && !isValid ? 'text-[var(--text-muted)]' : '',
         ].filter(Boolean).join(' ')}
       >
-        {isError && ERROR_MESSAGES[errorCode]}
-        {isValid && serviceArea && `PG&E territory · ${serviceArea.shortLabel}`}
+        {result?.errorCode === 'multi_utility' && (
+          <UtilityPicker
+            candidates={result.candidates}
+            serviceAreas={serviceAreasData.serviceAreas}
+            onSelect={(serviceAreaId) => {
+              onLocationResolved({
+                serviceAreaId,
+                displayLabel: result.displayLabel,
+                zip: result.zip,
+              });
+            }}
+          />
+        )}
+        {result?.errorCode && result.errorCode !== 'multi_utility' && ERROR_MESSAGES[result.errorCode] && (
+          <p className="text-[10px] leading-relaxed text-red-400">{ERROR_MESSAGES[result.errorCode]}</p>
+        )}
+        {isValid && serviceArea && `${serviceArea?.utility ?? 'PG&E'} territory · ${serviceArea.shortLabel}`}
         {isResolving && '…'}
         {status === 'idle' && 'Works with California zip codes and city names'}
       </div>

@@ -7,6 +7,7 @@ const mockHook = {
   inputValue: '',
   status: 'idle',
   errorCode: null,
+  result: null,
   resolved: null,
   setInput: vi.fn(),
   clearInput: vi.fn(),
@@ -17,7 +18,11 @@ vi.mock('../hooks/useLocationLookup', () => ({
 }));
 
 function setHookState(overrides) {
-  Object.assign(mockHook, { inputValue: '', status: 'idle', errorCode: null, resolved: null }, overrides);
+  Object.assign(mockHook, { inputValue: '', status: 'idle', errorCode: null, result: null, resolved: null }, overrides);
+  // Auto-populate result from errorCode when not explicitly provided
+  if (overrides.errorCode && overrides.result === undefined) {
+    mockHook.result = { errorCode: overrides.errorCode };
+  }
 }
 
 beforeEach(() => {
@@ -106,23 +111,35 @@ describe('LocationInput — error states', () => {
   it('shows not_ca message', () => {
     setHookState({ inputValue: '10001', status: 'error', errorCode: 'not_ca' });
     render(<LocationInput onLocationResolved={() => {}} onLocationCleared={() => {}} />);
-    expect(screen.getByTestId('location-status')).toHaveTextContent('PG&E only serves California');
+    expect(screen.getByTestId('location-status')).toHaveTextContent('Only California locations are supported');
   });
 
-  it('shows not_pge message', () => {
-    setHookState({ inputValue: '90001', status: 'error', errorCode: 'not_pge' });
+  it('shows not_supported message', () => {
+    setHookState({ inputValue: '90001', status: 'error', errorCode: 'not_supported' });
     render(<LocationInput onLocationResolved={() => {}} onLocationCleared={() => {}} />);
-    expect(screen.getByTestId('location-status')).toHaveTextContent('This area is served by a different utility, not PG&E');
+    expect(screen.getByTestId('location-status')).toHaveTextContent('This area is not yet supported');
   });
 
-  it('shows multi_utility message', () => {
-    setHookState({ inputValue: '99999', status: 'error', errorCode: 'multi_utility' });
+  it('shows UtilityPicker for multi_utility result', () => {
+    setHookState({
+      inputValue: '93101',
+      status: 'error',
+      errorCode: 'multi_utility',
+      result: {
+        errorCode: 'multi_utility',
+        candidates: ['pge-3ce-sb', 'sce-3ce-sb'],
+        displayLabel: 'Santa Barbara, CA',
+        zip: '93101',
+      },
+    });
     render(<LocationInput onLocationResolved={() => {}} onLocationCleared={() => {}} />);
-    expect(screen.getByTestId('location-status')).toHaveTextContent('Multiple utilities serve this area');
+    // Should render utility picker buttons, not a plain error message
+    expect(screen.getByTestId('location-status')).not.toHaveTextContent('Multiple utilities serve this area');
+    expect(screen.getByRole('button', { name: /PG&E|SCE|Central Coast|Clean Power/i })).toBeInTheDocument();
   });
 
   it('input has aria-invalid=true on error', () => {
-    setHookState({ inputValue: '90001', status: 'error', errorCode: 'not_pge' });
+    setHookState({ inputValue: '90001', status: 'error', errorCode: 'not_supported' });
     render(<LocationInput onLocationResolved={() => {}} onLocationCleared={() => {}} />);
     expect(screen.getByTestId('location-input')).toHaveAttribute('aria-invalid', 'true');
   });

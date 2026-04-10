@@ -1,0 +1,403 @@
+{
+  "_note": "SCE service territory ZIP codes → service area ID. Source: SCE service area documentation, Clean Power Alliance member city list (38 communities, LA/Ventura counties), 3CE service area (Carpinteria/Goleta/south SB county). Only includes ZIPs confirmed in SCE delivery territory. ZIPs 93101/93103/93105/93108/93110 are in multiUtilityZips.json.",
+  "zips": {
+    "90265": "sce-cpa-la",
+    "90263": "sce-cpa-la",
+    "90264": "sce-cpa-la",
+
+    "90401": "sce-cpa-la",
+    "90402": "sce-cpa-la",
+    "90403": "sce-cpa-la",
+    "90404": "sce-cpa-la",
+    "90405": "sce-cpa-la",
+
+    "90069": "sce-cpa-la",
+    "90046": "sce-cpa-la",
+    "90038": "sce-cpa-la",
+    "90048": "sce-cpa-la",
+
+    "90230": "sce-cpa-la",
+    "90231": "sce-cpa-la",
+    "90232": "sce-cpa-la",
+
+    "90501": "sce-cpa-la",
+    "90502": "sce-cpa-la",
+    "90503": "sce-cpa-la",
+    "90504": "sce-cpa-la",
+    "90505": "sce-cpa-la",
+    "90506": "sce-cpa-la",
+
+    "90254": "sce-cpa-la",
+
+    "90266": "sce-cpa-la",
+
+    "90277": "sce-cpa-la",
+    "90278": "sce-cpa-la",
+
+    "90260": "sce-cpa-la",
+
+    "90247": "sce-cpa-la",
+    "90248": "sce-cpa-la",
+    "90249": "sce-cpa-la",
+
+    "90301": "sce-cpa-la",
+    "90302": "sce-cpa-la",
+    "90303": "sce-cpa-la",
+    "90304": "sce-cpa-la",
+    "90305": "sce-cpa-la",
+
+    "90250": "sce-cpa-la",
+
+    "90245": "sce-cpa-la",
+
+    "90745": "sce-cpa-la",
+    "90746": "sce-cpa-la",
+    "90747": "sce-cpa-la",
+    "90895": "sce-cpa-la",
+
+    "90717": "sce-cpa-la",
+
+    "90802": "sce-cpa-la",
+    "90803": "sce-cpa-la",
+    "90804": "sce-cpa-la",
+    "90805": "sce-cpa-la",
+    "90806": "sce-cpa-la",
+    "90807": "sce-cpa-la",
+    "90808": "sce-cpa-la",
+    "90810": "sce-cpa-la",
+    "90813": "sce-cpa-la",
+    "90814": "sce-cpa-la",
+    "90815": "sce-cpa-la",
+
+    "90001": "sce-cpa-la",
+    "90002": "sce-cpa-la",
+    "90003": "sce-cpa-la",
+    "90004": "sce-cpa-la",
+    "90005": "sce-cpa-la",
+    "90006": "sce-cpa-la",
+    "90007": "sce-cpa-la",
+    "90008": "sce-cpa-la",
+    "90010": "sce-cpa-la",
+    "90011": "sce-cpa-la",
+    "90012": "sce-cpa-la",
+    "90013": "sce-cpa-la",
+    "90014": "sce-cpa-la",
+    "90015": "sce-cpa-la",
+    "90016": "sce-cpa-la",
+    "90017": "sce-cpa-la",
+    "90018": "sce-cpa-la",
+    "90019": "sce-cpa-la",
+    "90020": "sce-cpa-la",
+    "90021": "sce-cpa-la",
+    "90023": "sce-cpa-la",
+    "90024": "sce-cpa-la",
+    "90025": "sce-cpa-la",
+    "90026": "sce-cpa-la",
+    "90027": "sce-cpa-la",
+    "90028": "sce-cpa-la",
+    "90029": "sce-cpa-la",
+    "90031": "sce-cpa-la",
+    "90032": "sce-cpa-la",
+    "90033": "sce-cpa-la",
+    "90034": "sce-cpa-la",
+    "90035": "sce-cpa-la",
+    "90036": "sce-cpa-la",
+    "90037": "sce-cpa-la",
+    "90039": "sce-cpa-la",
+    "90041": "sce-cpa-la",
+    "90042": "sce-cpa-la",
+    "90043": "sce-cpa-la",
+    "90044": "sce-cpa-la",
+    "90045": "sce-cpa-la",
+    "90047": "sce-cpa-la",
+    "90056": "sce-cpa-la",
+    "90057": "sce-cpa-la",
+    "90059": "sce-cpa-la",
+    "90061": "sce-cpa-la",
+    "90062": "sce-cpa-la",
+    "90063": "sce-cpa-la",
+    "90064": "sce-cpa-la",
+    "90065": "sce-cpa-la",
+    "90066": "sce-cpa-la",
+    "90067": "sce-cpa-la",
+    "90068": "sce-cpa-la",
+    "90071": "sce-cpa-la",
+    "90077": "sce-cpa-la",
+    "90089": "sce-cpa-la",
+
+    "90201": "sce-cpa-la",
+    "90255": "sce-cpa-la",
+    "90270": "sce-cpa-la",
+    "90280": "sce-cpa-la",
+
+    "90220": "sce-cpa-la",
+    "90221": "sce-cpa-la",
+    "90222": "sce-cpa-la",
+
+    "90723": "sce-cpa-la",
+
+    "90239": "sce-cpa-la",
+    "90240": "sce-cpa-la",
+    "90241": "sce-cpa-la",
+    "90242": "sce-cpa-la",
+
+    "90650": "sce-cpa-la",
+    "90651": "sce-cpa-la",
+    "90652": "sce-cpa-la",
+
+    "90660": "sce-cpa-la",
+    "90661": "sce-cpa-la",
+    "90662": "sce-cpa-la",
+
+    "90640": "sce-cpa-la",
+
+    "90601": "sce-cpa-la",
+    "90602": "sce-cpa-la",
+    "90603": "sce-cpa-la",
+    "90604": "sce-cpa-la",
+    "90605": "sce-cpa-la",
+    "90606": "sce-cpa-la",
+
+    "91754": "sce-cpa-la",
+    "91775": "sce-cpa-la",
+    "91776": "sce-cpa-la",
+    "91801": "sce-cpa-la",
+    "91803": "sce-cpa-la",
+
+    "91101": "sce-cpa-la",
+    "91103": "sce-cpa-la",
+    "91104": "sce-cpa-la",
+    "91105": "sce-cpa-la",
+    "91106": "sce-cpa-la",
+    "91107": "sce-cpa-la",
+
+    "91201": "sce-cpa-la",
+    "91202": "sce-cpa-la",
+    "91203": "sce-cpa-la",
+    "91204": "sce-cpa-la",
+    "91205": "sce-cpa-la",
+    "91206": "sce-cpa-la",
+    "91207": "sce-cpa-la",
+    "91208": "sce-cpa-la",
+
+    "91501": "sce-cpa-la",
+    "91502": "sce-cpa-la",
+    "91504": "sce-cpa-la",
+    "91505": "sce-cpa-la",
+    "91506": "sce-cpa-la",
+
+    "91731": "sce-cpa-la",
+    "91732": "sce-cpa-la",
+    "91733": "sce-cpa-la",
+
+    "91780": "sce-cpa-la",
+
+    "91006": "sce-cpa-la",
+    "91007": "sce-cpa-la",
+
+    "91016": "sce-cpa-la",
+    "91017": "sce-cpa-la",
+
+    "91008": "sce-cpa-la",
+    "91010": "sce-cpa-la",
+
+    "91702": "sce-cpa-la",
+
+    "91706": "sce-cpa-la",
+
+    "91766": "sce-cpa-la",
+    "91767": "sce-cpa-la",
+    "91768": "sce-cpa-la",
+
+    "91790": "sce-cpa-la",
+    "91791": "sce-cpa-la",
+    "91792": "sce-cpa-la",
+
+    "91301": "sce-cpa-la",
+    "91302": "sce-cpa-la",
+
+    "91320": "sce-cpa-la",
+    "91360": "sce-cpa-la",
+    "91361": "sce-cpa-la",
+    "91362": "sce-cpa-la",
+
+    "93021": "sce-cpa-la",
+
+    "93063": "sce-cpa-la",
+    "93065": "sce-cpa-la",
+
+    "93010": "sce-cpa-la",
+    "93012": "sce-cpa-la",
+
+    "93041": "sce-cpa-la",
+    "93043": "sce-cpa-la",
+
+    "93030": "sce-cpa-la",
+    "93033": "sce-cpa-la",
+    "93035": "sce-cpa-la",
+    "93036": "sce-cpa-la",
+
+    "93001": "sce-cpa-la",
+    "93003": "sce-cpa-la",
+    "93004": "sce-cpa-la",
+
+    "93060": "sce-cpa-la",
+
+    "93015": "sce-cpa-la",
+
+    "93013": "sce-3ce-sb",
+    "93067": "sce-3ce-sb",
+    "93117": "sce-3ce-sb",
+    "93118": "sce-3ce-sb",
+
+    "92501": "sce-only",
+    "92503": "sce-only",
+    "92504": "sce-only",
+    "92505": "sce-only",
+    "92506": "sce-only",
+    "92507": "sce-only",
+    "92508": "sce-only",
+    "92509": "sce-only",
+
+    "92401": "sce-only",
+    "92404": "sce-only",
+    "92405": "sce-only",
+    "92407": "sce-only",
+    "92408": "sce-only",
+    "92410": "sce-only",
+    "92411": "sce-only",
+
+    "91701": "sce-only",
+    "91730": "sce-only",
+    "91737": "sce-only",
+    "91739": "sce-only",
+
+    "91710": "sce-only",
+    "91758": "sce-only",
+    "91761": "sce-only",
+    "91762": "sce-only",
+    "91764": "sce-only",
+
+    "92335": "sce-only",
+    "92336": "sce-only",
+    "92337": "sce-only",
+
+    "92376": "sce-only",
+    "92377": "sce-only",
+
+    "92324": "sce-only",
+    "92354": "sce-only",
+
+    "92373": "sce-only",
+    "92374": "sce-only",
+
+    "92346": "sce-only",
+
+    "92399": "sce-only",
+
+    "91784": "sce-only",
+    "91786": "sce-only",
+
+    "91763": "sce-only",
+
+    "91711": "sce-cpa-la",
+
+    "91722": "sce-only",
+    "91723": "sce-only",
+    "91724": "sce-only",
+
+    "91740": "sce-only",
+    "91741": "sce-only",
+
+    "91750": "sce-only",
+
+    "91773": "sce-only",
+
+    "92392": "sce-only",
+    "92393": "sce-only",
+    "92394": "sce-only",
+    "92395": "sce-only",
+
+    "92344": "sce-only",
+    "92345": "sce-only",
+
+    "92307": "sce-only",
+    "92308": "sce-only",
+
+    "92801": "sce-only",
+    "92802": "sce-only",
+    "92804": "sce-only",
+    "92805": "sce-only",
+    "92806": "sce-only",
+    "92807": "sce-only",
+    "92808": "sce-only",
+
+    "92701": "sce-only",
+    "92703": "sce-only",
+    "92704": "sce-only",
+    "92705": "sce-only",
+    "92706": "sce-only",
+    "92707": "sce-only",
+
+    "92859": "sce-only",
+    "92861": "sce-only",
+    "92862": "sce-only",
+    "92863": "sce-only",
+    "92864": "sce-only",
+    "92865": "sce-only",
+    "92866": "sce-only",
+    "92867": "sce-only",
+    "92868": "sce-only",
+    "92869": "sce-only",
+
+    "92831": "sce-only",
+    "92832": "sce-only",
+    "92833": "sce-only",
+    "92835": "sce-only",
+    "92836": "sce-only",
+    "92837": "sce-only",
+    "92838": "sce-only",
+
+    "92870": "sce-only",
+    "92886": "sce-only",
+    "92887": "sce-only",
+
+    "90621": "sce-only",
+
+    "92821": "sce-only",
+    "92823": "sce-only",
+
+    "90631": "sce-only",
+    "90632": "sce-only",
+    "90633": "sce-only",
+
+    "92840": "sce-only",
+    "92841": "sce-only",
+    "92843": "sce-only",
+    "92844": "sce-only",
+    "92845": "sce-only",
+    "92846": "sce-only",
+
+    "92646": "sce-only",
+    "92647": "sce-only",
+    "92648": "sce-only",
+    "92649": "sce-only",
+
+    "92677": "sce-only",
+    "92607": "sce-only",
+
+    "92691": "sce-only",
+    "92692": "sce-only",
+
+    "92675": "sce-only",
+    "92693": "sce-only",
+    "92694": "sce-only",
+
+    "92672": "sce-only",
+    "92673": "sce-only",
+    "92674": "sce-only",
+
+    "92630": "sce-only",
+    "92610": "sce-only"
+  }
+}

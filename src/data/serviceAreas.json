@@ -146,6 +146,36 @@
       "defaultProvider": "pge",
       "providerHint": "This area is served directly by PG&E with no Community Choice Aggregator.",
       "ccas": []
+    },
+    "sce-cpa-la": {
+      "name": "SCE + Clean Power Alliance",
+      "utility": "SCE",
+      "cca": "CPA",
+      "shortLabel": "SCE + CPA",
+      "defaultPlanId": "TOU-D-4-9PM",
+      "defaultProvider": "cpa",
+      "providerHint": "Your area is served by Clean Power Alliance for generation. SCE handles delivery.",
+      "ccas": ["cpa"]
+    },
+    "sce-3ce-sb": {
+      "name": "SCE + Central Coast Community Energy (Santa Barbara)",
+      "utility": "SCE",
+      "cca": "3CE",
+      "shortLabel": "SCE + 3CE",
+      "defaultPlanId": "TOU-D-4-9PM",
+      "defaultProvider": "3ce",
+      "providerHint": "Your area is in SCE territory but served by 3CE for generation.",
+      "ccas": ["3ce"]
+    },
+    "sce-only": {
+      "name": "SCE (Direct Service)",
+      "utility": "SCE",
+      "cca": null,
+      "shortLabel": "SCE Direct",
+      "defaultPlanId": "TOU-D-4-9PM",
+      "defaultProvider": "sce",
+      "providerHint": "Your area is served directly by SCE.",
+      "ccas": []
     }
   }
 }
