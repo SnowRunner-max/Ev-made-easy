@@ -35,17 +35,17 @@ const RATE_PLAN_REGISTRY = {
 const CUSTOM_ID = 'custom';
 
 function buildRateMatrix(v2Rates, provider, ccaTier) {
-  const seasons = Object.keys(v2Rates.pgeDelivery);
+  const seasons = Object.keys(v2Rates.delivery);
   return Object.fromEntries(
     seasons.map(season => [
       season,
       Object.fromEntries(
-        Object.keys(v2Rates.pgeDelivery[season]).map(period => {
-          const delivery = v2Rates.pgeDelivery[season][period];
-          const bundled  = v2Rates.pgeTotalBundled[season][period];
+        Object.keys(v2Rates.delivery[season]).map(period => {
+          const delivery = v2Rates.delivery[season][period];
+          const bundled  = v2Rates.totalBundled[season][period];
           let generation, combined;
           if (provider === 'pge') {
-            generation = v2Rates.pgeGeneration[season][period];
+            generation = v2Rates.generation[season][period];
             combined   = bundled;
           } else {
             const ccaEntry = v2Rates.ccaGeneration[provider];
@@ -72,11 +72,11 @@ function getEffectiveConfig(planConfig, provider, ccaTier) {
 
   if (!planConfig.touPeriods) {
     const r = planConfig.rates;
-    const delivery = r.pgeDelivery.tier1;
+    const delivery = r.delivery.tier1;
     let generation, combined;
     if (provider === 'pge') {
-      generation = r.pgeGeneration.allUsage;
-      combined   = r.pgeTotalBundled.tier1;
+      generation = r.generation.allUsage;
+      combined   = r.totalBundled.tier1;
     } else {
       const ccaEntry = r.ccaGeneration[provider];
       const tier = ccaTier ?? ccaEntry.defaultTier;

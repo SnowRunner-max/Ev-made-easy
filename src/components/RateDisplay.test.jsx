@@ -5,15 +5,15 @@ import RateDisplay from './RateDisplay';
 
 function buildEffectiveConfig(planConfig) {
   if (!planConfig.touPeriods) return planConfig;
-  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const seasons = Object.keys(planConfig.rates.delivery);
   const rates = Object.fromEntries(
     seasons.map(season => [
       season,
       Object.fromEntries(
-        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
-          const delivery = planConfig.rates.pgeDelivery[season][period];
-          const generation = planConfig.rates.pgeGeneration[season][period];
-          const combined = planConfig.rates.pgeTotalBundled[season][period];
+        Object.keys(planConfig.rates.delivery[season]).map(period => {
+          const delivery = planConfig.rates.delivery[season][period];
+          const generation = planConfig.rates.generation[season][period];
+          const combined = planConfig.rates.totalBundled[season][period];
           return [period, { combined, delivery, generation }];
         })
       ),

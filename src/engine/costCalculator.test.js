@@ -12,20 +12,20 @@ function buildEffectiveConfig(planConfig) {
   if (!planConfig.touPeriods) {
     // Tiered plan (E-1): compute flat tier-1 rate, mirroring getEffectiveConfig in App.jsx
     const r = planConfig.rates;
-    const delivery = r.pgeDelivery.tier1;
-    const generation = r.pgeGeneration.allUsage;
-    const combined = r.pgeTotalBundled.tier1;
+    const delivery = r.delivery.tier1;
+    const generation = r.generation.allUsage;
+    const combined = r.totalBundled.tier1;
     return { ...planConfig, _flatRate: { combined, delivery, generation } };
   }
-  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const seasons = Object.keys(planConfig.rates.delivery);
   const rates = Object.fromEntries(
     seasons.map(season => [
       season,
       Object.fromEntries(
-        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
-          const delivery = planConfig.rates.pgeDelivery[season][period];
-          const generation = planConfig.rates.pgeGeneration[season][period];
-          const combined = planConfig.rates.pgeTotalBundled[season][period];
+        Object.keys(planConfig.rates.delivery[season]).map(period => {
+          const delivery = planConfig.rates.delivery[season][period];
+          const generation = planConfig.rates.generation[season][period];
+          const combined = planConfig.rates.totalBundled[season][period];
           return [period, { combined, delivery, generation }];
         })
       ),
@@ -40,20 +40,20 @@ function buildCCAConfig(planConfig, ccaId = '3ce', tierId = null) {
     const r = planConfig.rates;
     const ccaEntry = r.ccaGeneration[ccaId];
     const tier = tierId ?? ccaEntry.defaultTier;
-    const delivery = r.pgeDelivery.tier1;
+    const delivery = r.delivery.tier1;
     const generation = ccaEntry.tiers[tier].allUsage;
     const combined = delivery + generation;
     return { ...planConfig, _flatRate: { combined, delivery, generation } };
   }
-  const seasons = Object.keys(planConfig.rates.pgeDelivery);
+  const seasons = Object.keys(planConfig.rates.delivery);
   const rates = Object.fromEntries(
     seasons.map(season => [
       season,
       Object.fromEntries(
-        Object.keys(planConfig.rates.pgeDelivery[season]).map(period => {
+        Object.keys(planConfig.rates.delivery[season]).map(period => {
           const ccaEntry = planConfig.rates.ccaGeneration[ccaId];
           const tier = tierId ?? ccaEntry.defaultTier;
-          const delivery = planConfig.rates.pgeDelivery[season][period];
+          const delivery = planConfig.rates.delivery[season][period];
           const generation = ccaEntry.tiers[tier][season][period];
           const combined = delivery + generation;
           return [period, { combined, delivery, generation }];
@@ -256,7 +256,7 @@ describe('ccaGeneration — EV2-A with SJCE vs 3CE', () => {
   });
 
   it('SJCE combined = delivery + sjce generation', () => {
-    const delivery = ratePlans.ratePlans['EV2-A'].rates.pgeDelivery.summer.peak;
+    const delivery = ratePlans.ratePlans["EV2-A"].rates.delivery.summer.peak;
     const gen = ratePlans.ratePlans['EV2-A'].rates.ccaGeneration.sjce.tiers.greensource.summer.peak;
     expect(ev2aSjce.rates.summer.peak.combined).toBeCloseTo(delivery + gen, 4);
   });

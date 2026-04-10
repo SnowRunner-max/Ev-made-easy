@@ -37,9 +37,9 @@ function TieredRateTable({ planConfig }) {
   // Use the pre-computed _flatRate for generation; compute both tiers from raw delivery
   const r = planConfig.rates;
   const flatRate = planConfig._flatRate;
-  const generation = flatRate ? flatRate.generation : r.pgeGeneration.allUsage;
-  const combined1 = r.pgeDelivery.tier1 + generation;
-  const combined2 = r.pgeDelivery.tier2 + generation;
+  const generation = flatRate ? flatRate.generation : r.generation.allUsage;
+  const combined1 = r.delivery.tier1 + generation;
+  const combined2 = r.delivery.tier2 + generation;
 
   return (
     <table className="w-full text-xs border-collapse mt-2">

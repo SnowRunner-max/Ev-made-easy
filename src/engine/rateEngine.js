@@ -188,8 +188,8 @@ export function getCurrentPeriod(date, planConfig) {
  * Returns the complete rate information for a given date and plan config.
  *
  * provider param (optional):
- *   'bundled' — returns pgeTotalBundled rate (for tests / direct engine calls)
- *   'cca'     — returns pgeDelivery + cce rate (for tests / direct engine calls)
+ *   'bundled' — returns totalBundled rate (for tests / direct engine calls)
+ *   'cca'     — returns delivery + cce rate (for tests / direct engine calls)
  *   null      — reads pre-computed combined rate set by getEffectiveConfig() in App.jsx
  *
  * @param {Date} date
@@ -219,11 +219,11 @@ export function getRate(date, planConfig, provider = null) {
   let rate, delivery, generation;
 
   if (provider === 'bundled') {
-    rate = planConfig.rates.pgeTotalBundled[season][period];
-    delivery = planConfig.rates.pgeDelivery[season][period];
-    generation = planConfig.rates.pgeGeneration[season][period];
+    rate = planConfig.rates.totalBundled[season][period];
+    delivery = planConfig.rates.delivery[season][period];
+    generation = planConfig.rates.generation[season][period];
   } else if (provider === 'cca') {
-    delivery = planConfig.rates.pgeDelivery[season][period];
+    delivery = planConfig.rates.delivery[season][period];
     generation = planConfig.rates.cce[season][period];
     rate = delivery + generation;
   } else {
@@ -294,11 +294,11 @@ export function getDaySchedule(date, planConfig, provider = null) {
     let rate, delivery, generation;
 
     if (provider === 'bundled') {
-      rate = planConfig.rates.pgeTotalBundled[season][block.period];
-      delivery = planConfig.rates.pgeDelivery[season][block.period];
-      generation = planConfig.rates.pgeGeneration[season][block.period];
+      rate = planConfig.rates.totalBundled[season][block.period];
+      delivery = planConfig.rates.delivery[season][block.period];
+      generation = planConfig.rates.generation[season][block.period];
     } else if (provider === 'cca') {
-      delivery = planConfig.rates.pgeDelivery[season][block.period];
+      delivery = planConfig.rates.delivery[season][block.period];
       generation = planConfig.rates.cce[season][block.period];
       rate = delivery + generation;
     } else {
