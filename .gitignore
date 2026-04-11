@@ -2,3 +2,10 @@ node_modules/
 dist/
 .vite/
 *.local
+.DS_Store
+.github/.DS_Store
+src/.DS_Store
+
+# Source rate documents — not committed (large PDFs, xlsx, HTML snapshots)
+pge_source/
+sce_source/
