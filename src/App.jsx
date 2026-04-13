@@ -132,8 +132,10 @@ export default function App() {
   }
 
   // Derive available provider options for the current plan
+  const bundledKey = serviceArea.utility === 'SCE' ? 'sce' : 'pge';
+  const bundledLabel = `${serviceArea.utility} Bundled`;
   const providerOptions = [
-    { value: 'pge', label: 'PG&E Bundled' },
+    { value: bundledKey, label: bundledLabel },
     ...serviceArea.ccas
       .filter(ccaId => planConfig.rates.ccaGeneration?.[ccaId] != null)
       .map(ccaId => {
@@ -142,11 +144,12 @@ export default function App() {
       }),
   ];
 
-  // If current provider was filtered out (plan doesn't support it), fall back to pge
-  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : 'pge';
+  // If current provider was filtered out (plan doesn't support it), fall back to bundled
+  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : bundledKey;
 
   // Derive tier options for the selected CCA
-  const ccaEntry = effectiveProvider !== 'pge'
+  const isBundledProvider = !planConfig.rates.ccaGeneration?.[effectiveProvider];
+  const ccaEntry = !isBundledProvider
     ? planConfig.rates.ccaGeneration[effectiveProvider]
     : null;
   const tierOptions = ccaEntry

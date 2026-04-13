@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import ratesData from '../data/rates.json';
+import ratesData from './__fixtures__/rates.json';
 import ratePlans from '../data/ratePlans.json';
 import {
   getCurrentPeriod,

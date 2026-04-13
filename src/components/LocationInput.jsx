@@ -110,7 +110,7 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
         {result?.errorCode && result.errorCode !== 'multi_utility' && ERROR_MESSAGES[result.errorCode] && (
           <p className="text-[10px] leading-relaxed text-red-400">{ERROR_MESSAGES[result.errorCode]}</p>
         )}
-        {isValid && serviceArea && `${serviceArea?.utility ?? 'PG&E'} territory · ${serviceArea.shortLabel}`}
+        {isValid && serviceArea && `${serviceArea.utility} territory · ${serviceArea.shortLabel}`}
         {isResolving && '…'}
         {status === 'idle' && 'Works with California zip codes and city names'}
       </div>

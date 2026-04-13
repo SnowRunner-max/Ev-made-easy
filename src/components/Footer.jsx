@@ -70,13 +70,16 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
   const bsc = fixedCharges?.type === 'incomeBasedBSC' ? fixedCharges.baseServicesCharge : null;
   const dmc = fixedCharges?.type === 'flatMeterCharge' ? fixedCharges.meterCharge : null;
 
-  const isCCA = provider != null ? provider !== 'pge' : (
-    planConfig._displayProvider ? !planConfig._displayProvider.startsWith('PG&E Bundled') : false
-  );
+  const isBundledProvider = !planConfig.rates?.ccaGeneration?.[provider]
+    && (provider == null || provider === 'pge' || provider === 'sce');
 
-  const ccaName = isCCA && planConfig._displayProvider
+  const ccaName = !isBundledProvider && planConfig._displayProvider
     ? planConfig._displayProvider.split(' — ')[0]
-    : (serviceArea?.cca ?? '3CE');
+    : (serviceArea?.cca ?? 'CCA');
+
+  const effectiveDate = globalMetadata?.pgeEffectiveDate ?? globalMetadata?.sceEffectiveDate;
+  const adviceLetter = globalMetadata?.pgeAdviceLetter ?? globalMetadata?.sceAdviceLetter;
+  const ccaRateDate = globalMetadata?.cceRateSheetDate ?? globalMetadata?.cpaRateSheetDate;
 
   return (
     <footer
@@ -84,7 +87,7 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
       className="border-t border-pewter-light bg-white px-10 py-5 text-xs text-[var(--text-muted)] max-w-[1120px] mx-auto w-full"
     >
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-[var(--text-muted)]">{planConfig.name} · {city?.name ?? 'Buellton'}, CA · {serviceArea?.shortLabel ?? 'PG&E + 3CE'}</p>
+        <p className="text-[var(--text-muted)]">{planConfig.name} · {city?.name ?? 'Buellton'}, CA · {serviceArea?.shortLabel ?? 'Unknown'}</p>
         <button
           data-testid="footer-toggle"
           onClick={() => setExpanded(e => !e)}
@@ -133,8 +136,8 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
           <section>
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Effective dates</h3>
             <ul className="space-y-0.5">
-              <li>{serviceArea?.utility ?? 'PG&E'} delivery rates: {globalMetadata?.pgeEffectiveDate} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>{ccaName} generation rates: {globalMetadata?.cceRateSheetDate}</li>
+              <li>{serviceArea?.utility ?? 'Unknown'} delivery rates: {effectiveDate} (Advice Letter {adviceLetter})</li>
+              <li>{ccaName} generation rates: {ccaRateDate}</li>
             </ul>
           </section>
 
@@ -156,8 +159,8 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
           <section>
             <h3 className="font-semibold text-[var(--text-primary)] mb-1">Sources</h3>
             <ul className="space-y-0.5 list-disc list-inside">
-              <li>{serviceArea?.utility ?? 'PG&E'} Tariff Schedule {planConfig.tariffSource} (Advice Letter {globalMetadata?.pgeAdviceLetter})</li>
-              <li>{ccaName} Generation Rate Sheet (effective {globalMetadata?.cceRateSheetDate})</li>
+              <li>{serviceArea?.utility ?? 'Unknown'} Tariff Schedule {planConfig.tariffSource} (Advice Letter {adviceLetter})</li>
+              <li>{ccaName} Generation Rate Sheet (effective {ccaRateDate})</li>
             </ul>
           </section>
 

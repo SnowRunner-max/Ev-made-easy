@@ -34,10 +34,11 @@ function getPacificDayOfWeek(date) {
 }
 
 /**
- * Computes PG&E-observed holiday dates for a given year.
+ * Computes FERC-observed holiday dates for a given year.
+ * Both PG&E and SCE follow the same FERC holiday calendar.
  * Returns an array of 'YYYY-MM-DD' strings.
  */
-function getPGEHolidayDates(year) {
+function getFercHolidayDates(year) {
   // nthWeekday: weekday 0=Sun..6=Sat; n>0 for nth occurrence, n<0 for last
   function nthWeekday(y, month, weekday, n) {
     const first = new Date(y, month - 1, 1);
@@ -76,7 +77,7 @@ function getPGEHolidayDates(year) {
 // --- Exported functions ---
 
 /**
- * Returns whether the given date is a PG&E-recognized holiday in Pacific Time.
+ * Returns whether the given date is a FERC-recognized holiday in Pacific Time.
  * EV-B and E-TOU-D TOU periods change on holidays.
  * @param {Date} date
  * @returns {boolean}
@@ -84,7 +85,7 @@ function getPGEHolidayDates(year) {
 export function isHoliday(date) {
   const dateStr = getPacificDateStr(date);
   const year = parseInt(dateStr.split('-')[0]);
-  return getPGEHolidayDates(year).includes(dateStr);
+  return getFercHolidayDates(year).includes(dateStr);
 }
 
 /**
@@ -190,12 +191,11 @@ export function getCurrentPeriod(date, planConfig) {
  *
  * provider param (optional):
  *   'bundled' — returns totalBundled rate (for tests / direct engine calls)
- *   'cca'     — returns delivery + cce rate (for tests / direct engine calls)
  *   null      — reads pre-computed combined rate set by getEffectiveConfig() in App.jsx
  *
  * @param {Date} date
  * @param {Object} planConfig
- * @param {'bundled'|'cca'|null} [provider]
+ * @param {'bundled'|null} [provider]
  * @returns {{ period, season, rate, generation, delivery, periodLabel, colorScheme }}
  */
 export function getRate(date, planConfig, provider = null) {
@@ -223,10 +223,6 @@ export function getRate(date, planConfig, provider = null) {
     rate = planConfig.rates.totalBundled[season][period];
     delivery = planConfig.rates.delivery[season][period];
     generation = planConfig.rates.generation[season][period];
-  } else if (provider === 'cca') {
-    delivery = planConfig.rates.delivery[season][period];
-    generation = planConfig.rates.cce[season][period];
-    rate = delivery + generation;
   } else {
     // Default: read pre-computed combined set by getEffectiveConfig() in App.jsx
     const rateData = planConfig.rates[season][period];
@@ -298,10 +294,6 @@ export function getDaySchedule(date, planConfig, provider = null) {
       rate = planConfig.rates.totalBundled[season][block.period];
       delivery = planConfig.rates.delivery[season][block.period];
       generation = planConfig.rates.generation[season][block.period];
-    } else if (provider === 'cca') {
-      delivery = planConfig.rates.delivery[season][block.period];
-      generation = planConfig.rates.cce[season][block.period];
-      rate = delivery + generation;
     } else {
       const rateData = planConfig.rates[season][block.period];
       rate = rateData.combined;
