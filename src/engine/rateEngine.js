@@ -3,6 +3,7 @@ import { getPacificHour, buildPacificTime } from '../utils/pacificTime';
 // Period display metadata — single source of truth for labels and color schemes
 export const PERIOD_DISPLAY = {
   peak:         { label: 'Peak',           colorScheme: 'red'     },
+  midPeak:      { label: 'Mid-Peak',       colorScheme: 'amber'   },
   partPeak:     { label: 'Part-Peak',      colorScheme: 'amber'   },
   offPeak:      { label: 'Off-Peak',       colorScheme: 'emerald' },
   superOffPeak: { label: 'Super Off-Peak', colorScheme: 'blue'    },

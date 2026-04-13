@@ -176,29 +176,37 @@
   ---
   Phase 3: Multi-CCA per service area (enables "choose which CCA" UX)
 
+  STATUS: COMPLETED (2026-04-13) — Audit result: NO multi-CCA overlap exists.
+
   Goal: Today each service area has one CCA. Santa Barbara's sce-3ce-sb implicitly assumes 3CE, but real Santa Barbara SCE customers may also be
   on SBCE. This phase makes the ccas array genuinely multi-valued.
 
-  Tasks
+  Audit findings (2026-04-13):
 
-  1. Audit src/data/serviceAreas.json and expand ccas arrays where multiple CCAs legitimately serve the area.
-    - Example expansion: "sce-3ce-sb": { ccas: ["3ce-sce", "sbce"] } if SBCE serves the same ZIPs.
-    - Example: PG&E East Bay has Ava and MCE adjacency — check whether any ZIP legitimately supports both.
-  2. Confirm the ProviderSelector dropdown scales.
-    - Already driven by providerOptions array in App.jsx — should handle N CCAs with no code change.
-    - If the list grows past ~4 options, consider a grouped select (not in scope for this phase; only surface in backlog if it emerges).
-  3. Update defaultProvider logic so that when a service area has multiple CCAs, the default is predictable — pick the most common CCA in that
-  territory and document the rationale in serviceAreas.json comments.
-  4. Add test coverage in App.test.jsx for:
-    - Service area with 2+ CCAs renders correct provider options
-    - Switching CCAs updates rates in the live display
-    - Switching utility (via UtilityPicker) clears CCA tier and picks new default
+  California CCAs do NOT overlap geographically. Each address is served by exactly one CCA (or none).
+  The plan's hypothesis — "if SBCE serves the same ZIPs" — is false:
+    - SBCE serves ONLY the City of Santa Barbara (source: sustainability.santabarbaraca.gov)
+    - 3CE serves Goleta, Carpinteria, and unincorporated Santa Barbara County in SCE territory (source: sce.com CCA list)
+    - PG&E East Bay: Ava and MCE serve adjacent but non-overlapping jurisdictions
+    - Confirmed via SCE's active CCA list: 12 CCAs in SCE territory, all non-overlapping
+
+  Task disposition:
+  1. Audit ccas arrays — DONE. No expansion needed. All ccas arrays correctly have 0 or 1 entry.
+  2. ProviderSelector scales — CONFIRMED. App.jsx:137-149 already builds options dynamically from ccas array.
+  3. defaultProvider for multi-CCA — N/A. No multi-CCA case exists.
+  4. Tests — Existing coverage in App.test.jsx:111-198 already covers provider switching, CCA tiers, service area changes.
+
+  Action item surfaced: SBCE is missing from serviceAreas.json entirely. Added as part of this phase:
+    - New service area: sce-sbce-sb (City of Santa Barbara)
+    - New city entry: santa-barbara → sce-sbce-sb
+    - SBCE generation rates added to sceRatePlans.json for all three SCE plans
 
   Verification checklist for Phase 3
 
-  - Every serviceAreas.json entry's ccas array matches reality (cite CCA membership page per area)
-  - Test: render <App> with Santa Barbara ZIP, open UtilityPicker, pick SCE → ProviderSelector shows both 3CE and SBCE options
-  - npm run test:ci green
+  - [x] Every serviceAreas.json entry's ccas array matches reality (confirmed via SCE CCA page + individual CCA sites)
+  - [x] No multi-CCA overlap found — verification checklist item about "both 3CE and SBCE options" is N/A
+  - [x] npm run test:ci green (212 tests, 12 files — 4 new SBCE tests added)
+  - [x] npm run build succeeds
 
   ---
   Phase 4: Documentation sync

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
 
-const PERIOD_ORDER = ['peak', 'partPeak', 'offPeak'];
+const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
 function RateTable({ rates, seasons }) {
   const seasonKeys = Object.keys(seasons);

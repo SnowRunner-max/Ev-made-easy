@@ -32,6 +32,7 @@ const RATE_PLAN_REGISTRY = {
   'pge-kccp-mon':    ratePlans,
   'pge-only':        ratePlans,
   'sce-cpa-la':      sceRatePlans,
+  'sce-sbce-sb':     sceRatePlans,
   'sce-3ce-sb':      sceRatePlans,
   'sce-only':        sceRatePlans,
 };

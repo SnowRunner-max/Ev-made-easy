@@ -14,7 +14,8 @@
     { "id": "davis",          "name": "Davis",          "serviceAreaId": "pge-vce-yol" },
     { "id": "roseville",      "name": "Roseville",      "serviceAreaId": "pge-pioneer-pla" },
     { "id": "san-francisco",  "name": "San Francisco",  "serviceAreaId": "pge-cpsf-sf" },
-    { "id": "king-city",      "name": "King City",      "serviceAreaId": "pge-kccp-mon" }
+    { "id": "king-city",      "name": "King City",      "serviceAreaId": "pge-kccp-mon" },
+    { "id": "santa-barbara",  "name": "Santa Barbara",  "serviceAreaId": "sce-sbce-sb" }
   ],
   "serviceAreas": {
     "pge-3ce-sbco": {
@@ -157,14 +158,24 @@
       "providerHint": "Your area is served by Clean Power Alliance for generation. SCE handles delivery.",
       "ccas": ["cpa"]
     },
+    "sce-sbce-sb": {
+      "name": "SCE + Santa Barbara Clean Energy (City of Santa Barbara)",
+      "utility": "SCE",
+      "cca": "SBCE",
+      "shortLabel": "SCE + SBCE",
+      "defaultPlanId": "TOU-D-4-9PM",
+      "defaultProvider": "sbce",
+      "providerHint": "City of Santa Barbara residents are served by Santa Barbara Clean Energy for generation. SCE handles delivery.",
+      "ccas": ["sbce"]
+    },
     "sce-3ce-sb": {
-      "name": "SCE + Central Coast Community Energy (Santa Barbara)",
+      "name": "SCE + Central Coast Community Energy (Santa Barbara County)",
       "utility": "SCE",
       "cca": "3CE",
       "shortLabel": "SCE + 3CE",
       "defaultPlanId": "TOU-D-4-9PM",
       "defaultProvider": "3ce",
-      "providerHint": "Your area is in SCE territory but served by 3CE for generation.",
+      "providerHint": "Your area is in SCE territory but served by 3CE for generation. Covers Goleta, Carpinteria, and unincorporated Santa Barbara County.",
       "ccas": ["3ce"]
     },
     "sce-only": {

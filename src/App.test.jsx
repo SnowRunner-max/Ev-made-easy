@@ -199,3 +199,45 @@ describe('App — CCA tier selector', () => {
     expect([...opts].map(o => o.value)).not.toContain('kccp');
   });
 });
+
+describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
+  it('resolving to sce-sbce-sb shows SCE plans and SBCE provider option', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    // Default plan should be TOU-D-4-9PM
+    expect(screen.getByTestId('plan-select').value).toBe('TOU-D-4-9PM');
+    // Provider should default to sbce
+    expect(screen.getByTestId('provider-select').value).toBe('sbce');
+    // Provider options: SCE Bundled + SBCE
+    const opts = [...screen.getByTestId('provider-select').querySelectorAll('option')].map(o => o.value);
+    expect(opts).toContain('sce');
+    expect(opts).toContain('sbce');
+  });
+
+  it('SBCE provider shows tier selector with green-start and 100-green', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    const tierSelect = screen.getByTestId('tier-select');
+    const tiers = [...tierSelect.querySelectorAll('option')].map(o => o.value);
+    expect(tiers).toContain('green-start');
+    expect(tiers).toContain('100-green');
+  });
+
+  it('switching from SBCE area to PG&E area resets plan and provider', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    expect(screen.getByTestId('plan-select').value).toBe('TOU-D-4-9PM');
+    // Switch to Buellton (PG&E)
+    act(() => capturedOnResolved({ serviceAreaId: 'pge-3ce-sbco', displayLabel: 'Buellton, CA', zip: '93427' }));
+    expect(screen.getByTestId('plan-select').value).toBe('EV2-A');
+    expect(screen.getByTestId('provider-select').value).toBe('pge');
+  });
+
+  it('SBCE tier switch changes displayed rate', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    const before = screen.getByTestId('rate-value').textContent;
+    fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '100-green' } });
+    expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
+  });
+});
