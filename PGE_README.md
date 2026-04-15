@@ -6,6 +6,8 @@
 
 This document describes the live shape of `ratePlans.json`. If you only need to know what a field means or where a value lives, this is the right file.
 
+> **Multi-utility note:** This file covers PG&E delivery territory only. SCE rates live in a parallel file — `src/data/sceRatePlans.json` — with the same schema. See `SCE_README.md` for that file's structure, and `src/data/README.md` for how the two files are wired together via `serviceAreas.json` and `RATE_PLAN_REGISTRY` in `App.jsx`.
+
 ---
 
 ## Top-level shape

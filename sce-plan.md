@@ -222,8 +222,8 @@
 
   Verification checklist for Phase 4
 
-  - grep -rn "v2.0\|Buellton, CA" CLAUDE.md *README.md — only intentional mentions remain
-  - New contributor can read src/data/README.md and understand how to add SDG&E without reading code
+  - [x] grep -rn "v2.0\|Buellton, CA" CLAUDE.md *README.md — only intentional mentions remain
+  - [x] New contributor can read src/data/README.md and understand how to add SDG&E without reading code
 
   ---
   Final Phase: End-to-end verification

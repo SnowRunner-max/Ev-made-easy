@@ -1,10 +1,11 @@
 # SCE Rate Data — Structure Reference
 
-**Source of truth:** `sce_source/SCE_Combined_Rates.xlsx`
+**Canonical rate data:** `src/data/sceRatePlans.json` (schema v3.0)
+**Research workbook:** `sce_source/SCE_Combined_Rates.xlsx` (source of truth for raw tariff values)
 **Territory:** Southern California Edison (SCE)
 **Current tariffs:** Advice 5725-E (eff. 2026-01-01) for Schedule D and TOU-D rates; base tariffs Advice 5654-E (D) and 5338-E (TOU-D)
 
-This document describes the live shape of `SCE_Combined_Rates.xlsx`. SCE data has **not yet** been merged into `src/data/ratePlans.json`; the workbook is the authoritative intermediate artifact. All rates in `$/kWh` unless noted.
+This document describes the structure of `SCE_Combined_Rates.xlsx` and the shape of `sceRatePlans.json`. The workbook is the authoritative intermediate artifact for researching and validating rates; `sceRatePlans.json` is the derived runtime file consumed by the app. All rates in `$/kWh` unless noted.
 
 > ⚠ **Important:** `sce_source/` is gitignored. The workbook lives on disk but is not committed. Do not delete the directory.
 
@@ -43,7 +44,7 @@ Top sections in column A:
 
 1. **`SOURCES & EFFECTIVE DATES`** (rows 4–13) — Provider / Effective Date / Advice Letter / Source File for SCE and every CCA.
 2. **`RATE PLANS COVERED`** (rows 16–21) — Plan ID, TOU definition, and a `Sheet:` pointer in column L.
-3. **`COLUMN SCHEMA — Aligns with ratePlans.json v2.0`** (rows 23–35) — Field glossary documenting the rate columns used across the TOU sheets (`sceDelivery`, `sceGeneration`, `sceTotalBundled`, per-CCA columns, `FRC/MCAM`, formula rows).
+3. **`COLUMN SCHEMA — Aligns with sceRatePlans.json v3.0`** (rows 23–35) — Field glossary documenting the rate columns used across the TOU sheets (`sceDelivery`, `sceGeneration`, `sceTotalBundled`, per-CCA columns, `FRC/MCAM`, formula rows).
 
 Use this sheet to find which tariff PDF backed a given number and when it was last effective.
 
@@ -272,4 +273,4 @@ This was the root cause of the Issue #6 corruption that lost WFC, Baseline Credi
 5. Keep the invariant: `sceDelivery + sceGeneration ≈ sceTotalBundled` on bundled rows.
 6. Re-run any downstream export that feeds `src/data/ratePlans.json`.
 
-SCE territory is not yet wired into `ratePlans.json` — this workbook is the staging ground. When it is, the same three-field shape used for PG&E (`delivery / generation / totalBundled` + `ccaGeneration`) should map cleanly from the columns above.
+The `sceRatePlans.json` file uses the same three-field shape as `ratePlans.json` (`delivery / generation / totalBundled` + `ccaGeneration`). When updating SCE rates, patch the workbook first, verify the invariants, then propagate the values to `sceRatePlans.json`.
