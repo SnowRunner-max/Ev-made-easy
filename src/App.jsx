@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ratePlans from './data/ratePlans.json';
+import sceRatePlans from './data/sceRatePlans.json';
 import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
 import { calcChargeSummary } from './engine/costCalculator';
@@ -30,22 +31,27 @@ const RATE_PLAN_REGISTRY = {
   'pge-cpsf-sf':     ratePlans,
   'pge-kccp-mon':    ratePlans,
   'pge-only':        ratePlans,
+  'sce-cpa-la':      sceRatePlans,
+  'sce-sbce-sb':     sceRatePlans,
+  'sce-3ce-sb':      sceRatePlans,
+  'sce-only':        sceRatePlans,
 };
 
 const CUSTOM_ID = 'custom';
 
 function buildRateMatrix(v2Rates, provider, ccaTier) {
-  const seasons = Object.keys(v2Rates.pgeDelivery);
+  const seasons = Object.keys(v2Rates.delivery);
   return Object.fromEntries(
     seasons.map(season => [
       season,
       Object.fromEntries(
-        Object.keys(v2Rates.pgeDelivery[season]).map(period => {
-          const delivery = v2Rates.pgeDelivery[season][period];
-          const bundled  = v2Rates.pgeTotalBundled[season][period];
+        Object.keys(v2Rates.delivery[season]).map(period => {
+          const delivery = v2Rates.delivery[season][period];
+          const bundled  = v2Rates.totalBundled[season][period];
           let generation, combined;
-          if (provider === 'pge') {
-            generation = v2Rates.pgeGeneration[season][period];
+          const isBundledProvider = !v2Rates.ccaGeneration?.[provider];
+          if (isBundledProvider) {
+            generation = v2Rates.generation[season][period];
             combined   = bundled;
           } else {
             const ccaEntry = v2Rates.ccaGeneration[provider];
@@ -60,10 +66,13 @@ function buildRateMatrix(v2Rates, provider, ccaTier) {
   );
 }
 
-function getEffectiveConfig(planConfig, provider, ccaTier) {
+function getEffectiveConfig(planConfig, provider, ccaTier, serviceAreaConfig) {
   let providerLabel;
-  if (provider === 'pge') {
-    providerLabel = 'PG&E Bundled Service';
+  const isBundledProvider = !planConfig.rates.ccaGeneration?.[provider];
+  if (isBundledProvider) {
+    // Derive label from the current service area's utility field, if available
+    const utilityName = serviceAreaConfig?.utility === 'SCE' ? 'SCE' : 'PG&E';
+    providerLabel = `${utilityName} Bundled Service`;
   } else {
     const ccaEntry = planConfig.rates.ccaGeneration[provider];
     const activeTier = ccaTier ?? ccaEntry.defaultTier;
@@ -72,11 +81,11 @@ function getEffectiveConfig(planConfig, provider, ccaTier) {
 
   if (!planConfig.touPeriods) {
     const r = planConfig.rates;
-    const delivery = r.pgeDelivery.tier1;
+    const delivery = r.delivery.tier1;
     let generation, combined;
-    if (provider === 'pge') {
-      generation = r.pgeGeneration.allUsage;
-      combined   = r.pgeTotalBundled.tier1;
+    if (isBundledProvider) {
+      generation = r.generation.allUsage;
+      combined   = r.totalBundled.tier1;
     } else {
       const ccaEntry = r.ccaGeneration[provider];
       const tier = ccaTier ?? ccaEntry.defaultTier;
@@ -96,7 +105,9 @@ const PLAN_HINTS = {
   'EV-B':    'Requires a separately metered EV outlet (second meter). Best for high overnight charging.',
   'E-TOU-C': 'Standard residential TOU rate. Peak 4–9 PM every day including weekends.',
   'E-TOU-D': 'Standard residential TOU rate. Peak 5–8 PM on weekdays only.',
-  'E-1':     'Traditional tiered rate. No time-of-use pricing — rate varies by monthly usage tier.',
+  'E-1':         'Traditional tiered rate. No time-of-use pricing — rate varies by monthly usage tier.',
+  'TOU-D-4-9PM': 'Standard SCE residential TOU. Peak 4–9 PM every day.',
+  'TOU-D-PRIME': 'EV-optimized with super off-peak midnight pricing. Best for overnight charging.',
 };
 
 export default function App() {
@@ -122,8 +133,10 @@ export default function App() {
   }
 
   // Derive available provider options for the current plan
+  const bundledKey = serviceArea.utility === 'SCE' ? 'sce' : 'pge';
+  const bundledLabel = `${serviceArea.utility} Bundled`;
   const providerOptions = [
-    { value: 'pge', label: 'PG&E Bundled' },
+    { value: bundledKey, label: bundledLabel },
     ...serviceArea.ccas
       .filter(ccaId => planConfig.rates.ccaGeneration?.[ccaId] != null)
       .map(ccaId => {
@@ -132,11 +145,12 @@ export default function App() {
       }),
   ];
 
-  // If current provider was filtered out (plan doesn't support it), fall back to pge
-  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : 'pge';
+  // If current provider was filtered out (plan doesn't support it), fall back to bundled
+  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : bundledKey;
 
   // Derive tier options for the selected CCA
-  const ccaEntry = effectiveProvider !== 'pge'
+  const isBundledProvider = !planConfig.rates.ccaGeneration?.[effectiveProvider];
+  const ccaEntry = !isBundledProvider
     ? planConfig.rates.ccaGeneration[effectiveProvider]
     : null;
   const tierOptions = ccaEntry
@@ -164,7 +178,7 @@ export default function App() {
     setCcaTier(null); // reset tier when switching CCA
   }
 
-  const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier);
+  const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier, serviceArea);
   const supportsProviderToggle = !!planConfig.touPeriods;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;

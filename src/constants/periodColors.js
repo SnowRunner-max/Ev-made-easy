@@ -30,4 +30,11 @@ export const PERIOD_COLORS = {
     darkBadge: 'bg-red-950/40 text-red-400',
     dotColor:  '#FF6B5A',
   },
+  superOffPeak: {
+    badge:     'bg-blue-500 text-white',
+    bg:        'bg-blue-500',
+    tip:       'bg-blue-50 text-blue-900',
+    darkBadge: 'bg-blue-950/40 text-blue-300',
+    dotColor:  '#3B82F6',
+  },
 };

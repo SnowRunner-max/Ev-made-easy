@@ -15,7 +15,22 @@ vi.mock('../data/pgeTerritory.json', () => ({
     zips: {
       '93427': 'pge-3ce-sbco',   // PGE + 3CE CCA
       '94804': 'pge-only',        // PGE direct, no CCA
-      '99999': 'multi-utility',   // multi-utility sentinel
+    },
+  },
+}));
+
+// Mock sceTerritory.json
+vi.mock('../data/sceTerritory.json', () => ({
+  default: {
+    zips: {},
+  },
+}));
+
+// Mock multiUtilityZips.json
+vi.mock('../data/multiUtilityZips.json', () => ({
+  default: {
+    zips: {
+      '99999': ['pge', 'sce'],   // multi-utility overlap ZIP
     },
   },
 }));
@@ -93,7 +108,7 @@ describe('useLocationLookup — zipcode path', () => {
     expect(result.current.resolved?.serviceAreaId).toBe('pge-only');
   });
 
-  it('returns not_pge for a CA zip not in PGE territory', async () => {
+  it('returns not_supported for a CA zip not in any territory', async () => {
     zipcodes.lookup.mockReturnValue({ zip: '90001', city: 'Los Angeles', state: 'CA' });
     const { result } = renderHook(() => useLocationLookup());
 
@@ -101,7 +116,7 @@ describe('useLocationLookup — zipcode path', () => {
     await act(async () => { vi.advanceTimersByTime(400); });
 
     expect(result.current.status).toBe('error');
-    expect(result.current.errorCode).toBe('not_pge');
+    expect(result.current.errorCode).toBe('not_supported');
   });
 
   it('returns not_ca for an out-of-state zip', async () => {
@@ -153,7 +168,7 @@ describe('useLocationLookup — city name path', () => {
     expect(result.current.resolved?.displayLabel).toBe('Buellton, CA');
   });
 
-  it('returns not_pge for a CA city with no PGE zips', async () => {
+  it('returns not_supported for a CA city with no supported utility zips', async () => {
     zipcodes.lookupByName.mockReturnValue([
       { zip: '90001', city: 'Los Angeles', state: 'CA' },
     ]);
@@ -163,7 +178,7 @@ describe('useLocationLookup — city name path', () => {
     await act(async () => { vi.advanceTimersByTime(400); });
 
     expect(result.current.status).toBe('error');
-    expect(result.current.errorCode).toBe('not_pge');
+    expect(result.current.errorCode).toBe('not_supported');
   });
 
   it('returns invalid_input for an unknown city', async () => {

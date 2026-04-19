@@ -1,0 +1,10 @@
+{
+  "_note": "ZIPs where a single code spans multiple utility territories. User must select their utility. Add new entries as discovered.",
+  "zips": {
+    "93101": ["pge-3ce-sbco", "sce-sbce-sb"],
+    "93103": ["pge-3ce-sbco", "sce-sbce-sb"],
+    "93105": ["pge-3ce-sbco", "sce-sbce-sb"],
+    "93108": ["pge-3ce-sbco", "sce-3ce-sb"],
+    "93110": ["pge-3ce-sbco", "sce-sbce-sb"]
+  }
+}

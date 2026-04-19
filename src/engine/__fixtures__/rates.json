@@ -6,7 +6,7 @@
     "ccaTier": "3Cchoice",
     "pciaVintage": 2021,
     "effectiveDates": {
-      "pgeDelivery": "2026-03-01",
+      "delivery": "2026-03-01",
       "cceGeneration": "2026-02-15"
     },
     "sources": [

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import ratesData from '../data/rates.json';
+import ratesData from './__fixtures__/rates.json';
 import ratePlans from '../data/ratePlans.json';
 import {
   getCurrentPeriod,
@@ -183,7 +183,7 @@ describe('getRate — EV2-A (provider=bundled)', () => {
     expect(r.rate).toBeCloseTo(0.53809, 4);
     expect(r.season).toBe('summer');
   });
-  it('returns pgeDelivery and pgeGeneration components', () => {
+  it('returns delivery and generation components', () => {
     const r = getRate(new Date('2026-01-15T02:00:00-08:00'), ev2aConfig, 'bundled');
     expect(r.delivery).toBeCloseTo(0.13012, 4);
     expect(r.generation).toBeCloseTo(0.09546, 4);

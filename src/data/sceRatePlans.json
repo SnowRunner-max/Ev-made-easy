@@ -1,0 +1,494 @@
+{
+  "_metadata": {
+    "version": "3.0.0",
+    "territory": "SCE",
+    "sceAdviceLetter": "Advice 5725-E",
+    "sceEffectiveDate": "2026-01-01",
+    "3ceRateSheetDate": "2025-04-01",
+    "cpaRateSheetDate": "2025-03-01",
+    "sbceRateEffectiveDate": "2026-03-15",
+    "holidays": [
+      "New Year's Day",
+      "Presidents' Day",
+      "Memorial Day",
+      "Independence Day",
+      "Labor Day",
+      "Veterans Day",
+      "Thanksgiving Day",
+      "Christmas Day"
+    ],
+    "notes": [
+      "delivery + generation = totalBundled (±0.00001) — utility-agnostic field names (schema v3.0).",
+      "Rates sourced from SCE_Combined_Rates.xlsx, validated against SCE tariff schedules and 3CE/CPA rate sheets.",
+      "CCA combined rate = delivery + ccaGeneration[provider].tiers[tier][season][period].",
+      "TOU-D-4-9PM winter has 3 periods (midPeak, offPeak, superOffPeak). Summer has 2 (peak, offPeak).",
+      "TOU-D-PRIME summer: peak differs from off-peak/superOffPeak. Weekday peak used as canonical rate.",
+      "CPA generation rates are real TOU-differentiated rates per CPA rate schedule (effective Mar 2025).",
+      "3CE SCE-territory rates sourced from Residential-SCE-Website-Rate-Sheet-v2-2025.04.01.pdf.",
+      "SBCE rates sourced from SCE-SBCE Joint Rate Comparisons (sce.com). SBCE uses flat generation rates (not TOU-differentiated). Green Start ~50% renewable, 100% Green = 100% renewable. Effective Mar 15 2026.",
+      "TOU-D-4-9PM includes a baseline credit of -$0.10108/kWh on off-peak usage up to monthly baseline allowance. Rates shown are pre-credit (gross).",
+      "TOU-D-PRIME has NO baseline credit.",
+      "FRC ($0.00619/kWh) + MCAM ($0.00223/kWh) = $0.00842/kWh flat adder applies to all plans but is NOT embedded in rates. Noted for transparency.",
+      "BSC is $0.794/meter/day for all SCE residential customers (not income-tiered like PG&E).",
+      "Base tariff references: TOU-D variants = Advice 5338-E; Schedule D = Advice 5654-E."
+    ]
+  },
+  "ratePlans": {
+    "TOU-D-4-9PM": {
+      "name": "TOU-D-4-9PM",
+      "selectorLabel": "TOU-D-4-9PM",
+      "scheduleCode": "TOU-D-4-9PM",
+      "rateDesignation": "Time-of-Use (Peak 4–9 PM)",
+      "category": "Residential TOU",
+      "status": "current",
+      "description": "SCE residential TOU plan with a 4–9 PM peak window every day. Winter adds a super off-peak period (midnight–8 AM). Includes a baseline credit on off-peak usage (pre-credit rates shown).",
+      "eligibility": "Standard SCE residential customers",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "ELECTRIC_SCHEDULES_TOU-D",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "Summer (Jun–Sep)" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "Winter (Oct–May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "offPeak": { "label": "All other hours (midnight–4pm, 9pm–midnight)" }
+        },
+        "winter": {
+          "midPeak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "08:00", "days": "all", "label": "Midnight–8am every day" },
+          "offPeak": { "label": "All other hours (8am–4pm, 9pm–midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": {
+            "peak": 0.33082,
+            "offPeak": 0.27338
+          },
+          "winter": {
+            "midPeak": 0.33082,
+            "offPeak": 0.27338,
+            "superOffPeak": 0.25272
+          }
+        },
+        "generation": {
+          "summer": {
+            "peak": 0.25448,
+            "offPeak": 0.07360
+          },
+          "winter": {
+            "midPeak": 0.18077,
+            "offPeak": 0.10212,
+            "superOffPeak": 0.08364
+          }
+        },
+        "totalBundled": {
+          "summer": {
+            "peak": 0.58530,
+            "offPeak": 0.34698
+          },
+          "winter": {
+            "midPeak": 0.51159,
+            "offPeak": 0.37550,
+            "superOffPeak": 0.33636
+          }
+        },
+        "ccaGeneration": {
+          "cpa": {
+            "name": "Clean Power Alliance",
+            "defaultTier": "clean-power",
+            "tiers": {
+              "lean-power": {
+                "label": "Lean Power (~38% renewable)",
+                "summer": {
+                  "peak": 0.25324,
+                  "offPeak": 0.08196
+                },
+                "winter": {
+                  "midPeak": 0.18362,
+                  "offPeak": 0.10798,
+                  "superOffPeak": 0.08992
+                }
+              },
+              "clean-power": {
+                "label": "Clean Power (~50% renewable)",
+                "summer": {
+                  "peak": 0.26106,
+                  "offPeak": 0.08421
+                },
+                "winter": {
+                  "midPeak": 0.18918,
+                  "offPeak": 0.11108,
+                  "superOffPeak": 0.09243
+                }
+              },
+              "green-power": {
+                "label": "Green Power (100% renewable)",
+                "summer": {
+                  "peak": 0.30016,
+                  "offPeak": 0.09545
+                },
+                "winter": {
+                  "midPeak": 0.21695,
+                  "offPeak": 0.12655,
+                  "superOffPeak": 0.10496
+                }
+              }
+            }
+          },
+          "3ce": {
+            "name": "Central Coast Community Energy (SCE territory)",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": {
+                  "peak": 0.26696,
+                  "offPeak": 0.07675
+                },
+                "winter": {
+                  "midPeak": 0.18965,
+                  "offPeak": 0.10565,
+                  "superOffPeak": 0.08559
+                }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": {
+                  "peak": 0.27496,
+                  "offPeak": 0.08475
+                },
+                "winter": {
+                  "midPeak": 0.19765,
+                  "offPeak": 0.11365,
+                  "superOffPeak": 0.09359
+                }
+              }
+            }
+          },
+          "sbce": {
+            "name": "Santa Barbara Clean Energy",
+            "defaultTier": "green-start",
+            "tiers": {
+              "green-start": {
+                "label": "Green Start (~50% renewable)",
+                "summer": {
+                  "peak": 0.09354,
+                  "offPeak": 0.09354
+                },
+                "winter": {
+                  "midPeak": 0.09354,
+                  "offPeak": 0.09354,
+                  "superOffPeak": 0.09354
+                }
+              },
+              "100-green": {
+                "label": "100% Green (100% renewable)",
+                "summer": {
+                  "peak": 0.12954,
+                  "offPeak": 0.12954
+                },
+                "winter": {
+                  "midPeak": 0.12954,
+                  "offPeak": 0.12954,
+                  "superOffPeak": 0.12954
+                }
+              }
+            }
+          }
+        }
+      },
+      "baselineCredit": {
+        "rate": -0.10108,
+        "note": "Applied to off-peak usage up to 100% of monthly baseline allocation. See SCE tariff for baseline allowance by climate zone."
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.794,
+          "tier2": 0.794,
+          "tier3": 0.794,
+          "unit": "$/meter/day",
+          "note": "SCE BSC is $0.794/meter/day for all customers (not income-tiered). Deed-restricted housing gets -$0.332/day adjustment."
+        }
+      }
+    },
+    "TOU-D-PRIME": {
+      "name": "TOU-D-PRIME",
+      "selectorLabel": "TOU-D-PRIME (EV Plan)",
+      "scheduleCode": "TOU-D-PRIME",
+      "rateDesignation": "Time-of-Use (EV — Peak 4–9 PM, Super Off-Peak overnight)",
+      "category": "EV Rate",
+      "status": "current",
+      "description": "SCE's dedicated EV rate plan. Deep overnight super off-peak discount incentivizes off-peak charging. 4–9 PM peak every day both seasons. No baseline credit on this plan.",
+      "eligibility": "Residential customers with an electric vehicle",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "ELECTRIC_SCHEDULES_TOU-D",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "Summer (Jun–Sep)" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "Winter (Oct–May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight–6am every day" },
+          "offPeak": { "label": "All other hours (6am–4pm, 9pm–midnight)" }
+        },
+        "winter": {
+          "midPeak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm–9pm every day" },
+          "superOffPeak": { "start": "08:00", "end": "16:00", "days": "all", "label": "8am–4pm every day" },
+          "offPeak": { "label": "All other hours (9pm–8am every day)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": {
+            "peak": 0.29558,
+            "superOffPeak": 0.19737,
+            "offPeak": 0.19737
+          },
+          "winter": {
+            "midPeak": 0.30091,
+            "superOffPeak": 0.18785,
+            "offPeak": 0.18785
+          }
+        },
+        "generation": {
+          "summer": {
+            "peak": 0.29667,
+            "superOffPeak": 0.07049,
+            "offPeak": 0.07049
+          },
+          "winter": {
+            "midPeak": 0.26489,
+            "superOffPeak": 0.05958,
+            "offPeak": 0.05958
+          }
+        },
+        "totalBundled": {
+          "summer": {
+            "peak": 0.59225,
+            "superOffPeak": 0.26786,
+            "offPeak": 0.26786
+          },
+          "winter": {
+            "midPeak": 0.56580,
+            "superOffPeak": 0.24743,
+            "offPeak": 0.24743
+          }
+        },
+        "ccaGeneration": {
+          "cpa": {
+            "name": "Clean Power Alliance",
+            "defaultTier": "clean-power",
+            "tiers": {
+              "lean-power": {
+                "label": "Lean Power (~38% renewable)",
+                "summer": {
+                  "peak": 0.29340,
+                  "superOffPeak": 0.07951,
+                  "offPeak": 0.07951
+                },
+                "winter": {
+                  "midPeak": 0.25815,
+                  "superOffPeak": 0.06918,
+                  "offPeak": 0.06918
+                }
+              },
+              "clean-power": {
+                "label": "Clean Power (~50% renewable)",
+                "summer": {
+                  "peak": 0.30277,
+                  "superOffPeak": 0.08173,
+                  "offPeak": 0.08173
+                },
+                "winter": {
+                  "midPeak": 0.26634,
+                  "superOffPeak": 0.07107,
+                  "offPeak": 0.07107
+                }
+              },
+              "green-power": {
+                "label": "Green Power (100% renewable)",
+                "summer": {
+                  "peak": 0.34965,
+                  "superOffPeak": 0.09287,
+                  "offPeak": 0.09287
+                },
+                "winter": {
+                  "midPeak": 0.30733,
+                  "superOffPeak": 0.08048,
+                  "offPeak": 0.08048
+                }
+              }
+            }
+          },
+          "3ce": {
+            "name": "Central Coast Community Energy (SCE territory)",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "summer": {
+                  "peak": 0.31554,
+                  "superOffPeak": 0.07497,
+                  "offPeak": 0.07497
+                },
+                "winter": {
+                  "midPeak": 0.27589,
+                  "superOffPeak": 0.06336,
+                  "offPeak": 0.06336
+                }
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "summer": {
+                  "peak": 0.32354,
+                  "superOffPeak": 0.08297,
+                  "offPeak": 0.08297
+                },
+                "winter": {
+                  "midPeak": 0.28389,
+                  "superOffPeak": 0.07136,
+                  "offPeak": 0.07136
+                }
+              }
+            }
+          },
+          "sbce": {
+            "name": "Santa Barbara Clean Energy",
+            "defaultTier": "green-start",
+            "tiers": {
+              "green-start": {
+                "label": "Green Start (~50% renewable)",
+                "summer": {
+                  "peak": 0.09185,
+                  "superOffPeak": 0.09185,
+                  "offPeak": 0.09185
+                },
+                "winter": {
+                  "midPeak": 0.09185,
+                  "superOffPeak": 0.09185,
+                  "offPeak": 0.09185
+                }
+              },
+              "100-green": {
+                "label": "100% Green (100% renewable)",
+                "summer": {
+                  "peak": 0.12785,
+                  "superOffPeak": 0.12785,
+                  "offPeak": 0.12785
+                },
+                "winter": {
+                  "midPeak": 0.12785,
+                  "superOffPeak": 0.12785,
+                  "offPeak": 0.12785
+                }
+              }
+            }
+          }
+        }
+      },
+      "baselineCredit": null,
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.794,
+          "tier2": 0.794,
+          "tier3": 0.794,
+          "unit": "$/meter/day",
+          "note": "SCE BSC is $0.794/meter/day for all customers (not income-tiered)."
+        }
+      }
+    },
+    "D": {
+      "name": "Schedule D (Domestic)",
+      "selectorLabel": "D — Standard Residential (Tiered)",
+      "scheduleCode": "D",
+      "rateDesignation": "D",
+      "category": "Tiered (Non-TOU)",
+      "status": "current",
+      "description": "SCE standard residential tiered rate with no time-of-use periods. Rate varies by usage tier relative to baseline allowance. Same rate 24/7.",
+      "eligibility": "All SCE residential customers. Default rate schedule.",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "ELECTRIC_SCHEDULES_D",
+      "seasons": null,
+      "touPeriods": null,
+      "rates": {
+        "delivery": {
+          "tier1": 0.18482,
+          "tier2": 0.28590,
+          "note": "Tier 1 = 0–100% of baseline. Tier 2 = above baseline."
+        },
+        "generation": {
+          "allUsage": 0.11761
+        },
+        "totalBundled": {
+          "tier1": 0.30243,
+          "tier2": 0.40351,
+          "note": "Tier 2 applies to all usage above baseline allowance."
+        },
+        "ccaGeneration": {
+          "cpa": {
+            "name": "Clean Power Alliance",
+            "defaultTier": "clean-power",
+            "tiers": {
+              "lean-power": {
+                "label": "Lean Power (~38% renewable)",
+                "allUsage": 0.12318
+              },
+              "clean-power": {
+                "label": "Clean Power (~50% renewable)",
+                "allUsage": 0.12675
+              },
+              "green-power": {
+                "label": "Green Power (100% renewable)",
+                "allUsage": 0.14459
+              }
+            }
+          },
+          "3ce": {
+            "name": "Central Coast Community Energy (SCE territory)",
+            "defaultTier": "3cchoice",
+            "tiers": {
+              "3cchoice": {
+                "label": "3Cchoice (Standard)",
+                "allUsage": 0.12246
+              },
+              "3cprime": {
+                "label": "3Cprime (100% Renewable)",
+                "allUsage": 0.13046
+              }
+            }
+          },
+          "sbce": {
+            "name": "Santa Barbara Clean Energy",
+            "defaultTier": "green-start",
+            "tiers": {
+              "green-start": {
+                "label": "Green Start (~50% renewable)",
+                "allUsage": 0.09631
+              },
+              "100-green": {
+                "label": "100% Green (100% renewable)",
+                "allUsage": 0.13231
+              }
+            }
+          }
+        }
+      },
+      "baselineCredit": null,
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.794,
+          "tier2": 0.794,
+          "tier3": 0.794,
+          "unit": "$/meter/day",
+          "note": "SCE BSC is $0.794/meter/day for all customers (not income-tiered)."
+        }
+      }
+    }
+  }
+}
