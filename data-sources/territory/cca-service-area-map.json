@@ -1,0 +1,125 @@
+{
+  "note": "Maps exact CEC CCA Acronym values to internal rate-backed service-area IDs. CCA polygons listed under unbacked are present in the CEC snapshot but do not yet have rate-backed service-area IDs in this app.",
+  "supported": {
+    "Ava": {
+      "ccaId": "ava",
+      "serviceAreaIds": {
+        "pge": "pge-ava-eba"
+      }
+    },
+    "CCCE": {
+      "ccaId": "3ce",
+      "serviceAreaIds": {
+        "pge": "pge-3ce-sbco",
+        "sce": "sce-3ce-sb"
+      }
+    },
+    "CPA": {
+      "ccaId": "cpa",
+      "serviceAreaIds": {
+        "sce": "sce-cpa-la"
+      }
+    },
+    "CPSF": {
+      "ccaId": "cpsf",
+      "serviceAreaIds": {
+        "pge": "pge-cpsf-sf"
+      }
+    },
+    "King City": {
+      "ccaId": "kccp",
+      "serviceAreaIds": {
+        "pge": "pge-kccp-mon"
+      }
+    },
+    "MCE": {
+      "ccaId": "mce",
+      "serviceAreaIds": {
+        "pge": "pge-mce-mar"
+      }
+    },
+    "Peninsula Clean Ener": {
+      "ccaId": "pce",
+      "serviceAreaIds": {
+        "pge": "pge-pce-smc"
+      }
+    },
+    "Pioneer": {
+      "ccaId": "pioneer",
+      "serviceAreaIds": {
+        "pge": "pge-pioneer-pla"
+      }
+    },
+    "RCEA": {
+      "ccaId": "rcea",
+      "serviceAreaIds": {
+        "pge": "pge-rcea-hum"
+      }
+    },
+    "SBCE": {
+      "ccaId": "sbce",
+      "serviceAreaIds": {
+        "sce": "sce-sbce-sb"
+      }
+    },
+    "SCP": {
+      "ccaId": "scp",
+      "serviceAreaIds": {
+        "pge": "pge-scp-son"
+      }
+    },
+    "SJCE": {
+      "ccaId": "sjce",
+      "serviceAreaIds": {
+        "pge": "pge-sjce-scc"
+      }
+    },
+    "SVCE": {
+      "ccaId": "svce",
+      "serviceAreaIds": {
+        "pge": "pge-svce-sv"
+      }
+    },
+    "VCE": {
+      "ccaId": "vce",
+      "serviceAreaIds": {
+        "pge": "pge-vce-yol"
+      }
+    }
+  },
+  "unbacked": {
+    "AVCE": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "CEA": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "DCE": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "EPIC": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "Lancaster Energy": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "OCPA": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "PRIME": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "Pomona Choice": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "RMEA": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "SDCP": {
+      "reason": "No rate-backed service-area ID yet."
+    },
+    "SJP": {
+      "reason": "No rate-backed service-area ID yet."
+    }
+  }
+}

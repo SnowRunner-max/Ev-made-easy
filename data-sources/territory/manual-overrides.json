@@ -1,0 +1,15 @@
+{
+  "overrides": [
+    {
+      "zip": "93117",
+      "action": "multiUtility",
+      "candidates": [
+        "pge-3ce-sbco",
+        "sce-3ce-sb"
+      ],
+      "reason": "Current checked-in PG&E and SCE territory files both assign this ZIP. Multi-utility disambiguation is the conservative runtime behavior until address-level or authoritative polygon resolution is available.",
+      "source": "src/data/pgeTerritory.json and src/data/sceTerritory.json",
+      "reviewDate": "2026-04-19"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "bootstrapFromRuntime": true,
+  "note": "Initial generator source. The generator reads current checked-in runtime JSON until pinned CEC/CalCCA geospatial snapshots are committed for expansion.",
+  "pge": {
+    "zips": {}
+  },
+  "sce": {
+    "zips": {}
+  },
+  "multiUtility": {
+    "zips": {}
+  },
+  "excluded": {
+    "zips": {}
+  }
+}
