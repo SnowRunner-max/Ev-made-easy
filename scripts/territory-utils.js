@@ -23,6 +23,7 @@ export const PATHS = {
   zctaRaw: path.join(REPO_ROOT, 'data-sources/territory/raw/zcta-ca-2024.geojson'),
   overlayCandidates: path.join(REPO_ROOT, 'data-sources/territory/overlay-candidates.json'),
   ccaServiceAreaMap: path.join(REPO_ROOT, 'data-sources/territory/cca-service-area-map.json'),
+  reviewQueue: path.join(REPO_ROOT, 'data-sources/territory/review-queue.json'),
 };
 
 const UTILITY_CONFIG = {

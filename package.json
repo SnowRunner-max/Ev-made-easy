@@ -16,6 +16,9 @@
     "territory:check": "node scripts/build-territory.js --check",
     "territory:pin-zcta": "node scripts/pin-zcta.js",
     "territory:overlay": "node scripts/overlay-territory.js",
+    "territory:auto-review": "node scripts/auto-review-candidates.js",
+    "territory:apply-queue": "node scripts/apply-review-queue.js",
+    "territory:resolve-queue": "node scripts/resolve-review-queue.js",
     "territory:promote": "node scripts/promote-territory-candidates.js",
     "sources:catalog": "node scripts/catalog-sources.js",
     "sources:validate": "node scripts/validate-sources.js"
