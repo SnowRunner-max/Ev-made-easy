@@ -13,6 +13,7 @@ function hourToLabel(hour) {
 const PERIOD_BG = {
   offPeak:      '#2D8F5C',
   partPeak:     '#B87B2B',
+  midPeak:      '#B87B2B',
   peak:         '#C0392B',
   superOffPeak: '#3B82F6',
 };
@@ -20,6 +21,7 @@ const PERIOD_BG = {
 const PERIOD_LABEL = {
   offPeak:      'Off-Peak',
   partPeak:     'Part-Peak',
+  midPeak:      'Mid-Peak',
   peak:         'Peak',
   superOffPeak: 'Super Off-Peak',
 };
@@ -137,13 +139,13 @@ export default function Timeline({ planConfig }) {
         })}
       </div>
 
-      {/* Legend */}
+      {/* Legend — only show periods present in today's schedule */}
       <div className="flex gap-4 mt-3 text-[11px] text-[var(--text-secondary)]">
-        {Object.entries(PERIOD_BG).map(([period, color]) => (
+        {[...new Set(schedule.map(b => b.period))].map(period => (
           <span key={period} className="flex items-center gap-1.5 font-medium">
             <span
               className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
-              style={{ backgroundColor: color }}
+              style={{ backgroundColor: PERIOD_BG[period] }}
             />
             {PERIOD_LABEL[period]}
           </span>
