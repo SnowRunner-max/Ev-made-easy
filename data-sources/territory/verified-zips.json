@@ -1,5 +1,5 @@
 {
-  "bootstrapFromRuntime": true,
+  "bootstrapFromRuntime": false,
   "excluded": {
     "zips": {
       "90620": {

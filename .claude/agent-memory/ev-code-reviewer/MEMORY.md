@@ -1,0 +1,1 @@
+- [Territory Pipeline Architecture](project_territory_pipeline.md) — Build-time ZIP pipeline rules; any multiUtilityZips.json addition requires pipeline audit trail
