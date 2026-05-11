@@ -1,0 +1,6 @@
+- [Testing library packages](feedback_testing_library.md) — user-event is NOT installed; use fireEvent for click interactions
+- [DonutChart percentage querying](feedback_donut_chart_pct.md) — avoid regex % queries; use exact text like getByText('58%')
+- [DST test timestamps](reference_dst_timestamps.md) — canonical UTC timestamps for Nov 1 and Mar 8 DST boundaries
+- [EV2-A summer peak delivery split](reference_ev2a_summer_rates.md) — delivery=0.34979, totalBundled=0.53809, delivPct=65
+- [SCE territory mock strategy](feedback_sce_territory_mock.md) — update sceTerritory mock factory (not a test block) to add SCE ZIPs
+- [useSmartInterval self-reschedule pattern](reference_smart_interval_pattern.md) — how getMsToNext call count maps to interval sequence
