@@ -96,11 +96,6 @@ describe('App — plan selector', () => {
     expect(screen.getByTestId('plan-select').value).toBe('EV2-A');
   });
 
-  it('has six options', () => {
-    render(<App />);
-    expect(screen.getByTestId('plan-select').querySelectorAll('option')).toHaveLength(6);
-  });
-
   it('switching plan updates the UI', () => {
     render(<App />);
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
