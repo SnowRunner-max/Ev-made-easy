@@ -12,7 +12,7 @@ export default function DonutChart({ planConfig }) {
   const rateData = planConfig.rates[season]?.[period];
   if (!rateData) return null;
 
-  const { delivery, generation, combined } = rateData;
+  const { delivery, combined } = rateData;
   const delivPct = Math.round((delivery / combined) * 100);
   const genPct   = 100 - delivPct;
 

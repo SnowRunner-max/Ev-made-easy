@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import ratePlans from './data/ratePlans.json';
-import sceRatePlans from './data/sceRatePlans.json';
+import { RATE_PLAN_REGISTRY } from './data/ratePlanRegistry';
 import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
 import { calcChargeSummary } from './engine/costCalculator';
@@ -15,27 +14,6 @@ import { VehicleInputs, CostOutput } from './components/Calculator';
 import DonutChart from './components/DonutChart';
 import ChargingTip from './components/ChargingTip';
 import Footer from './components/Footer';
-
-/** Static registry mapping serviceAreaId → imported rate plan data */
-const RATE_PLAN_REGISTRY = {
-  'pge-3ce-sbco':    ratePlans,
-  'pge-sjce-scc':    ratePlans,
-  'pge-pce-smc':     ratePlans,
-  'pge-scp-son':     ratePlans,
-  'pge-ava-eba':     ratePlans,
-  'pge-svce-sv':     ratePlans,
-  'pge-mce-mar':     ratePlans,
-  'pge-rcea-hum':    ratePlans,
-  'pge-vce-yol':     ratePlans,
-  'pge-pioneer-pla': ratePlans,
-  'pge-cpsf-sf':     ratePlans,
-  'pge-kccp-mon':    ratePlans,
-  'pge-only':        ratePlans,
-  'sce-cpa-la':      sceRatePlans,
-  'sce-sbce-sb':     sceRatePlans,
-  'sce-3ce-sb':      sceRatePlans,
-  'sce-only':        sceRatePlans,
-};
 
 const CUSTOM_ID = 'custom';
 
@@ -252,7 +230,7 @@ export default function App() {
               Energy Price by Rate
             </h1>
             <p className="text-sm text-[var(--text-muted)]">
-              See today's electricity rates and estimate your EV charging cost.
+              See today&apos;s electricity rates and estimate your EV charging cost.
             </p>
           </div>
 
@@ -334,7 +312,7 @@ export default function App() {
           {/* TODAY'S RATE SCHEDULE — full width */}
           <section className="mb-8">
             <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)] mb-3">
-              Today's Rate Schedule
+              Today&apos;s Rate Schedule
             </label>
             <div className="bg-surface-container-high p-5 rounded-xl">
               <Timeline planConfig={effectivePlanConfig} />

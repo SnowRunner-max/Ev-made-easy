@@ -1,0 +1,190 @@
+{
+  "catalogVersion": 1,
+  "generatedBy": "scripts/catalog-sources.js",
+  "note": "Catalog of local authoritative rate source documents. Some source directories are gitignored because they contain large raw PDFs/workbooks; this catalog records their expected local paths and hashes.",
+  "groups": [
+    {
+      "id": "pge-rate-workbooks",
+      "description": "Authoritative PG&E delivery and PG&E-territory CCA generation workbooks.",
+      "files": [
+        {
+          "path": "pge_source/CCA_Generation_Rates.xlsx",
+          "bytes": 33217,
+          "sha256": "ad1a9dc2edbf081feeef0a4da7e89185f424666cc5df50785e96e52782f247c3"
+        },
+        {
+          "path": "pge_source/res-inclu-tou-current.xlsx",
+          "bytes": 37626,
+          "sha256": "e071be6fd457a92da60637fc529c1e4c7a5620ffd83d3ae221819f7e4866995d"
+        }
+      ]
+    },
+    {
+      "id": "pge-cca-raw-sources",
+      "description": "Raw PG&E-territory CCA rate PDFs, research notes, and verification reports.",
+      "files": [
+        {
+          "path": "cca_source/raw_sources/2026-January-Rate-Sheet-2024-Vintage.pdf",
+          "bytes": 1412986,
+          "sha256": "d0cb5ff8ceb8475d25163c94f891a25e61bf41cb241ff575eda74267be025b1c"
+        },
+        {
+          "path": "cca_source/raw_sources/CCA_Generation_Rates.xlsx",
+          "bytes": 33217,
+          "sha256": "ad1a9dc2edbf081feeef0a4da7e89185f424666cc5df50785e96e52782f247c3"
+        },
+        {
+          "path": "cca_source/raw_sources/CCA_Generation_Rates_Research.md",
+          "bytes": 33241,
+          "sha256": "41c5860a7bad0f70cd197fbb540243724106dc856efeb60ae1e0a397b48c6e73"
+        },
+        {
+          "path": "cca_source/raw_sources/CPSF_ResidentialRates2025.pdf",
+          "bytes": 348083,
+          "sha256": "69dc5cff1c4c193c39fbd8d3626f77b9d8bff13b82d0bae053a5006d44488fc5"
+        },
+        {
+          "path": "cca_source/raw_sources/MCE-Residential-Rates-05052023.pdf",
+          "bytes": 155981,
+          "sha256": "db92362d02205c24ccaed4c42e5508d5f4fd7077226b88cea3900acec9c55270"
+        },
+        {
+          "path": "cca_source/raw_sources/PCE-Residential-Rates-Effective-02-10-2025.pdf",
+          "bytes": 140074,
+          "sha256": "30c8c338dd41205fcdc7ab6c4143e8c0b3042f38294ab4be565681096d57211e"
+        },
+        {
+          "path": "cca_source/raw_sources/Residential-Rates-2025-01.pdf",
+          "bytes": 179324,
+          "sha256": "562626e814a39fae8b579e24e704248ce35886ecb7b6d275db75042d1a21bd97"
+        },
+        {
+          "path": "cca_source/raw_sources/Residential-Rates_Effective-9.1.25.pdf",
+          "bytes": 73372,
+          "sha256": "cf620f8d451bca7a8d98a66b796e8b51df405b70164dc9516e3cbedb5a30959d"
+        },
+        {
+          "path": "cca_source/raw_sources/SJCE-Residential-Rates-March-1-2025.pdf",
+          "bytes": 224056,
+          "sha256": "23184e6f58f7c5e3a6b1029b039dedd236035a2817836993c3abb076ef4e33b4"
+        },
+        {
+          "path": "cca_source/raw_sources/SVCE-4-2025-Residential-Rate-2.pdf",
+          "bytes": 96308,
+          "sha256": "c0add478a3844f1b89c290f342dd8663011aa317ab51f2a315d96b7c3e781809"
+        },
+        {
+          "path": "cca_source/raw_sources/VCE-Jan-2025-Residential-Rate-Sheets.pdf",
+          "bytes": 85694,
+          "sha256": "0126fe70a1dd38e1fe7bcc2f4debd52083af717969a7d0c8d518060db7c5930d"
+        },
+        {
+          "path": "cca_source/raw_sources/Verification_Report.md",
+          "bytes": 7206,
+          "sha256": "c0f98ec8d7ff0670c96538a81e7dc4bd215dff04bb8da6d63bf4cdd2cedd3800"
+        },
+        {
+          "path": "cca_source/raw_sources/compass_artifact_wf-59b8ac4c-40f9-4b7b-8edf-093b86cf971d_text_markdown.md",
+          "bytes": 33241,
+          "sha256": "41c5860a7bad0f70cd197fbb540243724106dc856efeb60ae1e0a397b48c6e73"
+        },
+        {
+          "path": "cca_source/raw_sources/kccp-rcc.pdf",
+          "bytes": 510405,
+          "sha256": "f08fbbd91fa08410c7003dfb67090a04ecf47f89220b5d6f1208311073a62395"
+        },
+        {
+          "path": "cca_source/raw_sources/pio-rcc-placer.pdf",
+          "bytes": 707189,
+          "sha256": "b0dea8d53e54ca38adcafaa62ad9108522e8960dbec577c29ae2e815ff33b58a"
+        }
+      ]
+    },
+    {
+      "id": "sce-rate-workbooks",
+      "description": "Authoritative SCE combined rates workbook and SCE residential raw source documents.",
+      "files": [
+        {
+          "path": "sce_source/SCE_Combined_Rates.xlsx",
+          "bytes": 24787,
+          "sha256": "5641e018974e739a57205c960fc436b4bc15dca54e0affa54c1254edb977397d"
+        },
+        {
+          "path": "sce_source/raw_sources/AVCE-Rates-Effective-April-1-2025_WEB-POSTING.pdf",
+          "bytes": 518984,
+          "sha256": "7590dfd4b219f2e6eb3eedc18051b5e725fb1096dbb5dcc1a750e22098c6b5a0"
+        },
+        {
+          "path": "sce_source/raw_sources/DCE-Rate-Schedule-for-Website-010126-RES.xlsx",
+          "bytes": 12687,
+          "sha256": "276acc42f57e046407a835c72c99c2b4b3b8cc5d7e19bc7333ca3644407475ee"
+        },
+        {
+          "path": "sce_source/raw_sources/ELECTRIC_SCHEDULES_D.pdf",
+          "bytes": 682583,
+          "sha256": "bb5ae3e440eababf03181b3176cafb469acb41afd40aa4cad6cefca6c833e9f9"
+        },
+        {
+          "path": "sce_source/raw_sources/ELECTRIC_SCHEDULES_TOU-D.pdf",
+          "bytes": 2088412,
+          "sha256": "aadbe85df805c38ac05d129a5a264f8c90830dd69cc8ffe55743a442ef853ccc"
+        },
+        {
+          "path": "sce_source/raw_sources/Energy-for-Palmdales-Independent-Choice-Residential-Rates_Effective-February-1-2024.pdf",
+          "bytes": 324970,
+          "sha256": "2905826aecc6c94879200df9fff9681701038315a592950d891f44d48a0d1d81"
+        },
+        {
+          "path": "sce_source/raw_sources/JRC_Pomona-December-1-2025-Rates_SCE-Jan-1-2026-Rates_WEBSITE.pdf",
+          "bytes": 563934,
+          "sha256": "4b6f58c3510e5a41d06c181125d2e1a50934b5d60b025a5ec967f2787f370b37"
+        },
+        {
+          "path": "sce_source/raw_sources/LE-Rates-08.21.24_Residential-for-WEB-v2.pdf",
+          "bytes": 94647,
+          "sha256": "da1f4165e76782661d0653e264e06c1a800ad626eae3a997b553e649db7a00bb"
+        },
+        {
+          "path": "sce_source/raw_sources/OCPA-Rates-Schedule-Website-rates_2025Oct-Update_Residential.pdf",
+          "bytes": 154769,
+          "sha256": "5164735b616a77308cd552b7eca54ee716bc08832933c3735635b44def3d9b38"
+        },
+        {
+          "path": "sce_source/raw_sources/RATES_SUMMARY.md",
+          "bytes": 6821,
+          "sha256": "12753b5e24d7d087ad4efae06571642ec7ede4db05f422d04ad2f9162ca021d6"
+        },
+        {
+          "path": "sce_source/raw_sources/Residential-Rates-as-of-March-2025-for-communities-enrolled-in-2019-2020.pdf",
+          "bytes": 695525,
+          "sha256": "d9f43bfefc64672defbf65a9b2be2e7e4cad0671cdeaabba23e221020a93a571"
+        },
+        {
+          "path": "sce_source/raw_sources/Residential-SCE-Website-Rate-Sheet-v2-2025.04.01.pdf",
+          "bytes": 858853,
+          "sha256": "dbbf27769bb3650771e9951e92aab85729ff97f4e4183fbc6a94b9fc6ed4223d"
+        },
+        {
+          "path": "sce_source/raw_sources/SBCE 100 GREEN RATES.pdf",
+          "bytes": 749706,
+          "sha256": "6ec74ea42eb3f417cd6f75c55fa7adcf9f632fd48bdb7b12700c3da6ab329098"
+        },
+        {
+          "path": "sce_source/raw_sources/SCE PRIME Joint Rate Comparisons | Rate Plans & Pricing | SCE.html",
+          "bytes": 241734,
+          "sha256": "21d40c8e830a6a3d94ec3d5347e2cf8f72ea8128b627f40898ed048e7b5ea58a"
+        },
+        {
+          "path": "sce_source/raw_sources/SCE RMEA Joint Rate Comparisons | Rate Plans & Pricing | SCE.html",
+          "bytes": 247339,
+          "sha256": "cd56faeea5d901763af1d129483520a3483d2dafd085947cb3da723393ab166b"
+        },
+        {
+          "path": "sce_source/raw_sources/SCE SJP Joint Rate Comparisons | Rate Plans & Pricing | SCE.html",
+          "bytes": 232971,
+          "sha256": "63aca8681e54cedb25d4806790670e77c97e3eff859d4e735992151ae99d40ac"
+        }
+      ]
+    }
+  ]
+}

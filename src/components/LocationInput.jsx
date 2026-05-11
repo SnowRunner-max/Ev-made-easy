@@ -10,7 +10,7 @@ const ERROR_MESSAGES = {
 };
 
 export default function LocationInput({ onLocationResolved, onLocationCleared }) {
-  const { inputValue, status, errorCode, resolved, result, setInput, clearInput } = useLocationLookup();
+  const { inputValue, status, resolved, result, setInput, clearInput } = useLocationLookup();
 
   useEffect(() => {
     if (status === 'valid' && resolved) {
