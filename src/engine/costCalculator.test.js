@@ -262,6 +262,42 @@ describe('ccaGeneration — EV2-A with SJCE vs 3CE', () => {
   });
 });
 
+// ── Additional single-plan calcChargeCost coverage ───────────────────────────
+
+describe('calcChargeCost — E-ELEC', () => {
+  const eelecConfig = buildEffectiveConfig(ratePlans.ratePlans['E-ELEC']);
+
+  // E-ELEC winter offPeak totalBundled = 0.28468
+  // At 2 AM winter is off-peak for E-ELEC (same TOU windows as EV2-A)
+  it('winter off-peak 2 AM, 30 kWh costs 30 × 0.28468', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 30, 7.7, eelecConfig);
+    expect(totalCost).toBeCloseTo(30 * 0.28468, 2);
+  });
+});
+
+describe('calcChargeCost — E-TOU-C', () => {
+  const etoucConfig = buildEffectiveConfig(ratePlans.ratePlans['E-TOU-C']);
+
+  // E-TOU-C summer peak totalBundled = 0.52240
+  // E-TOU-C peak = 4–9 PM every day. 5 PM is inside the peak window.
+  it('summer peak 5 PM, 20 kWh costs 20 × 0.52240', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-07-15T17:00:00-07:00'), 20, 7.7, etoucConfig);
+    expect(totalCost).toBeCloseTo(20 * 0.52240, 2);
+  });
+});
+
+describe('calcChargeCost — EV-B summer weekday (May 5 2026, Tuesday)', () => {
+  const evbSummerConfig = buildEffectiveConfig(ratePlans.ratePlans['EV-B']);
+
+  // May 5 2026 is a Tuesday — weekday. EV-B summer weekday peak = 2–9 PM.
+  // 3 PM is inside the peak window. EV-B summer peak totalBundled = 0.62131.
+  // 20 kWh at 7.7 kW → 20/7.7 ≈ 2.597h, stays entirely within peak (3 PM → ~5:35 PM).
+  it('EV-B summer weekday peak at 3 PM, 20 kWh stays in single peak period', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-05-05T15:00:00-07:00'), 20, 7.7, evbSummerConfig);
+    expect(totalCost).toBeCloseTo(20 * 0.62131, 2);
+  });
+});
+
 describe('ccaGeneration — E-1 flat rate with multiple CCAs', () => {
   const e1Raw = ratePlans.ratePlans['E-1'];
 

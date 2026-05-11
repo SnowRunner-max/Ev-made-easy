@@ -1,20 +1,27 @@
 #!/usr/bin/env node
+import { pathToFileURL } from 'node:url';
 import { loadValidationInputs, validateTerritoryData } from './territory-utils.js';
 
-const result = validateTerritoryData(loadValidationInputs());
-
-for (const warning of result.warnings) {
-  console.warn(`Warning: ${warning.message}`);
+export function validateTerritoryFromFiles() {
+  return validateTerritoryData(loadValidationInputs());
 }
 
-if (!result.ok) {
-  console.error('Territory validation failed:');
-  for (const error of result.errors) {
-    console.error(`- ${error.message}`);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const result = validateTerritoryFromFiles();
+
+  for (const warning of result.warnings) {
+    console.warn(`Warning: ${warning.message}`);
   }
-  process.exit(1);
-}
 
-console.log(
-  `Territory validation passed: ${result.stats.pgeZipCount} PG&E ZIPs, ${result.stats.sceZipCount} SCE ZIPs, ${result.stats.multiUtilityZipCount} multi-utility ZIPs, ${result.stats.serviceAreaCount} service areas.`
-);
+  if (!result.ok) {
+    console.error('Territory validation failed:');
+    for (const error of result.errors) {
+      console.error(`- ${error.message}`);
+    }
+    process.exit(1);
+  }
+
+  console.log(
+    `Territory validation passed: ${result.stats.pgeZipCount} PG&E ZIPs, ${result.stats.sceZipCount} SCE ZIPs, ${result.stats.multiUtilityZipCount} multi-utility ZIPs, ${result.stats.serviceAreaCount} service areas.`
+  );
+}

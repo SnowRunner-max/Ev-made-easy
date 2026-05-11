@@ -19,10 +19,12 @@ vi.mock('../data/pgeTerritory.json', () => ({
   },
 }));
 
-// Mock sceTerritory.json
+// Mock sceTerritory.json — includes SCE ZIPs for SCE territory tests
 vi.mock('../data/sceTerritory.json', () => ({
   default: {
-    zips: {},
+    zips: {
+      '91001': 'sce-cpa-la',   // SCE + CPA CCA
+    },
   },
 }));
 
@@ -248,5 +250,49 @@ describe('useLocationLookup — clearInput', () => {
     expect(result.current.resolved).toBeNull();
     expect(result.current.errorCode).toBeNull();
     expect(result.current.inputValue).toBe('');
+  });
+});
+
+describe('useLocationLookup — SCE territory (zipcode path)', () => {
+  it('resolves a valid SCE ZIP (91001) to sce-cpa-la serviceAreaId', async () => {
+    zipcodes.lookup.mockReturnValue({ zip: '91001', city: 'Altadena', state: 'CA' });
+    const { result } = renderHook(() => useLocationLookup());
+
+    act(() => result.current.setInput('91001'));
+    await act(async () => { vi.advanceTimersByTime(400); });
+
+    expect(result.current.status).toBe('valid');
+    expect(result.current.resolved).toEqual({
+      serviceAreaId: 'sce-cpa-la',
+      displayLabel: 'Altadena, CA',
+      zip: '91001',
+    });
+    expect(result.current.errorCode).toBeNull();
+  });
+
+  it('SCE ZIP resolves to a valid status, not an error', async () => {
+    zipcodes.lookup.mockReturnValue({ zip: '91001', city: 'Altadena', state: 'CA' });
+    const { result } = renderHook(() => useLocationLookup());
+
+    act(() => result.current.setInput('91001'));
+    await act(async () => { vi.advanceTimersByTime(400); });
+
+    expect(result.current.status).toBe('valid');
+  });
+});
+
+describe('useLocationLookup — SCE territory (city name path)', () => {
+  it('resolves a city name that maps to an SCE ZIP', async () => {
+    zipcodes.lookupByName.mockReturnValue([
+      { zip: '91001', city: 'Altadena', state: 'CA' },
+    ]);
+    const { result } = renderHook(() => useLocationLookup());
+
+    act(() => result.current.setInput('Altadena'));
+    await act(async () => { vi.advanceTimersByTime(400); });
+
+    expect(result.current.status).toBe('valid');
+    expect(result.current.resolved?.serviceAreaId).toBe('sce-cpa-la');
+    expect(result.current.resolved?.displayLabel).toBe('Altadena, CA');
   });
 });

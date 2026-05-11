@@ -20,6 +20,7 @@
     "territory:apply-queue": "node scripts/apply-review-queue.js",
     "territory:resolve-queue": "node scripts/resolve-review-queue.js",
     "territory:promote": "node scripts/promote-territory-candidates.js",
+    "territory:pipeline": "node scripts/run-territory-pipeline.js",
     "sources:catalog": "node scripts/catalog-sources.js",
     "sources:validate": "node scripts/validate-sources.js"
   },
