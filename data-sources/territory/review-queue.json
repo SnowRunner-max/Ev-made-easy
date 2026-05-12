@@ -1,6 +1,6 @@
 {
   "count": 146,
-  "generatedAt": "2026-05-05T03:59:35.136Z",
+  "generatedAt": "2026-05-12T03:27:25.930Z",
   "note": "Fill in each 'decision' field. Valid actions: assign, multiUtility, exclude, no-coverage. Leave action null to skip. Run 'npm run territory:apply-queue' to write decisions back, then 'npm run territory:promote'.",
   "queue": [
     {
@@ -5016,5 +5016,5 @@
       "zip": "96161"
     }
   ],
-  "resolvedAt": "2026-05-09T03:17:52.421Z"
+  "resolvedAt": "2026-05-12T03:27:25.950Z"
 }

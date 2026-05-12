@@ -7,7 +7,7 @@
       "zip": "93117"
     }
   ],
-  "generatedAt": "2026-05-10T17:51:34.281Z",
+  "generatedAt": "2026-05-12T03:27:26.000Z",
   "sourceMode": "pinned-boundary-snapshots-bootstrap-runtime-zips",
   "sources": [
     {
@@ -106,17 +106,24 @@
   "stats": {
     "appliedOverrideCount": 1,
     "excludedZipCount": 28,
+    "libertyZipCount": 14,
     "multiUtilityZipCount": 25,
     "pgeZipCount": 855,
     "sceZipCount": 473,
-    "serviceAreaCount": 17,
-    "usedServiceAreaCount": 16
+    "serviceAreaCount": 19,
+    "tdpudZipCount": 3,
+    "usedServiceAreaCount": 18
   },
   "warnings": [
     {
       "count": 3,
       "message": "Service area sce-sbce-sb has only 3 ZIP entries; confirm this is intentional",
       "serviceAreaId": "sce-sbce-sb"
+    },
+    {
+      "count": 3,
+      "message": "Service area tdpud-truckee has only 3 ZIP entries; confirm this is intentional",
+      "serviceAreaId": "tdpud-truckee"
     },
     {
       "message": "Territory ZIP outputs are bootstrapped from current runtime artifacts; overlay pinned CEC boundary snapshots with a reviewed ZIP/ZCTA source before broad coverage expansion"
