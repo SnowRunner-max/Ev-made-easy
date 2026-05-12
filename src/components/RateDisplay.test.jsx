@@ -84,6 +84,12 @@ describe('RateDisplay — tiered plan (E-1)', () => {
     expect(screen.getByTestId('rate-value')).toHaveTextContent('Tiered Rate');
   });
 
+  it('shows a flat per-kWh rate when the effective plan has one', () => {
+    vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
+    render(<RateDisplay planConfig={{ ...e1Config, _flatRate: { combined: 0.1976, delivery: 0, generation: 0.1976 } }} />);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.20/kWh');
+  });
+
   it('no countdown for tiered plan', () => {
     vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
     render(<RateDisplay planConfig={e1Config} />);

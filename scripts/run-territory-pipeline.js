@@ -137,6 +137,12 @@ export async function runTerritoryPipeline({
   if (utility === 'sce' || utility === 'all') {
     console.log(`  SCE ZIPs:        ${stats.sceZipCount}`);
   }
+  if (utility === 'tdpud' || utility === 'all') {
+    console.log(`  TDPUD ZIPs:      ${stats.tdpudZipCount ?? 0}`);
+  }
+  if (utility === 'liberty' || utility === 'all') {
+    console.log(`  Liberty ZIPs:    ${stats.libertyZipCount ?? 0}`);
+  }
   console.log(`  Multi-utility:   ${stats.multiUtilityZipCount}`);
   console.log(`  Service areas:   ${stats.serviceAreaCount}`);
   if (nullActionZips.length > 0) {

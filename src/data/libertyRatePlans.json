@@ -1,0 +1,139 @@
+{
+  "_metadata": {
+    "version": "1.0.0",
+    "territory": "Liberty Utilities (CalPeco)",
+    "effectiveDate": "2026-03-01",
+    "sourceDate": "2026-05-12",
+    "sources": [
+      "https://california.libertyutilities.com/south-lake-tahoe/residential/rates-and-tariffs/electrical.html",
+      "https://california.libertyutilities.com/uploads/Liberty%20Rate%20Brochure%203-2026%20%28With%20TOU%20Rates%29.pdf",
+      "https://california.libertyutilities.com/uploads/CalPeco%20Tariffs/Schedule%20No.%20D-1%20TOU%20EV%20Domestic%20Service.pdf",
+      "https://california.libertyutilities.com/uploads/CalPeco%20Tariffs/Schedule%20No%20D-1%20TOU.pdf",
+      "https://california.libertyutilities.com/uploads/CalPeco%20Tariffs/Schedule%20No%20D-1.pdf"
+    ],
+    "notes": [
+      "Liberty tariff totals include distribution, generation/ECAC, GHG, SIP, PPP, BRRBA, MARBA, and surcharges shown in the tariff tables.",
+      "The app stores non-generation riders in the delivery component and the tariff generation column in generation so combined equals the published total usage charge.",
+      "Customer charges are recorded in fixedCharges metadata and are not included in EV charging session estimates.",
+      "TOU periods are approximated to whole-hour boundaries used by the app: 5:01pm is represented as 5pm, 10:01pm as 10pm, 7:01am as 7am, and 10:01am as 10am."
+    ]
+  },
+  "ratePlans": {
+    "LIBERTY-D1-TOU-EV": {
+      "name": "TOU D-1 EV",
+      "selectorLabel": "TOU D-1 EV",
+      "scheduleCode": "TOU D-1 EV",
+      "rateDesignation": "EV Time-of-Use Domestic Service",
+      "category": "EV Rate",
+      "status": "current",
+      "description": "Optional Liberty residential electric vehicle time-of-use domestic service.",
+      "eligibility": "Liberty Schedule D-1 customers with EV charging, subject to meter availability.",
+      "meteringScope": "wholeHouse",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "Summer (Jun-Sep)" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "Winter (Oct-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "10:00", "end": "22:00", "days": "all", "label": "10am-10pm every day" },
+          "offPeak": { "label": "All other hours (10pm-10am)" }
+        },
+        "winter": {
+          "peak": { "start": "17:00", "end": "22:00", "days": "all", "label": "5pm-10pm every day" },
+          "midPeak": { "start": "07:00", "end": "17:00", "days": "all", "label": "7am-5pm every day" },
+          "offPeak": { "label": "All other hours (10pm-7am)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.20769, "offPeak": 0.20769 },
+          "winter": { "peak": 0.20769, "midPeak": 0.20769, "offPeak": 0.20769 }
+        },
+        "generation": {
+          "summer": { "peak": 0.1654, "offPeak": 0 },
+          "winter": { "peak": 0.17515, "midPeak": 0.16691, "offPeak": 0 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.37309, "offPeak": 0.20769 },
+          "winter": { "peak": 0.38284, "midPeak": 0.3746, "offPeak": 0.20769 }
+        },
+        "ccaGeneration": {}
+      },
+      "fixedCharges": {
+        "customerCharge": 14.17,
+        "unit": "$/meter/month"
+      }
+    },
+    "LIBERTY-D1-TOU": {
+      "name": "TOU D-1",
+      "selectorLabel": "TOU D-1",
+      "scheduleCode": "TOU D-1",
+      "rateDesignation": "Time-of-Use Domestic Service",
+      "category": "Residential TOU",
+      "status": "current",
+      "description": "Optional Liberty residential time-of-use domestic service.",
+      "eligibility": "Liberty Schedule D-1 customers, subject to meter availability.",
+      "meteringScope": "wholeHouse",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 9, "label": "Summer (Jun-Sep)" },
+        "winter": { "startMonth": 10, "endMonth": 5, "label": "Winter (Oct-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "10:00", "end": "22:00", "days": "all", "label": "10am-10pm every day" },
+          "offPeak": { "label": "All other hours (10pm-10am)" }
+        },
+        "winter": {
+          "peak": { "start": "17:00", "end": "22:00", "days": "all", "label": "5pm-10pm every day" },
+          "midPeak": { "start": "07:00", "end": "17:00", "days": "all", "label": "7am-5pm every day" },
+          "offPeak": { "label": "All other hours (10pm-7am)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.20769, "offPeak": 0.20769 },
+          "winter": { "peak": 0.20769, "midPeak": 0.20769, "offPeak": 0.20769 }
+        },
+        "generation": {
+          "summer": { "peak": 0.1654, "offPeak": 0.07512 },
+          "winter": { "peak": 0.17159, "midPeak": 0.16481, "offPeak": 0.08015 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.37309, "offPeak": 0.28281 },
+          "winter": { "peak": 0.37928, "midPeak": 0.3725, "offPeak": 0.28784 }
+        },
+        "ccaGeneration": {}
+      },
+      "fixedCharges": {
+        "customerCharge": 14.17,
+        "unit": "$/meter/month"
+      }
+    },
+    "LIBERTY-D1": {
+      "name": "D-1 Domestic Service",
+      "selectorLabel": "D-1 Domestic",
+      "scheduleCode": "D-1",
+      "rateDesignation": "Domestic Service",
+      "category": "Tiered (Non-TOU)",
+      "status": "current",
+      "description": "Liberty domestic residential service. The displayed flat rate uses the permanent baseline usage charge; tariff excess and non-permanent rates are recorded in metadata.",
+      "eligibility": "Liberty domestic residential customers.",
+      "meteringScope": "wholeHouse",
+      "rates": {
+        "delivery": { "tier1": 0.18247 },
+        "generation": { "allUsage": 0.11619 },
+        "totalBundled": { "tier1": 0.29866 },
+        "ccaGeneration": {}
+      },
+      "tiers": {
+        "baseline": 0.29866,
+        "excess": 0.34046,
+        "nonPermanent": 0.32412
+      },
+      "fixedCharges": {
+        "customerCharge": 14.17,
+        "unit": "$/meter/month"
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ export default function RateDisplay({ planConfig }) {
 
   // E-1 tiered plan
   if (!planConfig.touPeriods) {
+    const flatRate = rate != null ? `$${rate.toFixed(2)}` : 'Tiered Rate';
     return (
       <div className="mb-6">
         <div
@@ -25,7 +26,8 @@ export default function RateDisplay({ planConfig }) {
           data-testid="rate-value"
           className="font-display text-5xl tracking-tight leading-none text-white mb-1"
         >
-          Tiered Rate
+          {flatRate}
+          {rate != null && <span className="text-[22px] font-light opacity-70 tracking-normal">/kWh</span>}
         </div>
         <div className="text-sm text-pewter">{planConfig.name} · No time-based pricing</div>
       </div>

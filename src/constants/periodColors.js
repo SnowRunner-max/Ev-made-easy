@@ -23,6 +23,13 @@ export const PERIOD_COLORS = {
     darkBadge: 'bg-amber-950/40 text-amber-300',
     dotColor:  '#EFC88B',
   },
+  midPeak: {
+    badge:     'bg-amber-500 text-white',
+    bg:        'bg-amber-500',
+    tip:       'bg-amber-50 text-amber-900',
+    darkBadge: 'bg-amber-950/40 text-amber-300',
+    dotColor:  '#EFC88B',
+  },
   peak: {
     badge:     'bg-red-500 text-white',
     bg:        'bg-red-500',

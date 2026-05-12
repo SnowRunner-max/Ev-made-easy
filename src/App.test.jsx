@@ -236,3 +236,25 @@ describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
     expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
   });
 });
+
+describe('App — Tahoe utilities', () => {
+  it('resolving Olympic Valley selects Liberty Tahoe EV TOU rates and computes cost', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'liberty-tahoe', displayLabel: 'Olympic Valley, CA', zip: '96146' }));
+
+    expect(screen.getByTestId('plan-select').value).toBe('LIBERTY-D1-TOU-EV');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toHaveTextContent(/\$0\.\d{2}/);
+    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
+  });
+
+  it('selecting TDPUD Truckee uses TDPUD TOU plans and computes cost', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'tdpud-truckee', displayLabel: 'Truckee, CA', zip: '96161' }));
+
+    expect(screen.getByTestId('plan-select').value).toBe('TDPUD-TOU-PRIMARY');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.16');
+    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
+  });
+});

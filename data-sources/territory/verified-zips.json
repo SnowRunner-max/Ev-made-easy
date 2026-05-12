@@ -245,7 +245,30 @@
       "95389": [
         "pge-only",
         "sce-only"
+      ],
+      "96155": [
+        "liberty-tahoe",
+        "pge-pioneer-pla"
       ]
+    }
+  },
+  "liberty": {
+    "zips": {
+      "96140": "liberty-tahoe",
+      "96141": "liberty-tahoe",
+      "96142": "liberty-tahoe",
+      "96143": "liberty-tahoe",
+      "96145": "liberty-tahoe",
+      "96146": "liberty-tahoe",
+      "96148": "liberty-tahoe",
+      "96150": "liberty-tahoe",
+      "96151": "liberty-tahoe",
+      "96152": "liberty-tahoe",
+      "96154": "liberty-tahoe",
+      "96155": "liberty-tahoe",
+      "96156": "liberty-tahoe",
+      "96157": "liberty-tahoe",
+      "96158": "liberty-tahoe"
     }
   },
   "note": "Initial generator source. The generator reads current checked-in runtime JSON until pinned CEC/CalCCA geospatial snapshots are committed for expansion.",
@@ -1106,6 +1129,13 @@
       "96096": "pge-only",
       "96125": "pge-only",
       "96155": "pge-pioneer-pla"
+    }
+  },
+  "tdpud": {
+    "zips": {
+      "96160": "tdpud-truckee",
+      "96161": "tdpud-truckee",
+      "96162": "tdpud-truckee"
     }
   },
   "sce": {

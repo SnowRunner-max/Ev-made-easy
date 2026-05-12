@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { PATHS, formatJson, readJson, sortObjectByKey } from './territory-utils.js';
+import { PATHS, UTILITY_CONFIG, formatJson, readJson, sortObjectByKey } from './territory-utils.js';
 
 const PROMOTABLE_STATUSES = new Set(['assign', 'multiUtility', 'exclude']);
 
@@ -16,6 +16,8 @@ function cloneVerifiedZips(verifiedZips) {
     ...verifiedZips,
     pge: { ...(verifiedZips.pge ?? {}), zips: { ...(verifiedZips.pge?.zips ?? {}) } },
     sce: { ...(verifiedZips.sce ?? {}), zips: { ...(verifiedZips.sce?.zips ?? {}) } },
+    tdpud: { ...(verifiedZips.tdpud ?? {}), zips: { ...(verifiedZips.tdpud?.zips ?? {}) } },
+    liberty: { ...(verifiedZips.liberty ?? {}), zips: { ...(verifiedZips.liberty?.zips ?? {}) } },
     multiUtility: {
       ...(verifiedZips.multiUtility ?? {}),
       zips: { ...(verifiedZips.multiUtility?.zips ?? {}) },
@@ -30,6 +32,8 @@ function cloneVerifiedZips(verifiedZips) {
 function removeZipEverywhere(verifiedZips, zip) {
   delete verifiedZips.pge.zips[zip];
   delete verifiedZips.sce.zips[zip];
+  delete verifiedZips.tdpud.zips[zip];
+  delete verifiedZips.liberty.zips[zip];
   delete verifiedZips.multiUtility.zips[zip];
   delete verifiedZips.excluded.zips[zip];
 }
@@ -80,14 +84,12 @@ export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, ser
       }
 
       removeZipEverywhere(nextVerified, zip);
-      if (serviceArea.utility === 'PG&E') {
-        nextVerified.pge.zips[zip] = serviceAreaId;
-      } else if (serviceArea.utility === 'SCE') {
-        nextVerified.sce.zips[zip] = serviceAreaId;
-      } else {
+      const utilityConfig = UTILITY_CONFIG[serviceArea.utility];
+      if (!utilityConfig) {
         skip(skipped, zip, `assign review uses unsupported utility ${serviceArea.utility}`);
         continue;
       }
+      nextVerified[utilityConfig.id].zips[zip] = serviceAreaId;
 
       promoted.push({ zip, status, serviceAreaId });
       continue;
