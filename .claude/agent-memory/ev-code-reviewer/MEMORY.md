@@ -1,1 +1,2 @@
 - [Territory Pipeline Architecture](project_territory_pipeline.md) — Build-time ZIP pipeline rules; any multiUtilityZips.json addition requires pipeline audit trail
+- [Tahoe Utility Expansion](project_tahoe_utilities.md) — TDPUD + Liberty rate modeling decisions, known issues, and schema conventions

@@ -2,7 +2,7 @@
   "_metadata": {
     "version": "1.0.0",
     "territory": "TDPUD",
-    "effectiveDate": "2026",
+    "effectiveDate": "2026-01-01",
     "sourceDate": "2026-05-12",
     "sources": [
       "https://www.tdpud.org/departments/electric/time-of-use-rate",
@@ -11,6 +11,7 @@
     "notes": [
       "TDPUD rates are bundled residential energy rates. The app stores them as generation with zero delivery component so combined equals the published bundled rate.",
       "TDPUD residential TOU periods are the same every day: off-peak 9pm-11am, mid-peak 11am-4pm, peak 4pm-9pm.",
+      "TDPUD mid-peak and off-peak energy prices are intentionally equal in the published 2026 residential TOU tariffs.",
       "Fixed-rate plans are non-TOU bundled energy rates. Monthly fixed/customer charges are not included in EV charging cost estimates."
     ]
   },

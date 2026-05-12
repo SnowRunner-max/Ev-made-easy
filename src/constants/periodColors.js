@@ -23,6 +23,8 @@ export const PERIOD_COLORS = {
     darkBadge: 'bg-amber-950/40 text-amber-300',
     dotColor:  '#EFC88B',
   },
+  // Mid-peak and part-peak are distinct tariff keys but intentionally share the
+  // same intermediate severity treatment in the UI palette.
   midPeak: {
     badge:     'bg-amber-500 text-white',
     bg:        'bg-amber-500',

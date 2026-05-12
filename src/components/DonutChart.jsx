@@ -15,7 +15,7 @@ export default function DonutChart({ planConfig }) {
   const { delivery, combined } = rateData;
   const delivPct = Math.round((delivery / combined) * 100);
   const genPct   = 100 - delivPct;
-  const utilityName = planConfig._displayProvider?.replace(' Bundled Service', '') || 'PG&E';
+  const utilityName = planConfig._displayProvider?.replace(' Bundled Service', '') || 'Utility';
 
   return (
     <div className="py-6 border-t border-white/[0.08] border-b border-b-white/[0.08] mb-6">

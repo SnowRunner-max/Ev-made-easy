@@ -342,6 +342,24 @@ describe('getNextRateChange — E-TOU-C (provider=bundled)', () => {
   });
 });
 
+describe('getNextRateChange — Liberty D-1 TOU EV seasonal boundary (provider=bundled)', () => {
+  it('rolls Sep 30 late-night summer service into Oct 1 winter service at midnight', () => {
+    const r = getNextRateChange(new Date('2026-09-30T23:00:00-07:00'), libertyTouEvConfig, 'bundled');
+
+    expect(r.time.toISOString()).toBe('2026-10-01T07:00:00.000Z');
+    expect(r.newPeriod).toBe('offPeak');
+    expect(getRate(r.time, libertyTouEvConfig, 'bundled').season).toBe('winter');
+  });
+
+  it('uses the Oct 1 winter schedule for the next morning boundary', () => {
+    const r = getNextRateChange(new Date('2026-10-01T06:00:00-07:00'), libertyTouEvConfig, 'bundled');
+
+    expect(r.newPeriod).toBe('midPeak');
+    expect(pacificHour(r.time)).toBe(7);
+    expect(r.newRate).toBeCloseTo(0.3746, 4);
+  });
+});
+
 // ── getDaySchedule ────────────────────────────────────────────────────────────
 
 describe('getDaySchedule — EV2-A (provider=bundled)', () => {

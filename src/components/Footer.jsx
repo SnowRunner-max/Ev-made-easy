@@ -37,6 +37,8 @@ function TieredRateTable({ planConfig }) {
   const r = planConfig.rates;
   const flatRate = planConfig._flatRate;
   const generation = flatRate ? flatRate.generation : r.generation.allUsage;
+  // This table renders normalized active usage rows only. Liberty D-1 excess and
+  // non-permanent reference rates remain metadata, not selectable billing tiers.
   const tierRows = Object.entries(r.delivery)
     .filter(([tier, delivery]) => tier.startsWith('tier') && Number.isFinite(delivery))
     .map(([tier, delivery]) => ({

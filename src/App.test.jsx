@@ -185,13 +185,11 @@ describe('App — CCA tier selector', () => {
     expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
   });
 
-  it('KCCP provider option absent on EV2-A plan (no KCCP EV2-A rates)', () => {
+  it('hides provider selector on EV2-A when KCCP is unavailable and only bundled remains', () => {
     render(<App />);
     act(() => capturedOnResolved({ serviceAreaId: 'pge-kccp-mon', displayLabel: 'King City, CA', zip: '93930' }));
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV2-A' } });
-    // Provider select should only have PG&E (no KCCP option for EV2-A)
-    const opts = screen.getByTestId('provider-select').querySelectorAll('option');
-    expect([...opts].map(o => o.value)).not.toContain('kccp');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
   });
 });
 

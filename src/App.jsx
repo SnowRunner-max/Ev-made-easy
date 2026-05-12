@@ -49,8 +49,7 @@ function getEffectiveConfig(planConfig, provider, ccaTier, serviceAreaConfig) {
   let providerLabel;
   const isBundledProvider = !planConfig.rates.ccaGeneration?.[provider];
   if (isBundledProvider) {
-    // Derive label from the current service area's utility field, if available
-    const utilityName = serviceAreaConfig?.utility ?? 'PG&E';
+    const utilityName = serviceAreaConfig.utility;
     providerLabel = `${utilityName} Bundled Service`;
   } else {
     const ccaEntry = planConfig.rates.ccaGeneration[provider];
@@ -166,7 +165,7 @@ export default function App() {
   }
 
   const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier, serviceArea);
-  const supportsProviderToggle = !!planConfig.touPeriods && (providerOptions.length > 1 || serviceArea.ccas.length > 0);
+  const supportsProviderToggle = !!planConfig.touPeriods && providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
   const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedVehicleId);
