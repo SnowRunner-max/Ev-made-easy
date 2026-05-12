@@ -61,6 +61,9 @@ No backend. No routing library. No state management library. All rate logic is c
 ## Getting Started
 
 ```bash
+# Install Git LFS once on the machine if it is not already available
+git lfs install
+
 # Install dependencies
 npm install
 
@@ -79,6 +82,8 @@ npm run build
 # Preview production build
 npm run preview
 ```
+
+Large authoritative source artifacts such as PDFs, workbooks, and pinned geospatial snapshots are managed with Git LFS. A normal clone plus Git LFS hydration keeps them available locally without storing future binary revisions as ordinary Git blobs.
 
 ## Project Structure
 
@@ -122,3 +127,9 @@ See [CLAUDE.md](./CLAUDE.md) for the full development guide, including:
 - PCIA vintage 2021 for Buellton, CA: $0.05264/kWh
 - EV2-A / E-ELEC Base Services Charge: $0.79343/day (Income Tier 3, non-CARE/FERA)
 - EV-B Daily Meter Charge: $0.04928/day
+
+For source governance, use the committed catalogs and manifests before opening raw artifacts directly:
+
+- `data-sources/source-catalog.json`
+- `data-sources/territory/source-manifest.json`
+- `npm run sources:validate`
