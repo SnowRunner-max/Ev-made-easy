@@ -5,14 +5,3 @@ dist/
 .DS_Store
 .github/.DS_Store
 src/.DS_Store
-data-sources/territory/build-report.json
-
-# Source rate documents — not committed (large PDFs, xlsx, HTML snapshots)
-pge_source/
-sce_source/
-cca_source/
-
-# Raw GeoJSON geometry — too large for LLM/GitHub context (regenerate from source)
-data-sources/territory/raw/
-# Intermediate build artifact — regeneratable
-data-sources/territory/overlay-candidates.json
