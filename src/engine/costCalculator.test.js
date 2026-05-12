@@ -1,11 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
+import libertyRatePlans from '../data/libertyRatePlans.json';
+import tdpudRatePlans from '../data/tdpudRatePlans.json';
 import { calcChargeCost, findCheapestWindow, calcChargeSummary } from './costCalculator';
 
 // All PST dates use January 15, 2026 (-08:00). EV-B weekday = Tuesday Jan 6.
 
 const ev2aRaw = ratePlans.ratePlans['EV2-A'];
 const evbRaw  = ratePlans.ratePlans['EV-B'];
+const libertyTouEvRaw = libertyRatePlans.ratePlans['LIBERTY-D1-TOU-EV'];
+const tdpudTouPrimaryRaw = tdpudRatePlans.ratePlans['TDPUD-TOU-PRIMARY'];
 
 // Build effective planConfig with pre-computed combined rates (bundled provider)
 function buildEffectiveConfig(planConfig) {
@@ -66,6 +70,8 @@ function buildCCAConfig(planConfig, ccaId = '3ce', tierId = null) {
 
 const ev2aConfig = buildEffectiveConfig(ev2aRaw);
 const evbConfig  = buildEffectiveConfig(evbRaw);
+const libertyTouEvConfig = buildEffectiveConfig(libertyTouEvRaw);
+const tdpudTouPrimaryConfig = buildEffectiveConfig(tdpudTouPrimaryRaw);
 
 // EV2-A bundled rates used in assertions:
 //   winter offPeak=0.22558, partPeak=0.39428, peak=0.41099
@@ -180,6 +186,34 @@ describe('calcChargeSummary — EV2-A', () => {
     const { to80, to100 } = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 100, 7.7, ev2aConfig);
     expect(to80).toBeNull();
     expect(to100).toBeNull();
+  });
+});
+
+describe('calcChargeSummary — mid-peak utility plans', () => {
+  it('prices TDPUD TOU summaries that start in midPeak', () => {
+    const { to80 } = calcChargeSummary(
+      new Date('2026-01-15T11:00:00-08:00'),
+      60,
+      20,
+      7.7,
+      tdpudTouPrimaryConfig
+    );
+
+    expect(to80.costNow).toBeCloseTo(36 * 0.1567, 1);
+    expect(to80.cheapestCost).toBeCloseTo(36 * 0.1567, 1);
+  });
+
+  it('prices Liberty TOU EV summaries that start in winter midPeak', () => {
+    const { to80 } = calcChargeSummary(
+      new Date('2026-01-15T07:00:00-08:00'),
+      60,
+      20,
+      7.7,
+      libertyTouEvConfig
+    );
+
+    expect(to80.costNow).toBeCloseTo(36 * 0.3746, 1);
+    expect(to80.cheapestCost).toBeLessThan(to80.costNow);
   });
 });
 

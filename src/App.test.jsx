@@ -185,13 +185,11 @@ describe('App — CCA tier selector', () => {
     expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
   });
 
-  it('KCCP provider option absent on EV2-A plan (no KCCP EV2-A rates)', () => {
+  it('hides provider selector on EV2-A when KCCP is unavailable and only bundled remains', () => {
     render(<App />);
     act(() => capturedOnResolved({ serviceAreaId: 'pge-kccp-mon', displayLabel: 'King City, CA', zip: '93930' }));
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV2-A' } });
-    // Provider select should only have PG&E (no KCCP option for EV2-A)
-    const opts = screen.getByTestId('provider-select').querySelectorAll('option');
-    expect([...opts].map(o => o.value)).not.toContain('kccp');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
   });
 });
 
@@ -234,5 +232,27 @@ describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
     const before = screen.getByTestId('rate-value').textContent;
     fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '100-green' } });
     expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
+  });
+});
+
+describe('App — Tahoe utilities', () => {
+  it('resolving Olympic Valley selects Liberty Tahoe EV TOU rates and computes cost', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'liberty-tahoe', displayLabel: 'Olympic Valley, CA', zip: '96146' }));
+
+    expect(screen.getByTestId('plan-select').value).toBe('LIBERTY-D1-TOU-EV');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toHaveTextContent(/\$0\.\d{2}/);
+    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
+  });
+
+  it('selecting TDPUD Truckee uses TDPUD TOU plans and computes cost', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'tdpud-truckee', displayLabel: 'Truckee, CA', zip: '96161' }));
+
+    expect(screen.getByTestId('plan-select').value).toBe('TDPUD-TOU-PRIMARY');
+    expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.16');
+    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 });

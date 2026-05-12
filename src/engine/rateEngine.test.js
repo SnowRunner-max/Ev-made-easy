@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import ratesData from './__fixtures__/rates.json';
 import ratePlans from '../data/ratePlans.json';
+import tdpudRatePlans from '../data/tdpudRatePlans.json';
+import libertyRatePlans from '../data/libertyRatePlans.json';
 import {
   getCurrentPeriod,
   getSeason,
@@ -21,6 +23,10 @@ const evbConfig   = ratePlans.ratePlans['EV-B'];
 const etoucConfig = ratePlans.ratePlans['E-TOU-C'];
 const etoudConfig = ratePlans.ratePlans['E-TOU-D'];
 const e1Config    = ratePlans.ratePlans['E-1'];
+const tdpudTouPrimaryConfig = tdpudRatePlans.ratePlans['TDPUD-TOU-PRIMARY'];
+const tdpudTouSecondaryConfig = tdpudRatePlans.ratePlans['TDPUD-TOU-SECONDARY'];
+const tdpudFixedPrimaryConfig = tdpudRatePlans.ratePlans['TDPUD-FIXED-PRIMARY'];
+const libertyTouEvConfig = libertyRatePlans.ratePlans['LIBERTY-D1-TOU-EV'];
 
 // Helper to get Pacific hour from a Date
 function pacificHour(date) {
@@ -113,6 +119,21 @@ describe('getCurrentPeriod — E-TOU-D (peak 5–8 PM weekdays only)', () => {
   });
   it('offPeak at 6 PM Saturday (no weekend peak)', () => {
     expect(getCurrentPeriod(new Date('2026-01-10T18:00:00-08:00'), etoudConfig)).toBe('offPeak');
+  });
+});
+
+describe('getCurrentPeriod — TDPUD TOU (off-peak 9 PM-11 AM, mid-peak 11 AM-4 PM, peak 4-9 PM)', () => {
+  it('offPeak before 11 AM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T10:00:00-08:00'), tdpudTouPrimaryConfig)).toBe('offPeak');
+  });
+  it('midPeak at 11 AM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T11:00:00-08:00'), tdpudTouPrimaryConfig)).toBe('midPeak');
+  });
+  it('peak at 4 PM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T16:00:00-08:00'), tdpudTouPrimaryConfig)).toBe('peak');
+  });
+  it('offPeak at 9 PM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T21:00:00-08:00'), tdpudTouPrimaryConfig)).toBe('offPeak');
   });
 });
 
@@ -245,6 +266,38 @@ describe('getRate — E-1 tiered', () => {
   });
 });
 
+describe('getRate — TDPUD residential rates', () => {
+  it('matches primary TOU off/mid/peak rates', () => {
+    expect(getRate(new Date('2026-01-15T10:00:00-08:00'), tdpudTouPrimaryConfig, 'bundled').rate).toBeCloseTo(0.1567, 4);
+    expect(getRate(new Date('2026-01-15T11:00:00-08:00'), tdpudTouPrimaryConfig, 'bundled').rate).toBeCloseTo(0.1567, 4);
+    expect(getRate(new Date('2026-01-15T16:00:00-08:00'), tdpudTouPrimaryConfig, 'bundled').rate).toBeCloseTo(0.3093, 4);
+  });
+
+  it('matches secondary TOU off/mid/peak rates', () => {
+    expect(getRate(new Date('2026-01-15T10:00:00-08:00'), tdpudTouSecondaryConfig, 'bundled').rate).toBeCloseTo(0.1782, 4);
+    expect(getRate(new Date('2026-01-15T11:00:00-08:00'), tdpudTouSecondaryConfig, 'bundled').rate).toBeCloseTo(0.1782, 4);
+    expect(getRate(new Date('2026-01-15T16:00:00-08:00'), tdpudTouSecondaryConfig, 'bundled').rate).toBeCloseTo(0.3517, 4);
+  });
+
+  it('exposes a computable fixed primary flat rate when effective config provides _flatRate', () => {
+    const config = { ...tdpudFixedPrimaryConfig, _flatRate: { combined: 0.1976, delivery: 0, generation: 0.1976 } };
+    expect(getRate(new Date('2026-01-15T16:00:00-08:00'), config).rate).toBeCloseTo(0.1976, 4);
+  });
+});
+
+describe('getRate — Liberty D-1 TOU EV rates', () => {
+  it('matches winter off/mid/peak rates', () => {
+    expect(getRate(new Date('2026-01-15T06:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.20769, 5);
+    expect(getRate(new Date('2026-01-15T07:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.3746, 4);
+    expect(getRate(new Date('2026-01-15T17:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.38284, 5);
+  });
+
+  it('matches summer off/peak rates', () => {
+    expect(getRate(new Date('2026-07-15T09:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.20769, 5);
+    expect(getRate(new Date('2026-07-15T10:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.37309, 5);
+  });
+});
+
 // ── getNextRateChange ─────────────────────────────────────────────────────────
 
 describe('getNextRateChange — EV2-A (provider=bundled)', () => {
@@ -286,6 +339,24 @@ describe('getNextRateChange — E-TOU-C (provider=bundled)', () => {
     const r = getNextRateChange(new Date('2026-01-15T01:00:00-08:00'), etoucConfig, 'bundled');
     expect(r.newPeriod).toBe('peak');
     expect(pacificHour(r.time)).toBe(16);
+  });
+});
+
+describe('getNextRateChange — Liberty D-1 TOU EV seasonal boundary (provider=bundled)', () => {
+  it('rolls Sep 30 late-night summer service into Oct 1 winter service at midnight', () => {
+    const r = getNextRateChange(new Date('2026-09-30T23:00:00-07:00'), libertyTouEvConfig, 'bundled');
+
+    expect(r.time.toISOString()).toBe('2026-10-01T07:00:00.000Z');
+    expect(r.newPeriod).toBe('offPeak');
+    expect(getRate(r.time, libertyTouEvConfig, 'bundled').season).toBe('winter');
+  });
+
+  it('uses the Oct 1 winter schedule for the next morning boundary', () => {
+    const r = getNextRateChange(new Date('2026-10-01T06:00:00-07:00'), libertyTouEvConfig, 'bundled');
+
+    expect(r.newPeriod).toBe('midPeak');
+    expect(pacificHour(r.time)).toBe(7);
+    expect(r.newRate).toBeCloseTo(0.3746, 4);
   });
 });
 

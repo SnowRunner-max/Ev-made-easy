@@ -187,6 +187,26 @@
       "defaultProvider": "sce",
       "providerHint": "Your area is served directly by SCE.",
       "ccas": []
+    },
+    "tdpud-truckee": {
+      "name": "Truckee Donner Public Utility District",
+      "utility": "TDPUD",
+      "cca": null,
+      "shortLabel": "TDPUD",
+      "defaultPlanId": "TDPUD-TOU-PRIMARY",
+      "defaultProvider": "tdpud",
+      "providerHint": "This area is served by Truckee Donner Public Utility District bundled electric service.",
+      "ccas": []
+    },
+    "liberty-tahoe": {
+      "name": "Liberty Utilities (California Tahoe)",
+      "utility": "Liberty",
+      "cca": null,
+      "shortLabel": "Liberty Tahoe",
+      "defaultPlanId": "LIBERTY-D1-TOU-EV",
+      "defaultProvider": "liberty",
+      "providerHint": "This area is served by Liberty Utilities/CalPeco bundled electric service.",
+      "ccas": []
     }
   }
 }

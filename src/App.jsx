@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { RATE_PLAN_REGISTRY } from './data/ratePlanRegistry';
 import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
+import { getUtilityConfig } from './data/utilityConfig';
 import { calcChargeSummary } from './engine/costCalculator';
 import { useCurrentRate } from './hooks/useCurrentRate';
 import LocationInput from './components/LocationInput';
@@ -48,8 +49,7 @@ function getEffectiveConfig(planConfig, provider, ccaTier, serviceAreaConfig) {
   let providerLabel;
   const isBundledProvider = !planConfig.rates.ccaGeneration?.[provider];
   if (isBundledProvider) {
-    // Derive label from the current service area's utility field, if available
-    const utilityName = serviceAreaConfig?.utility === 'SCE' ? 'SCE' : 'PG&E';
+    const utilityName = serviceAreaConfig.utility;
     providerLabel = `${utilityName} Bundled Service`;
   } else {
     const ccaEntry = planConfig.rates.ccaGeneration[provider];
@@ -86,6 +86,13 @@ const PLAN_HINTS = {
   'E-1':         'Traditional tiered rate. No time-of-use pricing — rate varies by monthly usage tier.',
   'TOU-D-4-9PM': 'Standard SCE residential TOU. Peak 4–9 PM every day.',
   'TOU-D-PRIME': 'EV-optimized with super off-peak midnight pricing. Best for overnight charging.',
+  'TDPUD-TOU-PRIMARY': 'TDPUD optional residential TOU. Lowest prices run 9 PM–11 AM.',
+  'TDPUD-TOU-SECONDARY': 'TDPUD optional residential TOU for secondary residences.',
+  'TDPUD-FIXED-PRIMARY': 'TDPUD fixed bundled energy rate for primary residences.',
+  'TDPUD-FIXED-SECONDARY': 'TDPUD fixed bundled energy rate for secondary residences.',
+  'LIBERTY-D1-TOU-EV': 'Liberty EV TOU plan with lower overnight rates.',
+  'LIBERTY-D1-TOU': 'Liberty residential TOU plan.',
+  'LIBERTY-D1': 'Liberty standard domestic residential rate.',
 };
 
 export default function App() {
@@ -111,7 +118,8 @@ export default function App() {
   }
 
   // Derive available provider options for the current plan
-  const bundledKey = serviceArea.utility === 'SCE' ? 'sce' : 'pge';
+  const utilityConfig = getUtilityConfig(serviceArea.utility);
+  const bundledKey = utilityConfig?.bundledProvider ?? serviceArea.defaultProvider;
   const bundledLabel = `${serviceArea.utility} Bundled`;
   const providerOptions = [
     { value: bundledKey, label: bundledLabel },
@@ -157,7 +165,7 @@ export default function App() {
   }
 
   const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier, serviceArea);
-  const supportsProviderToggle = !!planConfig.touPeriods;
+  const supportsProviderToggle = !!planConfig.touPeriods && providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
   const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedVehicleId);
@@ -482,7 +490,8 @@ function CostFacts({ planConfig, summary }) {
   const totalCost = summary.to80.costNow;
   const costPerKwh = rateData.combined;
 
-  const isCCA = planConfig._displayProvider && !planConfig._displayProvider.startsWith('PG&E Bundled');
+  const isCCA = planConfig._displayProvider && !planConfig._displayProvider.includes('Bundled Service');
+  const utilityName = planConfig._displayProvider?.replace(' Bundled Service', '') || 'Utility';
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -510,10 +519,10 @@ function CostFacts({ planConfig, summary }) {
           <span className="text-white/90">${costPerKwh.toFixed(4)}</span>
         </div>
 
-        {/* PG&E Delivery */}
+        {/* Utility delivery */}
         <div className="mt-5">
           <div className="flex justify-between items-baseline">
-            <span className="font-black text-sm uppercase">PG&amp;E Delivery</span>
+            <span className="font-black text-sm uppercase">{utilityName} Delivery</span>
             <span className="font-bold text-sm">${deliveryCost.toFixed(2)}</span>
           </div>
           <div className="border-b-4 border-white mb-2" />
@@ -531,7 +540,7 @@ function CostFacts({ planConfig, summary }) {
           </div>
           <div className="border-b-4 border-white mb-2" />
           <div className="flex justify-between text-[11px] border-b border-white/20 py-1.5 text-white/70">
-            <span>{isCCA ? planConfig._displayProvider : 'PG&E Generation'}</span>
+            <span>{isCCA ? planConfig._displayProvider : `${utilityName} Generation`}</span>
             <span className="font-medium text-white">${(rateData.generation).toFixed(4)}/kWh</span>
           </div>
         </div>

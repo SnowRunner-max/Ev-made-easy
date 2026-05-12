@@ -1,5 +1,7 @@
 import ratePlans from './ratePlans.json';
 import sceRatePlans from './sceRatePlans.json';
+import tdpudRatePlans from './tdpudRatePlans.json';
+import libertyRatePlans from './libertyRatePlans.json';
 
 /** Static registry mapping serviceAreaId → imported rate plan data */
 export const RATE_PLAN_REGISTRY = {
@@ -20,4 +22,6 @@ export const RATE_PLAN_REGISTRY = {
   'sce-sbce-sb': sceRatePlans,
   'sce-3ce-sb': sceRatePlans,
   'sce-only': sceRatePlans,
+  'tdpud-truckee': tdpudRatePlans,
+  'liberty-tahoe': libertyRatePlans,
 };

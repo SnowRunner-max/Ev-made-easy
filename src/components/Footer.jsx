@@ -34,12 +34,30 @@ function RateTable({ rates, seasons }) {
 }
 
 function TieredRateTable({ planConfig }) {
-  // Use the pre-computed _flatRate for generation; compute both tiers from raw delivery
   const r = planConfig.rates;
   const flatRate = planConfig._flatRate;
   const generation = flatRate ? flatRate.generation : r.generation.allUsage;
-  const combined1 = r.delivery.tier1 + generation;
-  const combined2 = r.delivery.tier2 + generation;
+  // This table renders normalized active usage rows only. Liberty D-1 excess and
+  // non-permanent reference rates remain metadata, not selectable billing tiers.
+  const tierRows = Object.entries(r.delivery)
+    .filter(([tier, delivery]) => tier.startsWith('tier') && Number.isFinite(delivery))
+    .map(([tier, delivery]) => ({
+      tier,
+      combined: delivery + generation,
+    }));
+
+  const hasMultipleUsageTiers = tierRows.length > 1;
+  const rows = hasMultipleUsageTiers
+    ? tierRows.map(({ tier, combined }, index) => ({
+        key: tier,
+        label: index === 0 ? 'Tier 1 (0–100% of baseline)' : `Tier ${index + 1} (above baseline)`,
+        combined,
+      }))
+    : [{
+        key: 'flat',
+        label: 'Flat energy rate',
+        combined: flatRate?.combined ?? r.totalBundled?.tier1 ?? generation,
+      }];
 
   return (
     <table className="w-full text-xs border-collapse mt-2">
@@ -50,14 +68,12 @@ function TieredRateTable({ planConfig }) {
         </tr>
       </thead>
       <tbody>
-        <tr className="border-t border-pewter-light">
-          <td className="py-1.5 pr-4 text-[var(--text-secondary)]">Tier 1 (0–100% of baseline)</td>
-          <td className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">${combined1.toFixed(5)}</td>
-        </tr>
-        <tr className="border-t border-pewter-light">
-          <td className="py-1.5 pr-4 text-[var(--text-secondary)]">Tier 2 (above baseline)</td>
-          <td className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">${combined2.toFixed(5)}</td>
-        </tr>
+        {rows.map(row => (
+          <tr key={row.key} className="border-t border-pewter-light">
+            <td className="py-1.5 pr-4 text-[var(--text-secondary)]">{row.label}</td>
+            <td className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">${row.combined.toFixed(5)}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

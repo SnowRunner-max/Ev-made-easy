@@ -9,23 +9,35 @@ vi.mock('zipcodes', () => ({
   },
 }));
 
-// Mock pgeTerritory.json
-vi.mock('../data/pgeTerritory.json', () => ({
-  default: {
-    zips: {
-      '93427': 'pge-3ce-sbco',   // PGE + 3CE CCA
-      '94804': 'pge-only',        // PGE direct, no CCA
+// Mock utility config — includes territories for supported utility tests
+vi.mock('../data/utilityConfig', () => ({
+  SUPPORTED_UTILITIES: [
+    {
+      id: 'pge',
+      territory: {
+        zips: {
+          '93427': 'pge-3ce-sbco',   // PGE + 3CE CCA
+          '94804': 'pge-only',        // PGE direct, no CCA
+        },
+      },
     },
-  },
-}));
-
-// Mock sceTerritory.json — includes SCE ZIPs for SCE territory tests
-vi.mock('../data/sceTerritory.json', () => ({
-  default: {
-    zips: {
-      '91001': 'sce-cpa-la',   // SCE + CPA CCA
+    {
+      id: 'sce',
+      territory: {
+        zips: {
+          '91001': 'sce-cpa-la',   // SCE + CPA CCA
+        },
+      },
     },
-  },
+    {
+      id: 'liberty',
+      territory: {
+        zips: {
+          '96146': 'liberty-tahoe',
+        },
+      },
+    },
+  ],
 }));
 
 // Mock multiUtilityZips.json
@@ -152,6 +164,21 @@ describe('useLocationLookup — zipcode path', () => {
 
     expect(result.current.status).toBe('error');
     expect(result.current.errorCode).toBe('multi_utility');
+  });
+
+  it('resolves a valid Liberty Tahoe zip after debounce', async () => {
+    zipcodes.lookup.mockReturnValue({ zip: '96146', city: 'Olympic Valley', state: 'CA' });
+    const { result } = renderHook(() => useLocationLookup());
+
+    act(() => result.current.setInput('96146'));
+    await act(async () => { vi.advanceTimersByTime(400); });
+
+    expect(result.current.status).toBe('valid');
+    expect(result.current.resolved).toEqual({
+      serviceAreaId: 'liberty-tahoe',
+      displayLabel: 'Olympic Valley, CA',
+      zip: '96146',
+    });
   });
 });
 

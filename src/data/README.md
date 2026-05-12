@@ -93,6 +93,10 @@ Committed source metadata lives in `data-sources/territory/`:
 - `manual-overrides.json` documents edge cases where ZIP-level geography is ambiguous or a conservative multi-utility flow is required.
 - `build-report.json` is generated locally by `npm run territory:build` and is intended for PR notes rather than source control.
 
+Large raw source artifacts are tracked through Git LFS, not ordinary Git blobs. The repo keeps manifests, catalogs, review artifacts, and runtime JSON in normal Git, while tariff PDFs, source workbooks, and pinned territory GeoJSON snapshots stay available at their existing paths through LFS hydration.
+
+For routine inspection, read the source catalog, source manifest, and README files first. Open large raw files only when a task requires tariff verification, source refresh, or territory regeneration.
+
 Source priority for future expansion:
 
 1. Utility territory from pinned California Energy Commission IOU/POU boundary data, cross-checked against PG&E/SCE service-area pages.

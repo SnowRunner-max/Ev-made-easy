@@ -26,17 +26,23 @@ export function buildTerritoryFromFiles({ check = false } = {}) {
     const current = loadCurrentTerritoryData();
     generated.pgeTerritory._note = current.pgeTerritory._note;
     generated.sceTerritory._note = current.sceTerritory._note;
+    generated.tdpudTerritory._note = current.tdpudTerritory._note;
+    generated.libertyTerritory._note = current.libertyTerritory._note;
     generated.multiUtilityZips._note = current.multiUtilityZips._note;
   }
 
   const validation = validateTerritoryData({
     pgeTerritory: generated.pgeTerritory,
     sceTerritory: generated.sceTerritory,
+    tdpudTerritory: generated.tdpudTerritory,
+    libertyTerritory: generated.libertyTerritory,
     multiUtilityZips: generated.multiUtilityZips,
     serviceAreas: readJson(PATHS.serviceAreas),
     ratePlanFiles: {
       pge: readJson(PATHS.pgeRatePlans),
       sce: readJson(PATHS.sceRatePlans),
+      tdpud: readJson(PATHS.tdpudRatePlans),
+      liberty: readJson(PATHS.libertyRatePlans),
     },
     rateRegistryIds: loadRateRegistryIds(),
     manifest,
@@ -51,6 +57,8 @@ export function buildTerritoryFromFiles({ check = false } = {}) {
   const outputs = [
     [PATHS.pgeTerritory, generated.pgeTerritory],
     [PATHS.sceTerritory, generated.sceTerritory],
+    [PATHS.tdpudTerritory, generated.tdpudTerritory],
+    [PATHS.libertyTerritory, generated.libertyTerritory],
     [PATHS.multiUtilityZips, generated.multiUtilityZips],
     [PATHS.buildReport, makeBuildReport({ generated, validation, manifest })],
   ];

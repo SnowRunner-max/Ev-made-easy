@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import zipcodes from 'zipcodes';
-import pgeTerritory from '../data/pgeTerritory.json';
-import sceTerritory from '../data/sceTerritory.json';
 import multiUtilityZips from '../data/multiUtilityZips.json';
+import { SUPPORTED_UTILITIES } from '../data/utilityConfig';
 
 const ZIP_RE = /^\d{5}$/;
 const MIN_CHARS = 2;
@@ -75,16 +74,12 @@ function resolveZip(zip) {
     return { ok: false, errorCode: 'multi_utility', candidates: multiUtilityZips.zips[zip], displayLabel: `${info.city}, CA`, zip };
   }
 
-  // Priority 2: PG&E territory
-  const pgeSid = pgeTerritory.zips[zip];
-  if (pgeSid && pgeSid !== 'multi-utility') {
-    return { ok: true, data: { serviceAreaId: pgeSid, displayLabel: `${info.city}, CA`, zip } };
-  }
-
-  // Priority 3: SCE territory
-  const sceSid = sceTerritory.zips[zip];
-  if (sceSid) {
-    return { ok: true, data: { serviceAreaId: sceSid, displayLabel: `${info.city}, CA`, zip } };
+  // Priority 2: supported single-utility territory
+  for (const utility of SUPPORTED_UTILITIES) {
+    const serviceAreaId = utility.territory.zips[zip];
+    if (serviceAreaId && serviceAreaId !== 'multi-utility') {
+      return { ok: true, data: { serviceAreaId, displayLabel: `${info.city}, CA`, zip } };
+    }
   }
 
   return { ok: false, errorCode: 'not_supported' };
@@ -106,32 +101,21 @@ function resolveCity(cityName) {
     };
   }
 
-  // Priority 2: PG&E territory
-  const pgeMatch = matches.find(
-    m => pgeTerritory.zips[m.zip] && pgeTerritory.zips[m.zip] !== 'multi-utility'
-  );
-  if (pgeMatch) {
-    return {
-      ok: true,
-      data: {
-        serviceAreaId: pgeTerritory.zips[pgeMatch.zip],
-        displayLabel: `${pgeMatch.city}, CA`,
-        zip: pgeMatch.zip,
-      },
-    };
-  }
-
-  // Priority 3: SCE territory
-  const sceMatch = matches.find(m => sceTerritory.zips[m.zip]);
-  if (sceMatch) {
-    return {
-      ok: true,
-      data: {
-        serviceAreaId: sceTerritory.zips[sceMatch.zip],
-        displayLabel: `${sceMatch.city}, CA`,
-        zip: sceMatch.zip,
-      },
-    };
+  // Priority 2: supported single-utility territory
+  for (const utility of SUPPORTED_UTILITIES) {
+    const match = matches.find(
+      m => utility.territory.zips[m.zip] && utility.territory.zips[m.zip] !== 'multi-utility'
+    );
+    if (match) {
+      return {
+        ok: true,
+        data: {
+          serviceAreaId: utility.territory.zips[match.zip],
+          displayLabel: `${match.city}, CA`,
+          zip: match.zip,
+        },
+      };
+    }
   }
 
   return { ok: false, errorCode: 'not_supported' };

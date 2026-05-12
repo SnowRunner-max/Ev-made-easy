@@ -1,0 +1,132 @@
+{
+  "appliedOverrides": [
+    {
+      "action": "multiUtility",
+      "reason": "Current checked-in PG&E and SCE territory files both assign this ZIP. Multi-utility disambiguation is the conservative runtime behavior until address-level or authoritative polygon resolution is available.",
+      "source": "src/data/pgeTerritory.json and src/data/sceTerritory.json",
+      "zip": "93117"
+    }
+  ],
+  "generatedAt": "2026-05-12T03:27:26.000Z",
+  "sourceMode": "pinned-boundary-snapshots-bootstrap-runtime-zips",
+  "sources": [
+    {
+      "id": "current-runtime-territory-artifacts",
+      "intendedUse": "Bootstrap source snapshot so validation and generation can be introduced without changing current coverage.",
+      "name": "Current checked-in territory JSON files",
+      "paths": [
+        "src/data/pgeTerritory.json",
+        "src/data/sceTerritory.json",
+        "src/data/multiUtilityZips.json"
+      ]
+    },
+    {
+      "id": "local-rate-source-catalog",
+      "intendedUse": "Documents the local authoritative rate workbooks/PDFs used to decide whether a service area is rate-backed before ZIP coverage is expanded.",
+      "name": "Local PG&E, CCA, and SCE raw rate source catalog",
+      "path": "data-sources/source-catalog.json",
+      "status": "cataloged"
+    },
+    {
+      "arcgisDataLastEdit": "2025-08-28T16:01:56Z",
+      "arcgisLayerUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_IOU_POU/FeatureServer/0",
+      "bytes": 6051254,
+      "capturedAt": "2026-04-19",
+      "entities": [
+        "Pacific Gas & Electric Company",
+        "Southern California Edison"
+      ],
+      "featureCount": 2,
+      "id": "cec-iou-pou",
+      "intendedUse": "Pinned utility territory polygon source for PG&E/SCE coverage expansion. Overlay against ZIP/ZCTA geography before changing runtime ZIP mappings.",
+      "license": "Creative Commons Attribution",
+      "localPath": "data-sources/territory/raw/cec-lse-iou-pou-pge-sce.geojson",
+      "name": "California Energy Commission Electric Load Serving Entities (IOU & POU)",
+      "queryUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_IOU_POU/FeatureServer/0/query?where=Acronym%20in%20(%27PG%26E%27%2C%27SCE%27)&outFields=OBJECTID,Acronym,Utility,Type,OnlineName,Audit,URL&returnGeometry=true&outSR=4326&f=geojson",
+      "sha256": "3069e651b7ce2b63ea15d5641e276f6e41280153c7706f9805bfe6898536a79d",
+      "sourceLastUpdated": "2026-04-17",
+      "status": "pinned",
+      "url": "https://lab.data.ca.gov/dataset/electric-load-serving-entities-iou-pou"
+    },
+    {
+      "arcgisDataLastEdit": "2025-08-28T16:04:24Z",
+      "arcgisLayerUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_Other/FeatureServer/0",
+      "bytes": 4990425,
+      "capturedAt": "2026-04-19",
+      "featureCount": 25,
+      "id": "cec-other-lse",
+      "intendedUse": "Pinned CCA territory polygon source for service-area classification. Overlay against ZIP/ZCTA geography and rate-backed service-area registry before changing runtime ZIP mappings.",
+      "license": "Creative Commons Attribution",
+      "localPath": "data-sources/territory/raw/cec-lse-other-cca.geojson",
+      "name": "California Energy Commission Electric Load Serving Entities (Other)",
+      "queryUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_Other/FeatureServer/0/query?where=Type%3D%27CCA%27&outFields=OBJECTID,Acronym,Utility,Type,URL&returnGeometry=true&outSR=4326&f=geojson",
+      "sha256": "c1cfc16a19b78f74d61fa4ea6f670c263cd07c77a7bf69ab20f7f910cbfcc8c7",
+      "sourceLastUpdated": "2026-04-12",
+      "status": "pinned",
+      "url": "https://lab.data.ca.gov/dataset/electric-load-serving-entities-other"
+    },
+    {
+      "arcgisLayerUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/PUMA_TAD_TAZ_UGA_ZCTA/MapServer/7",
+      "bytes": 68559357,
+      "capturedAt": "2026-04-19T21:29:21.927Z",
+      "featureCount": 1802,
+      "geometryPrecision": 5,
+      "id": "census-zcta-2024",
+      "intendedUse": "Pinned ZCTA polygon source for offline ZIP-to-utility/CCA overlay candidates. ZCTAs are approximate ZIP service area representations, not USPS delivery-route boundaries.",
+      "license": "Public Domain (U.S. Government Work)",
+      "localPath": "data-sources/territory/raw/zcta-ca-2024.geojson",
+      "name": "U.S. Census Bureau TIGERweb ZIP Code Tabulation Areas (California, ACS 2024 service layer)",
+      "queryUrl": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/PUMA_TAD_TAZ_UGA_ZCTA/MapServer/7/query?where=ZCTA5%20%3E%3D%20%2790000%27%20AND%20ZCTA5%20%3C%3D%20%2796199%27&geometry=-124.5%2C32.5%2C-114.1%2C42.1&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=ZCTA5%2CGEOID&returnGeometry=true&outSR=4326&geometryPrecision=5&f=geojson",
+      "sha256": "fa398174c901fe64650a1692a9792bc1102e065ebb6194a59f2947ea3eb25b7c",
+      "status": "pinned",
+      "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/PUMA_TAD_TAZ_UGA_ZCTA/MapServer"
+    },
+    {
+      "id": "cpuc-cca-regulatory",
+      "intendedUse": "Cross-check active CCA service areas and regulatory status.",
+      "name": "CPUC CCA Regulatory Information",
+      "status": "reference",
+      "url": "https://www.cpuc.ca.gov/consumer-support/consumer-programs-and-services/electrical-energy-and-energy-efficiency/community-choice-aggregation-and-direct-access-/cca-regulatory-information"
+    },
+    {
+      "id": "pge-cca",
+      "intendedUse": "Cross-check PG&E CCA roster and service-area descriptions.",
+      "name": "PG&E Community Choice Aggregation",
+      "status": "reference",
+      "url": "https://www.pge.com/en/account/alternate-energy-providers/community-choice-aggregation.html"
+    },
+    {
+      "id": "sce-cca",
+      "intendedUse": "Cross-check SCE CCA roster and service-area descriptions.",
+      "name": "SCE Community Choice Aggregation Overview",
+      "status": "reference",
+      "url": "https://www.sce.com/partners/partnerships/community-choice-aggregation-Overview"
+    }
+  ],
+  "stats": {
+    "appliedOverrideCount": 1,
+    "excludedZipCount": 28,
+    "libertyZipCount": 14,
+    "multiUtilityZipCount": 25,
+    "pgeZipCount": 855,
+    "sceZipCount": 473,
+    "serviceAreaCount": 19,
+    "tdpudZipCount": 3,
+    "usedServiceAreaCount": 18
+  },
+  "warnings": [
+    {
+      "count": 3,
+      "message": "Service area sce-sbce-sb has only 3 ZIP entries; confirm this is intentional",
+      "serviceAreaId": "sce-sbce-sb"
+    },
+    {
+      "count": 3,
+      "message": "Service area tdpud-truckee has only 3 ZIP entries; confirm this is intentional",
+      "serviceAreaId": "tdpud-truckee"
+    },
+    {
+      "message": "Territory ZIP outputs are bootstrapped from current runtime artifacts; overlay pinned CEC boundary snapshots with a reviewed ZIP/ZCTA source before broad coverage expansion"
+    }
+  ]
+}

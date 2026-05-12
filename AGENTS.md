@@ -44,3 +44,9 @@ PRs should include a brief summary, note any affected plans/providers, link the 
 ## Rate Data Notes
 
 Treat files in `pge_source/` and `sce_source/` as the source of truth. If you update `src/data/ratePlans.json` or `src/data/sceRatePlans.json`, verify every changed value against those source documents before merging.
+
+## Large Source Files
+
+Bulky authoritative inputs are repo-managed with Git LFS rather than ordinary Git blobs. This includes tariff PDFs, source workbooks, and pinned territory GeoJSON snapshots declared in `.gitattributes`.
+
+When investigating rates or territory inputs, inspect `data-sources/source-catalog.json`, `data-sources/territory/source-manifest.json`, and the related README files first. Open raw binaries or large GeoJSON only when the task specifically requires source verification or regeneration. Do not treat large source directories as routine context to bulk-read or index.
