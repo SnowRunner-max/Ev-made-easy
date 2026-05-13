@@ -13,20 +13,20 @@ const sourceGroups = [
     id: 'pge-rate-workbooks',
     description: 'Authoritative PG&E delivery and PG&E-territory CCA generation workbooks.',
     paths: [
-      'pge_source/res-inclu-tou-current.xlsx',
-      'pge_source/CCA_Generation_Rates.xlsx',
+      'data-sources/pge_source/res-inclu-tou-current.xlsx',
+      'data-sources/pge_source/CCA_Generation_Rates.xlsx',
     ],
   },
   {
     id: 'pge-cca-raw-sources',
     description: 'Raw PG&E-territory CCA rate PDFs, research notes, and verification reports.',
-    roots: ['cca_source/raw_sources'],
+    roots: ['data-sources/cca_source/raw_sources'],
   },
   {
     id: 'sce-rate-workbooks',
     description: 'Authoritative SCE combined rates workbook and SCE residential raw source documents.',
-    paths: ['sce_source/SCE_Combined_Rates.xlsx'],
-    roots: ['sce_source/raw_sources'],
+    paths: ['data-sources/sce_source/SCE_Combined_Rates.xlsx'],
+    roots: ['data-sources/sce_source/raw_sources'],
   },
 ];
 

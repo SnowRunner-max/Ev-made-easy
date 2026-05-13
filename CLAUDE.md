@@ -32,16 +32,17 @@ src/
     useCurrentRate.js
     useCountdown.js
   App.jsx            # RATE_PLAN_REGISTRY maps serviceAreaId → rate data file
-pge_source/         # Authoritative source documents for PG&E rate data
-  res-inclu-tou-current.xlsx   # PG&E residential inclusive TOU rates (current)
-  3ce-rates.pdf                # 3CE (Central Coast Community Energy) rate sheet
-sce_source/         # Authoritative source documents for SCE rate data (gitignored)
-  SCE_Combined_Rates.xlsx      # SCE delivery + CCA generation rates workbook
+data-sources/
+  pge_source/       # Authoritative source documents for PG&E rate data
+    res-inclu-tou-current.xlsx # PG&E residential inclusive TOU rates (current)
+    3ce-rates.pdf              # 3CE (Central Coast Community Energy) rate sheet
+  sce_source/       # Authoritative source documents for SCE rate data
+    SCE_Combined_Rates.xlsx    # SCE delivery + CCA generation rates workbook
 ```
 
 See `src/data/README.md` for the registry pattern and instructions for adding a new utility.
 
-When modifying `ratePlans.json` or `sceRatePlans.json`, validate every changed cell against the documents in the corresponding `*_source/` directory. Source files are the source of truth — the JSON files are derived artifacts. If the two disagree, the source document wins. Note the effective date in the rate data section below.
+When modifying `ratePlans.json` or `sceRatePlans.json`, validate every changed cell against the documents in the corresponding `data-sources/*_source/` directory. Source files are the source of truth — the JSON files are derived artifacts. If the two disagree, the source document wins. Note the effective date in the rate data section below.
 
 -----
 

@@ -1,13 +1,13 @@
 # SCE Rate Data — Structure Reference
 
 **Canonical rate data:** `src/data/sceRatePlans.json` (schema v3.0)
-**Research workbook:** `sce_source/SCE_Combined_Rates.xlsx` (source of truth for raw tariff values)
+**Research workbook:** `data-sources/sce_source/SCE_Combined_Rates.xlsx` (source of truth for raw tariff values)
 **Territory:** Southern California Edison (SCE)
 **Current tariffs:** Advice 5725-E (eff. 2026-01-01) for Schedule D and TOU-D rates; base tariffs Advice 5654-E (D) and 5338-E (TOU-D)
 
 This document describes the structure of `SCE_Combined_Rates.xlsx` and the shape of `sceRatePlans.json`. The workbook is the authoritative intermediate artifact for researching and validating rates; `sceRatePlans.json` is the derived runtime file consumed by the app. All rates in `$/kWh` unless noted.
 
-> ⚠ **Important:** `sce_source/` is gitignored. The workbook lives on disk but is not committed. Do not delete the directory.
+> ⚠ **Important:** `data-sources/sce_source/` contains committed authoritative source files. Do not delete or relocate it without updating source metadata and documentation.
 
 ---
 
@@ -215,7 +215,7 @@ Per-CCA metadata. Columns:
 | **Energy for Palmdale** | ⚠ Not extracted | — | — | Feb 1, 2024 |
 | **CPA** (Clean Power Alliance) | ✓ Rates extracted | D, TOU-D-4, TOU-D-5, TOU-D-PRIME | Lean Power → Clean Power → 100% Green Power | Mar 1, 2025 |
 
-`⚠ Not extracted` rows exist as placeholders — the source HTML/PDF is on disk in `sce_source/` but the per-period rates have not been pulled into the workbook yet.
+`⚠ Not extracted` rows exist as placeholders — the source HTML/PDF is on disk in `data-sources/sce_source/` but the per-period rates have not been pulled into the workbook yet.
 
 ---
 
@@ -264,9 +264,9 @@ This was the root cause of the Issue #6 corruption that lost WFC, Baseline Credi
 
 ## Updating SCE rates
 
-`sce_source/` holds the authoritative PDFs/XLSX/HTML inputs. When SCE or a CCA publishes a new tariff:
+`data-sources/sce_source/` holds the authoritative PDFs/XLSX/HTML inputs. When SCE or a CCA publishes a new tariff:
 
-1. Drop the new source file into `sce_source/`.
+1. Drop the new source file into `data-sources/sce_source/`.
 2. Verify the advice letter and effective date on page 1 of the PDF.
 3. Update the corresponding row in `Overview` (rows 6–15) with the new effective date and advice letter.
 4. Patch the affected rate cells in `D (Domestic)`, `TOU-D-4`, `TOU-D-5`, `TOU-D-PRIME`, or `Fixed_Charges`.

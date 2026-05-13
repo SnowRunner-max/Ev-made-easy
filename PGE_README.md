@@ -241,4 +241,4 @@ Multi-hour charging spans multiple periods. Walk each period individually; do no
 
 ## Updating PG&E rates
 
-When PG&E or 3CE publish new tariffs, **`pge_source/` is the source of truth** and `ratePlans.json` is the derived artifact. Validate every changed cell against the PDFs in `pge_source/` before committing, then bump `_metadata.pgeAdviceLetter`, `pgeEffectiveDate`, and/or `cceRateSheetDate` to match. The `delivery + generation = totalBundled` invariant must hold.
+When PG&E or 3CE publish new tariffs, **`data-sources/pge_source/` is the source of truth** and `ratePlans.json` is the derived artifact. Validate every changed cell against the PDFs in `data-sources/pge_source/` before committing, then bump `_metadata.pgeAdviceLetter`, `pgeEffectiveDate`, and/or `cceRateSheetDate` to match. The `delivery + generation = totalBundled` invariant must hold.

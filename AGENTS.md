@@ -10,7 +10,7 @@ This repository is a client-side React + Vite app for EV charging rate compariso
 - `src/data/` rate plans, territory lookups, service-area registries, and vehicle data
 - `src/utils/` shared utilities such as Pacific Time helpers
 
-Reference materials live in `pge_source/`, `sce_source/`, and `design_system/`. Build output goes to `dist/`.
+Reference materials live in `data-sources/`, especially `data-sources/pge_source/`, `data-sources/sce_source/`, and the other provider source folders, plus `design_system/`. Build output goes to `dist/`.
 
 ## Build, Test, and Development Commands
 
@@ -43,7 +43,7 @@ PRs should include a brief summary, note any affected plans/providers, link the 
 
 ## Rate Data Notes
 
-Treat files in `pge_source/` and `sce_source/` as the source of truth. If you update `src/data/ratePlans.json` or `src/data/sceRatePlans.json`, verify every changed value against those source documents before merging.
+Treat files in `data-sources/pge_source/` and `data-sources/sce_source/` as the source of truth. If you update `src/data/ratePlans.json` or `src/data/sceRatePlans.json`, verify every changed value against those source documents before merging.
 
 ## Large Source Files
 

@@ -124,12 +124,12 @@
 
   Tasks
 
-  1. Extract and validate Schedule D (tiered domestic) plan from sce_source/SCE_Combined_Rates.xlsx → new entry in
+  1. Extract and validate Schedule D (tiered domestic) plan from data-sources/sce_source/SCE_Combined_Rates.xlsx → new entry in
   sceRatePlans.json.ratePlans["D"].
     - Follow the shape of ratePlans.json.ratePlans["E-1"] as a model (it is the analogous PG&E tiered plan).
     - Category: "Tiered (Non-TOU)" to match existing PlanSelector grouping order.
     - Include _flatRate structure that App.jsx:getEffectiveConfig already handles.
-    - Verification: cross-check every rate cell against sce_source/ELECTRIC_SCHEDULES_D.pdf (per CLAUDE.md action-boundary rule — pause and
+    - Verification: cross-check every rate cell against data-sources/sce_source/ELECTRIC_SCHEDULES_D.pdf (per CLAUDE.md action-boundary rule — pause and
   confirm with user before committing changes).
   2. Replace ESTIMATED TOU-D-4-9PM and TOU-D-PRIME rates with authoritative values from the SCE tariff PDFs.
     - Re-derive the delivery/generation split from the actual tariff breakdown rather than the blended average currently in place.
@@ -140,7 +140,7 @@
     - Already present: cpa, sce-3ce-sb
     - Backlog (per SCE_README.md): rmea (Rancho Mirage), sjp (San Jacinto Power), sbce (Santa Barbara Clean Energy), lancaster-choice,
   jrc-pomona, energy-palmdale
-    - Source: sce_source/CCA_Summary sheet in the workbook; if rates aren't extracted there, cite sce_source/ PDFs and extract.
+    - Source: data-sources/sce_source/CCA_Summary sheet in the workbook; if rates aren't extracted there, cite data-sources/sce_source/ PDFs and extract.
     - Each CCA block must follow the shape from ratePlans.json.ratePlans["EV2-A"].rates.ccaGeneration["3ce"] exactly (name, defaultTier,
   tiers[tierId] = { label, summer: {peak, offPeak, ...}, winter: {...} }).
     - Critical gotcha per memory S4/128/129: Some workbook cells contain stale PG&E PCIA values. Before copying any rate, verify the source is an
