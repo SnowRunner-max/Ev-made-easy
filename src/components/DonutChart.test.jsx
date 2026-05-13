@@ -112,12 +112,20 @@ describe('DonutChart — percentage rendering', () => {
 });
 
 describe('DonutChart — legend labels', () => {
-  it('renders "Utility Delivery" when _displayProvider is missing', () => {
+  it('renders a utility-neutral delivery fallback label', () => {
     useCurrentRate.mockReturnValue({ period: 'offPeak', season: 'winter' });
 
     render(<DonutChart planConfig={ev2aConfig} />);
 
     expect(screen.getByText('Utility Delivery')).toBeInTheDocument();
+  });
+
+  it('renders the configured delivery label when present', () => {
+    useCurrentRate.mockReturnValue({ period: 'offPeak', season: 'winter' });
+
+    render(<DonutChart planConfig={{ ...ev2aConfig, deliveryLabel: 'PG&E Delivery' }} />);
+
+    expect(screen.getByText('PG&E Delivery')).toBeInTheDocument();
   });
 
   it('renders "Generation" label', () => {

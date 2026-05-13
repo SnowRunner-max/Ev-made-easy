@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
+import { getUtilityConfigForServiceArea } from '../data/utilityRegistry';
 
 const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
@@ -85,17 +86,25 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
 
   const bsc = fixedCharges?.type === 'incomeBasedBSC' ? fixedCharges.baseServicesCharge : null;
   const dmc = fixedCharges?.type === 'flatMeterCharge' ? fixedCharges.meterCharge : null;
+  const utility = getUtilityConfigForServiceArea(serviceArea);
 
-  const isBundledProvider = !planConfig.rates?.ccaGeneration?.[provider]
-    && (provider == null || provider === 'pge' || provider === 'sce');
+  const isBundledProvider = planConfig.isBundledProvider ?? (
+    !planConfig.rates?.ccaGeneration?.[provider] &&
+    (provider == null || provider === utility?.bundledProviderId)
+  );
 
   const ccaName = !isBundledProvider && planConfig._displayProvider
     ? planConfig._displayProvider.split(' — ')[0]
     : (serviceArea?.cca ?? 'CCA');
 
-  const effectiveDate = globalMetadata?.pgeEffectiveDate ?? globalMetadata?.sceEffectiveDate;
-  const adviceLetter = globalMetadata?.pgeAdviceLetter ?? globalMetadata?.sceAdviceLetter;
-  const ccaRateDate = globalMetadata?.cceRateSheetDate ?? globalMetadata?.cpaRateSheetDate;
+  const effectiveDateKey = utility?.metadataKeys.effectiveDate;
+  const adviceLetterKey = utility?.metadataKeys.adviceLetter;
+  const effectiveDate = globalMetadata?.[effectiveDateKey];
+  const adviceLetter = globalMetadata?.[adviceLetterKey];
+  const ccaRateDate = globalMetadata?.cceRateSheetDate
+    ?? globalMetadata?.cpaRateSheetDate
+    ?? globalMetadata?.sbceRateEffectiveDate
+    ?? globalMetadata?.['3ceRateSheetDate'];
 
   return (
     <footer

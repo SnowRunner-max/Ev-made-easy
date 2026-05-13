@@ -45,6 +45,7 @@
       "category": "EV Rate",
       "status": "active",
       "description": "Residential time-of-use for EV, battery storage, and heat pump customers. Whole-house metering.",
+      "uiHint": "For customers with an EV, battery storage, or heat pump. Whole-house metering.",
       "eligibility": "EV, battery storage, or electric heat pump. Must not exceed 800% of annual baseline allowance.",
       "meteringScope": "wholeHouse",
       "seasons": {
@@ -286,6 +287,7 @@
       "category": "EV Rate",
       "status": "active",
       "description": "Residential time-of-use for customers with EV, battery storage, or electric heat pump. Whole-house metering. Same TOU windows as EV2-A.",
+      "uiHint": "All-electric home rate for customers with space/water heating and an EV or battery storage.",
       "eligibility": "EV, battery storage, or electric heat pump for water heating or climate control. Also required for Net Billing Tariff customers.",
       "meteringScope": "wholeHouse",
       "seasons": {
@@ -527,6 +529,7 @@
       "category": "EV Rate",
       "status": "active",
       "description": "Residential time-of-use for a separately metered EV charging outlet. Requires a dedicated second meter for EV only.",
+      "uiHint": "Requires a separately metered EV outlet (second meter). Best for high overnight charging.",
       "eligibility": "Registered BEV or PHEV with a separately metered EV outlet. Not eligible for SmartRate, Medical Baseline, CARE, or FERA.",
       "meteringScope": "separatelyMeteredEV",
       "deprecationNotice": "EV-A (Rate A) was eliminated November 30, 2025 per Advice Letter 7771-E. Only Rate B remains.",
@@ -757,6 +760,7 @@
       "category": "Residential TOU",
       "status": "active",
       "description": "General residential time-of-use with peak pricing 4–9pm every day. Includes a baseline credit for usage within baseline allowance. Peak and Off-Peak only (no part-peak).",
+      "uiHint": "Standard residential TOU rate. Peak 4-9 PM every day including weekends.",
       "eligibility": "All residential customers. Opt-in basis.",
       "meteringScope": "wholeHouse",
       "seasons": {
@@ -1008,6 +1012,7 @@
       "category": "Residential TOU",
       "status": "active",
       "description": "Residential time-of-use with narrow peak window 5–8pm on non-holiday weekdays only. Peak and Off-Peak only (no part-peak). No baseline allowance.",
+      "uiHint": "Standard residential TOU rate. Peak 5-8 PM on weekdays only.",
       "eligibility": "All residential customers. Opt-in basis.",
       "meteringScope": "wholeHouse",
       "seasons": {
@@ -1241,6 +1246,7 @@
       "category": "Tiered (Non-TOU)",
       "status": "active",
       "description": "Standard residential tiered rate with no time-of-use periods. Rate varies by usage tier relative to baseline allowance. Same rate 24/7.",
+      "uiHint": "Traditional tiered rate. No time-of-use pricing - rate varies by monthly usage tier.",
       "eligibility": "All residential customers. Default rate schedule.",
       "meteringScope": "wholeHouse",
       "seasons": null,

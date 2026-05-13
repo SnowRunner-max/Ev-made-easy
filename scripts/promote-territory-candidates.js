@@ -3,7 +3,8 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { PATHS, UTILITY_CONFIG, formatJson, readJson, sortObjectByKey } from './territory-utils.js';
+import { PATHS, formatJson, readJson, sortObjectByKey } from './territory-utils.js';
+import { UTILITY_CONFIG } from './utility-config.js';
 
 const PROMOTABLE_STATUSES = new Set(['assign', 'multiUtility', 'exclude']);
 
@@ -11,13 +12,26 @@ function stableHash(value) {
   return crypto.createHash('sha256').update(JSON.stringify(sortObjectByKey(value))).digest('hex');
 }
 
-function cloneVerifiedZips(verifiedZips) {
+function configuredUtilityIds(utilityConfig) {
+  return Object.keys(utilityConfig);
+}
+
+function getServiceAreaUtility(utilityConfig, serviceArea) {
+  if (!serviceArea) return null;
+  return utilityConfig[serviceArea.utilityId]
+    ?? Object.values(utilityConfig).find(utility => utility.label === serviceArea.utility)
+    ?? null;
+}
+
+function cloneVerifiedZips(verifiedZips, utilityConfig = UTILITY_CONFIG) {
   return {
     ...verifiedZips,
-    pge: { ...(verifiedZips.pge ?? {}), zips: { ...(verifiedZips.pge?.zips ?? {}) } },
-    sce: { ...(verifiedZips.sce ?? {}), zips: { ...(verifiedZips.sce?.zips ?? {}) } },
-    tdpud: { ...(verifiedZips.tdpud ?? {}), zips: { ...(verifiedZips.tdpud?.zips ?? {}) } },
-    liberty: { ...(verifiedZips.liberty ?? {}), zips: { ...(verifiedZips.liberty?.zips ?? {}) } },
+    ...Object.fromEntries(
+      configuredUtilityIds(utilityConfig).map(utilityId => {
+        const key = utilityConfig[utilityId].verifiedKey;
+        return [key, { ...(verifiedZips[key] ?? {}), zips: { ...(verifiedZips[key]?.zips ?? {}) } }];
+      })
+    ),
     multiUtility: {
       ...(verifiedZips.multiUtility ?? {}),
       zips: { ...(verifiedZips.multiUtility?.zips ?? {}) },
@@ -29,11 +43,10 @@ function cloneVerifiedZips(verifiedZips) {
   };
 }
 
-function removeZipEverywhere(verifiedZips, zip) {
-  delete verifiedZips.pge.zips[zip];
-  delete verifiedZips.sce.zips[zip];
-  delete verifiedZips.tdpud.zips[zip];
-  delete verifiedZips.liberty.zips[zip];
+function removeZipEverywhere(verifiedZips, zip, utilityConfig = UTILITY_CONFIG) {
+  for (const utilityId of configuredUtilityIds(utilityConfig)) {
+    delete verifiedZips[utilityConfig[utilityId].verifiedKey].zips[zip];
+  }
   delete verifiedZips.multiUtility.zips[zip];
   delete verifiedZips.excluded.zips[zip];
 }
@@ -50,8 +63,8 @@ function validateServiceArea(serviceAreaMap, serviceAreaId) {
   return serviceAreaMap[serviceAreaId] ?? null;
 }
 
-export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, serviceAreas }) {
-  const nextVerified = cloneVerifiedZips(verifiedZips);
+export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, serviceAreas, utilityConfig = UTILITY_CONFIG }) {
+  const nextVerified = cloneVerifiedZips(verifiedZips, utilityConfig);
   const serviceAreaMap = serviceAreas.serviceAreas ?? serviceAreas;
   const promoted = [];
   const skipped = [];
@@ -83,13 +96,13 @@ export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, ser
         continue;
       }
 
-      removeZipEverywhere(nextVerified, zip);
-      const utilityConfig = UTILITY_CONFIG[serviceArea.utility];
-      if (!utilityConfig) {
+      removeZipEverywhere(nextVerified, zip, utilityConfig);
+      const utility = getServiceAreaUtility(utilityConfig, serviceArea);
+      if (!utility) {
         skip(skipped, zip, `assign review uses unsupported utility ${serviceArea.utility}`);
         continue;
       }
-      nextVerified[utilityConfig.id].zips[zip] = serviceAreaId;
+      nextVerified[utility.verifiedKey].zips[zip] = serviceAreaId;
 
       promoted.push({ zip, status, serviceAreaId });
       continue;
@@ -108,7 +121,7 @@ export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, ser
         continue;
       }
 
-      removeZipEverywhere(nextVerified, zip);
+      removeZipEverywhere(nextVerified, zip, utilityConfig);
       nextVerified.multiUtility.zips[zip] = candidates;
       promoted.push({ zip, status, candidates });
       continue;
@@ -120,7 +133,7 @@ export function promoteReviewedCandidates({ overlayCandidates, verifiedZips, ser
         continue;
       }
 
-      removeZipEverywhere(nextVerified, zip);
+      removeZipEverywhere(nextVerified, zip, utilityConfig);
       nextVerified.excluded.zips[zip] = {
         reason: review.reason,
         source: review.source,
