@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
+import sceRatePlans from '../data/sceRatePlans.json';
 import RateDisplay from './RateDisplay';
 
 function buildEffectiveConfig(planConfig) {
@@ -24,6 +25,7 @@ function buildEffectiveConfig(planConfig) {
 
 const ev2aConfig = buildEffectiveConfig(ratePlans.ratePlans['EV2-A']);
 const e1Config   = ratePlans.ratePlans['E-1'];
+const sceTouDConfig = buildEffectiveConfig(sceRatePlans.ratePlans['TOU-D-4-9PM']);
 
 describe('RateDisplay — TOU plan (EV2-A)', () => {
   beforeEach(() => vi.useFakeTimers());
@@ -94,5 +96,18 @@ describe('RateDisplay — tiered plan (E-1)', () => {
     vi.setSystemTime(new Date('2026-01-15T18:00:00-08:00'));
     render(<RateDisplay planConfig={e1Config} />);
     expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
+  });
+});
+
+describe('RateDisplay — SCE TOU-D-4-9PM', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  it('renders winter mid-peak without crashing', () => {
+    vi.setSystemTime(new Date('2026-01-15T17:00:00-08:00'));
+    render(<RateDisplay planConfig={sceTouDConfig} />);
+    expect(screen.getByTestId('rate-badge')).toHaveTextContent('Mid-Peak');
+    expect(screen.getByTestId('rate-badge').className).toMatch(/amber/);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.51/kWh');
   });
 });

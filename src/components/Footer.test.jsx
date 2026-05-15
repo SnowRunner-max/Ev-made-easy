@@ -38,9 +38,11 @@ function buildEffectiveConfig(planConfig) {
 }
 
 const ev2aConfig = buildEffectiveConfig(ratePlans.ratePlans['EV2-A']);
+const sceTouDConfig = buildEffectiveConfig(sceRatePlans.ratePlans['TOU-D-4-9PM']);
 const globalMetadata = ratePlans._metadata;
 const city = serviceAreasData.cities[0]; // Buellton
 const serviceArea = serviceAreasData.serviceAreas[city.serviceAreaId];
+const sceServiceArea = serviceAreasData.serviceAreas['sce-only'];
 
 describe('Footer — collapsed (default)', () => {
   it('renders app-footer', () => {
@@ -143,5 +145,20 @@ describe('Footer — expanded', () => {
       expect(screen.getByTestId('footer-details')).not.toHaveTextContent('NaN');
       unmount();
     }
+  });
+
+  it('shows SCE periods that only exist in one season', () => {
+    render(
+      <Footer
+        planConfig={sceTouDConfig}
+        globalMetadata={sceRatePlans._metadata}
+        serviceArea={sceServiceArea}
+        provider="sce"
+      />
+    );
+    fireEvent.click(screen.getByTestId('footer-toggle'));
+    expect(screen.getByTestId('footer-details')).toHaveTextContent('Mid-Peak');
+    expect(screen.getByTestId('footer-details')).toHaveTextContent('Super Off-Peak');
+    expect(screen.getByTestId('footer-details')).toHaveTextContent('N/A');
   });
 });

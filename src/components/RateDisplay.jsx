@@ -34,8 +34,8 @@ export default function RateDisplay({ planConfig }) {
     );
   }
 
-  const colors = PERIOD_COLORS[period];
-  const nextLabel = PERIOD_DISPLAY[nextChange.newPeriod]?.label;
+  const colors = PERIOD_COLORS[period] ?? PERIOD_COLORS.offPeak;
+  const nextLabel = PERIOD_DISPLAY[nextChange.newPeriod]?.label ?? 'Next rate';
   const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
 
   return (

@@ -6,7 +6,7 @@ const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
 function RateTable({ rates, seasons }) {
   const seasonKeys = Object.keys(seasons);
-  const periodKeys = PERIOD_ORDER.filter(p => rates[seasonKeys[0]][p] !== undefined);
+  const periodKeys = PERIOD_ORDER.filter(p => seasonKeys.some(s => rates[s][p] !== undefined));
 
   return (
     <table className="w-full text-xs border-collapse mt-2">
@@ -22,11 +22,14 @@ function RateTable({ rates, seasons }) {
         {periodKeys.map(period => (
           <tr key={period} className="border-t border-pewter-light">
             <td className="py-1.5 pr-4 text-[var(--text-secondary)]">{PERIOD_DISPLAY[period].label}</td>
-            {seasonKeys.map(s => (
-              <td key={s} className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">
-                ${rates[s][period].combined.toFixed(5)}
-              </td>
-            ))}
+            {seasonKeys.map(s => {
+              const rate = rates[s][period];
+              return (
+                <td key={s} className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">
+                  {rate ? `$${rate.combined.toFixed(5)}` : 'N/A'}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>
