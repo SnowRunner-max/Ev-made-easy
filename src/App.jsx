@@ -9,6 +9,7 @@ import {
   normalizeProvider,
 } from './data/effectivePlanConfig';
 import { calcChargeSummary } from './engine/costCalculator';
+import { useDebouncedValue } from './hooks/useDebouncedValue';
 import LocationInput from './components/LocationInput';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
@@ -23,6 +24,7 @@ import CostFacts from './components/CostFacts';
 import Footer from './components/Footer';
 
 const CUSTOM_ID = 'custom';
+const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
 
 export default function App() {
   const [locationResult, setLocationResult] = useState({
@@ -37,6 +39,7 @@ export default function App() {
   const [customKwh, setCustomKwh] = useState('');
   const [currentPct, setCurrentPct] = useState(20);
   const [showCostFacts, setShowCostFacts] = useState(false);
+  const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
 
   const serviceArea = serviceAreasData.serviceAreas[locationResult.serviceAreaId];
   const ratePlansData = RATE_PLAN_REGISTRY[locationResult.serviceAreaId];
@@ -83,8 +86,8 @@ export default function App() {
     ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
     : (selectedVehicle?.usableBatteryKwh ?? 60);
 
-  const summary = batteryKwh > 0 && currentPct < 100
-    ? calcChargeSummary(new Date(), batteryKwh, currentPct, 7.7, effectivePlanConfig)
+  const summary = batteryKwh > 0 && summaryPct < 100
+    ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, effectivePlanConfig)
     : null;
 
   return (

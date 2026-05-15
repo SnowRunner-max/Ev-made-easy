@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
 import Calculator from './Calculator';
@@ -69,5 +69,22 @@ describe('Calculator — cost output', () => {
   it('shows a dollar cost in the output', () => {
     render(<Calculator planConfig={ev2aConfig} />);
     expect(screen.getByTestId('calculator')).toHaveTextContent('$');
+  });
+
+  it('updates the slider label immediately and debounces cost output', () => {
+    render(<Calculator planConfig={ev2aConfig} />);
+
+    const initialCost = screen.getByTestId('to80-cost-now').textContent;
+
+    fireEvent.change(screen.getByTestId('charge-slider'), { target: { value: '50' } });
+
+    expect(screen.getByTestId('charge-label')).toHaveTextContent('50%');
+    expect(screen.getByTestId('to80-cost-now')).toHaveTextContent(initialCost);
+
+    act(() => {
+      vi.advanceTimersByTime(120);
+    });
+
+    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(initialCost);
   });
 });
