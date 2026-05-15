@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import vehiclesData from '../data/vehicles.json';
 import { calcChargeSummary } from '../engine/costCalculator';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 const CUSTOM_ID = 'custom';
+const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
 
 /**
  * Vehicle picker + charge slider — presentational, accepts controlled props.
@@ -168,10 +170,14 @@ export default function Calculator({ planConfig }) {
   const batteryKwh = isCustom
     ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
     : selectedVehicle.usableBatteryKwh;
+  const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
 
-  const summary = batteryKwh > 0 && currentPct < 100
-    ? calcChargeSummary(new Date(), batteryKwh, currentPct, 7.7, planConfig)
-    : null;
+  const summary = useMemo(
+    () => batteryKwh > 0 && summaryPct < 100
+      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, planConfig)
+      : null,
+    [batteryKwh, summaryPct, planConfig]
+  );
 
   return (
     <div data-testid="calculator" className="w-full">
