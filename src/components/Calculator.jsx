@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import vehiclesData from '../data/vehicles.json';
 import { calcChargeSummary } from '../engine/costCalculator';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
@@ -172,9 +172,12 @@ export default function Calculator({ planConfig }) {
     : selectedVehicle.usableBatteryKwh;
   const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
 
-  const summary = batteryKwh > 0 && summaryPct < 100
-    ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, planConfig)
-    : null;
+  const summary = useMemo(
+    () => batteryKwh > 0 && summaryPct < 100
+      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, planConfig)
+      : null,
+    [batteryKwh, summaryPct, planConfig]
+  );
 
   return (
     <div data-testid="calculator" className="w-full">

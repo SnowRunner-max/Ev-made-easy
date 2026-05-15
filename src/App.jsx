@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { RATE_PLAN_REGISTRY } from './data/ratePlanRegistry';
 import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
@@ -72,12 +72,10 @@ export default function App() {
     setCcaTier(null); // reset tier when switching CCA
   }
 
-  const effectivePlanConfig = buildEffectivePlanConfig({
-    planConfig,
-    serviceArea,
-    providerId: effectiveProvider,
-    tierId: effectiveTier,
-  });
+  const effectivePlanConfig = useMemo(
+    () => buildEffectivePlanConfig({ planConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier }),
+    [planConfig, serviceArea, effectiveProvider, effectiveTier]
+  );
   const supportsProviderToggle = !!planConfig.touPeriods && providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
@@ -86,9 +84,12 @@ export default function App() {
     ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
     : (selectedVehicle?.usableBatteryKwh ?? 60);
 
-  const summary = batteryKwh > 0 && summaryPct < 100
-    ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, effectivePlanConfig)
-    : null;
+  const summary = useMemo(
+    () => batteryKwh > 0 && summaryPct < 100
+      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, effectivePlanConfig)
+      : null,
+    [batteryKwh, summaryPct, effectivePlanConfig]
+  );
 
   return (
     <div className="min-h-screen bg-surface font-sans">
