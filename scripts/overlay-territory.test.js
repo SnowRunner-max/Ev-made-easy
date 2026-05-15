@@ -94,7 +94,7 @@ describe('territory overlay candidate generation', () => {
     });
 
     const candidate = result.candidates['90003'];
-    expect(candidate.utilityAreaPct).toEqual({ pge: 0.6, sce: 0.6 });
+    expect(candidate.utilityAreaPct).toEqual({ pge: 0.6, sce: 0.6, tdpud: 0, liberty: 0 });
     expect(candidate).not.toHaveProperty('pgeAreaPct');
     expect(candidate).not.toHaveProperty('sceAreaPct');
     expect(candidate.flags.split_utility_zip).toBe(true);
