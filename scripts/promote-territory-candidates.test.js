@@ -15,6 +15,12 @@ const serviceAreas = {
   },
 };
 
+const threeUtilityConfig = {
+  pge: { id: 'pge', label: 'PG&E', verifiedKey: 'pge' },
+  sce: { id: 'sce', label: 'SCE', verifiedKey: 'sce' },
+  sdge: { id: 'sdge', label: 'SDG&E', verifiedKey: 'sdge' },
+};
+
 function candidate(review, overrides = {}) {
   return {
     sourceHashes,
@@ -79,5 +85,31 @@ describe('reviewed territory candidate promotion', () => {
     expect(result.verifiedZips.pge.zips['90006']).toBeUndefined();
     expect(result.stats.promotedCount).toBe(3);
     expect(result.stats.skippedCount).toBe(3);
+  });
+
+  it('promotes a reviewed third-utility service area through utility config', () => {
+    const result = promoteReviewedCandidates({
+      overlayCandidates: {
+        sourceHashes,
+        candidates: {
+          '92101': candidate({ status: 'assign', serviceAreaId: 'sdge-sdcp-sd' }),
+        },
+      },
+      verifiedZips: {
+        pge: { zips: {} },
+        sce: { zips: {} },
+        sdge: { zips: {} },
+        multiUtility: { zips: {} },
+        excluded: { zips: {} },
+      },
+      serviceAreas: {
+        serviceAreas: {
+          'sdge-sdcp-sd': { utilityId: 'sdge', utility: 'SDG&E' },
+        },
+      },
+      utilityConfig: threeUtilityConfig,
+    });
+
+    expect(result.verifiedZips.sdge.zips['92101']).toBe('sdge-sdcp-sd');
   });
 });

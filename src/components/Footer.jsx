@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
+import { getUtilityConfigForServiceArea } from '../data/utilityRegistry';
 
 const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
 function RateTable({ rates, seasons }) {
   const seasonKeys = Object.keys(seasons);
-  const periodKeys = PERIOD_ORDER.filter(p => rates[seasonKeys[0]][p] !== undefined);
+  const periodKeys = PERIOD_ORDER.filter(p => seasonKeys.some(s => rates[s][p] !== undefined));
 
   return (
     <table className="w-full text-xs border-collapse mt-2">
@@ -21,11 +22,14 @@ function RateTable({ rates, seasons }) {
         {periodKeys.map(period => (
           <tr key={period} className="border-t border-pewter-light">
             <td className="py-1.5 pr-4 text-[var(--text-secondary)]">{PERIOD_DISPLAY[period].label}</td>
-            {seasonKeys.map(s => (
-              <td key={s} className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">
-                ${rates[s][period].combined.toFixed(5)}
-              </td>
-            ))}
+            {seasonKeys.map(s => {
+              const rate = rates[s][period];
+              return (
+                <td key={s} className="py-1.5 pr-4 font-mono text-[var(--text-primary)]">
+                  {rate ? `$${rate.combined.toFixed(5)}` : 'N/A'}
+                </td>
+              );
+            })}
           </tr>
         ))}
       </tbody>
@@ -85,17 +89,25 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
 
   const bsc = fixedCharges?.type === 'incomeBasedBSC' ? fixedCharges.baseServicesCharge : null;
   const dmc = fixedCharges?.type === 'flatMeterCharge' ? fixedCharges.meterCharge : null;
+  const utility = getUtilityConfigForServiceArea(serviceArea);
 
-  const isBundledProvider = !planConfig.rates?.ccaGeneration?.[provider]
-    && (provider == null || provider === 'pge' || provider === 'sce');
+  const isBundledProvider = planConfig.isBundledProvider ?? (
+    !planConfig.rates?.ccaGeneration?.[provider] &&
+    (provider == null || provider === utility?.bundledProviderId)
+  );
 
   const ccaName = !isBundledProvider && planConfig._displayProvider
     ? planConfig._displayProvider.split(' — ')[0]
     : (serviceArea?.cca ?? 'CCA');
 
-  const effectiveDate = globalMetadata?.pgeEffectiveDate ?? globalMetadata?.sceEffectiveDate;
-  const adviceLetter = globalMetadata?.pgeAdviceLetter ?? globalMetadata?.sceAdviceLetter;
-  const ccaRateDate = globalMetadata?.cceRateSheetDate ?? globalMetadata?.cpaRateSheetDate;
+  const effectiveDateKey = utility?.metadataKeys.effectiveDate;
+  const adviceLetterKey = utility?.metadataKeys.adviceLetter;
+  const effectiveDate = globalMetadata?.[effectiveDateKey];
+  const adviceLetter = globalMetadata?.[adviceLetterKey];
+  const ccaRateDate = globalMetadata?.cceRateSheetDate
+    ?? globalMetadata?.cpaRateSheetDate
+    ?? globalMetadata?.sbceRateEffectiveDate
+    ?? globalMetadata?.['3ceRateSheetDate'];
 
   return (
     <footer

@@ -9,32 +9,29 @@ vi.mock('zipcodes', () => ({
   },
 }));
 
-// Mock utility config — includes territories for supported utility tests
-vi.mock('../data/utilityConfig', () => ({
-  SUPPORTED_UTILITIES: [
+// Mock utility registry — includes territories for supported utility tests
+vi.mock('../data/utilityRegistry', () => ({
+  getUtilityTerritories: () => [
     {
-      id: 'pge',
-      territory: {
-        zips: {
-          '93427': 'pge-3ce-sbco',   // PGE + 3CE CCA
-          '94804': 'pge-only',        // PGE direct, no CCA
-        },
+      utilityId: 'pge',
+      label: 'PG&E',
+      zips: {
+        '93427': 'pge-3ce-sbco',
+        '94804': 'pge-only',
       },
     },
     {
-      id: 'sce',
-      territory: {
-        zips: {
-          '91001': 'sce-cpa-la',   // SCE + CPA CCA
-        },
+      utilityId: 'sce',
+      label: 'SCE',
+      zips: {
+        '91001': 'sce-cpa-la',
       },
     },
     {
-      id: 'liberty',
-      territory: {
-        zips: {
-          '96146': 'liberty-tahoe',
-        },
+      utilityId: 'liberty',
+      label: 'Liberty',
+      zips: {
+        '96146': 'liberty-tahoe',
       },
     },
   ],

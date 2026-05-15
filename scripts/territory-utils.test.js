@@ -64,6 +64,36 @@ const serviceAreas = {
 
 const rateRegistryIds = new Set(Object.keys(serviceAreas.serviceAreas));
 
+const threeUtilityConfig = {
+  pge: {
+    id: 'pge',
+    label: 'PG&E',
+    bundledProviderId: 'pge',
+    verifiedKey: 'pge',
+    generatedKey: 'pgeTerritory',
+    statsKey: 'pgeZipCount',
+    territoryNote: 'PG&E fixture territory',
+  },
+  sce: {
+    id: 'sce',
+    label: 'SCE',
+    bundledProviderId: 'sce',
+    verifiedKey: 'sce',
+    generatedKey: 'sceTerritory',
+    statsKey: 'sceZipCount',
+    territoryNote: 'SCE fixture territory',
+  },
+  sdge: {
+    id: 'sdge',
+    label: 'SDG&E',
+    bundledProviderId: 'sdge',
+    verifiedKey: 'sdge',
+    generatedKey: 'sdgeTerritory',
+    statsKey: 'sdgeZipCount',
+    territoryNote: 'SDG&E fixture territory',
+  },
+};
+
 function validate(overrides = {}) {
   return validateTerritoryData({
     pgeTerritory: { zips: { '93427': 'pge-3ce-sbco', '94804': 'pge-only', ...(overrides.pge ?? {}) } },
@@ -126,6 +156,83 @@ describe('territory validation', () => {
     expect(result.ok).toBe(true);
     expect(result.warnings.map(warning => warning.message).join('\n')).toContain('ZIP outputs are bootstrapped');
   });
+
+  it('validates a third utility fixture without PG&E/SCE-specific branches', () => {
+    const expandedServiceAreas = structuredClone(serviceAreas);
+    expandedServiceAreas.serviceAreas['sdge-sdcp-sd'] = {
+      utilityId: 'sdge',
+      utility: 'SDG&E',
+      defaultPlanId: 'EV-TOU-5',
+      defaultProvider: 'sdcp',
+      ccas: ['sdcp'],
+    };
+
+    const result = validateTerritoryData({
+      utilityTerritories: {
+        pge: { zips: { '93427': 'pge-3ce-sbco' } },
+        sce: { zips: { '90265': 'sce-cpa-la' } },
+        sdge: { zips: { '92101': 'sdge-sdcp-sd' } },
+      },
+      multiUtilityZips: { zips: { '99999': ['pge-3ce-sbco', 'sdge-sdcp-sd'] } },
+      serviceAreas: expandedServiceAreas,
+      ratePlanFiles: {
+        ...ratePlanFiles,
+        sdge: {
+          ratePlans: {
+            'EV-TOU-5': {
+              rates: {
+                ccaGeneration: {
+                  sdcp: {},
+                },
+              },
+            },
+          },
+        },
+      },
+      rateRegistryIds: new Set([...Object.keys(expandedServiceAreas.serviceAreas)]),
+      utilityConfig: threeUtilityConfig,
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.stats.sdgeZipCount).toBe(1);
+  });
+
+  it('uses utilityId before legacy utility labels when selecting rate data', () => {
+    const expandedServiceAreas = structuredClone(serviceAreas);
+    expandedServiceAreas.serviceAreas['sdge-label-mismatch'] = {
+      utilityId: 'sdge',
+      utility: 'Legacy label that should not be used',
+      defaultPlanId: 'EV-TOU-5',
+      defaultProvider: 'sdge',
+      ccas: [],
+    };
+
+    const result = validateTerritoryData({
+      utilityTerritories: {
+        pge: { zips: {} },
+        sce: { zips: {} },
+        sdge: { zips: { '92101': 'sdge-label-mismatch' } },
+      },
+      multiUtilityZips: { zips: {} },
+      serviceAreas: expandedServiceAreas,
+      ratePlanFiles: {
+        ...ratePlanFiles,
+        sdge: {
+          ratePlans: {
+            'EV-TOU-5': {
+              rates: {
+                generation: { allUsage: 0.1 },
+              },
+            },
+          },
+        },
+      },
+      rateRegistryIds: new Set([...Object.keys(expandedServiceAreas.serviceAreas)]),
+      utilityConfig: threeUtilityConfig,
+    });
+
+    expect(result.ok).toBe(true);
+  });
 });
 
 describe('territory generator', () => {
@@ -167,5 +274,19 @@ describe('territory generator', () => {
 
     expect(generated.multiUtilityZips.zips['93117']).toEqual(['pge-3ce-sbco', 'sce-sbce-sb']);
     expect(generated.appliedOverrides).toHaveLength(1);
+  });
+
+  it('builds third utility fixture output from the same generator path', () => {
+    const generated = buildTerritoryData({
+      utilityConfig: threeUtilityConfig,
+      verifiedZips: {
+        pge: { zips: {} },
+        sce: { zips: {} },
+        sdge: { zips: { '92101': 'sdge-sdcp-sd' } },
+        multiUtility: { zips: {} },
+      },
+    });
+
+    expect(generated.sdgeTerritory.zips['92101']).toBe('sdge-sdcp-sd');
   });
 });

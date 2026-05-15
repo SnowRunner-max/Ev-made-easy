@@ -15,7 +15,7 @@ export default function DonutChart({ planConfig }) {
   const { delivery, combined } = rateData;
   const delivPct = Math.round((delivery / combined) * 100);
   const genPct   = 100 - delivPct;
-  const utilityName = planConfig._displayProvider?.replace(' Bundled Service', '') || 'Utility';
+  const deliveryLabel = planConfig.deliveryLabel ?? 'Utility Delivery';
 
   return (
     <div className="py-6 border-t border-white/[0.08] border-b border-b-white/[0.08] mb-6">
@@ -37,7 +37,7 @@ export default function DonutChart({ planConfig }) {
             <path
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="#CF5C36"
+              stroke="var(--color-paprika)"
               strokeWidth="4"
               strokeDasharray={`${delivPct}, 100`}
             />
@@ -45,7 +45,7 @@ export default function DonutChart({ planConfig }) {
             <path
               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="#EFC88B"
+              stroke="var(--color-apricot)"
               strokeWidth="4"
               strokeDasharray={`${genPct}, 100`}
               strokeDashoffset={`-${delivPct}`}
@@ -61,7 +61,7 @@ export default function DonutChart({ planConfig }) {
         <div className="flex-1 space-y-2.5">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-paprika flex-shrink-0" />
-            <span className="text-[11px] text-pewter flex-1">{utilityName} Delivery</span>
+            <span className="text-[11px] text-pewter flex-1">{deliveryLabel}</span>
             <span className="text-[11px] font-semibold text-white tabular-nums">{delivPct}%</span>
           </div>
           <div className="flex items-center gap-2">

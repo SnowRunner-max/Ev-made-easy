@@ -233,6 +233,13 @@ describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
     fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '100-green' } });
     expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
   });
+
+  it('uses SCE delivery labels instead of PG&E labels in SCE territory', () => {
+    render(<App />);
+    act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    expect(screen.getByText('SCE Delivery')).toBeInTheDocument();
+    expect(screen.queryByText('PG&E Delivery')).not.toBeInTheDocument();
+  });
 });
 
 describe('App — Tahoe utilities', () => {

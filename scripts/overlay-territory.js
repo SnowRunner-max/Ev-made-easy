@@ -18,6 +18,7 @@ import {
   readJson,
   sortObjectByKey,
 } from './territory-utils.js';
+import { UTILITY_CONFIG, UTILITY_IDS, getUtilityByLabel } from './utility-config.js';
 
 export const THRESHOLDS = {
   utilDominant: 0.50,
@@ -25,16 +26,6 @@ export const THRESHOLDS = {
   ccaDominant: 0.50,
   multiCCA: 0.20,
   ccaNoiseFloor: 0.01,
-};
-
-const UTILITY_SOURCE_IDS = {
-  pge: 'PG&E',
-  sce: 'SCE',
-};
-
-const DIRECT_SERVICE_AREAS = {
-  pge: 'pge-only',
-  sce: 'sce-only',
 };
 
 const DEFAULT_REVIEW = {
@@ -113,13 +104,17 @@ function sumCcaIntersectionAreas(baseFeature, baseBbox, indexedCcaPolygons) {
 }
 
 function utilityKey(utility) {
-  return utility === 'PG&E' ? 'pge' : 'sce';
+  return getUtilityByLabel(utility)?.id ?? null;
 }
 
-function getDominantUtility(pgePercent, scePercent) {
-  if (pgePercent >= THRESHOLDS.utilDominant && pgePercent >= scePercent) return 'PG&E';
-  if (scePercent >= THRESHOLDS.utilDominant && scePercent > pgePercent) return 'SCE';
-  return null;
+function getDominantUtility(utilityIntersections) {
+  const best = utilityIntersections.reduce(
+    (currentBest, intersection) => (
+      intersection.percentRaw > currentBest.percentRaw ? intersection : currentBest
+    ),
+    { percentRaw: -1, utility: null }
+  );
+  return best.percentRaw >= THRESHOLDS.utilDominant ? best.utility : null;
 }
 
 function resolveCcaBacking({ acronym, dominantUtility, ccaServiceAreaMap }) {
@@ -194,36 +189,34 @@ function getSuggestedServiceAreaForUtility(utility, ccaIntersections) {
   const dominantCca = ccaIntersections.find(
     cca => cca.serviceAreaIds?.[key] && cca.percentOfZcta >= THRESHOLDS.ccaDominant
   );
-  return dominantCca?.serviceAreaIds[key] ?? DIRECT_SERVICE_AREAS[key];
+  return dominantCca?.serviceAreaIds[key] ?? UTILITY_CONFIG[key]?.directServiceAreaId;
 }
 
-function buildSuggestedResolution({ pgePercent, scePercent, dominantUtility, flags, ccaIntersections }) {
-  const utilityPresent = pgePercent >= THRESHOLDS.multiUtil || scePercent >= THRESHOLDS.multiUtil;
+function buildSuggestedResolution({ utilityIntersections, dominantUtility, flags, ccaIntersections }) {
+  const utilityPresent = utilityIntersections.some(intersection => intersection.percentRaw >= THRESHOLDS.multiUtil);
   const topCca = ccaIntersections[0] ?? null;
+  const utilityList = utilityIntersections.map(intersection => intersection.utility).join(' or ');
 
   if (!utilityPresent) {
     return {
       action: 'no-coverage',
       serviceAreaId: null,
       multiUtilityCandidates: null,
-      reason: 'No PG&E or SCE utility polygon materially intersects this ZCTA.',
+      reason: `No ${utilityList} utility polygon materially intersects this ZCTA.`,
     };
   }
 
   if (flags.split_utility_zip) {
-    const multiUtilityCandidates = [];
-    if (pgePercent >= THRESHOLDS.multiUtil) {
-      multiUtilityCandidates.push(getSuggestedServiceAreaForUtility('PG&E', ccaIntersections));
-    }
-    if (scePercent >= THRESHOLDS.multiUtil) {
-      multiUtilityCandidates.push(getSuggestedServiceAreaForUtility('SCE', ccaIntersections));
-    }
+    const multiUtilityCandidates = utilityIntersections
+      .filter(intersection => intersection.percentRaw >= THRESHOLDS.multiUtil)
+      .map(intersection => getSuggestedServiceAreaForUtility(intersection.utility, ccaIntersections))
+      .filter(Boolean);
 
     return {
       action: 'multiUtility',
       serviceAreaId: null,
       multiUtilityCandidates: [...new Set(multiUtilityCandidates)].sort(),
-      reason: 'Both PG&E and SCE materially intersect this ZCTA.',
+      reason: 'Multiple supported utilities materially intersect this ZCTA.',
     };
   }
 
@@ -239,7 +232,7 @@ function buildSuggestedResolution({ pgePercent, scePercent, dominantUtility, fla
   if (!topCca) {
     return {
       action: 'assign',
-      serviceAreaId: DIRECT_SERVICE_AREAS[utilityKey(dominantUtility)],
+      serviceAreaId: UTILITY_CONFIG[utilityKey(dominantUtility)]?.directServiceAreaId,
       multiUtilityCandidates: null,
       reason: 'Dominant utility territory has no material CCA polygon intersection.',
     };
@@ -307,8 +300,7 @@ function buildReview({ existingCandidate, geometrySignature, sourceHashes }) {
 
 function buildCandidate({
   zctaFeature,
-  pgePolygons,
-  scePolygons,
+  utilityPolygonsById,
   ccaPolygons,
   ccaServiceAreaMap,
   sourceHashes,
@@ -317,11 +309,23 @@ function buildCandidate({
   const zcta = getZcta(zctaFeature);
   const zctaBbox = bbox(zctaFeature);
   const zctaAreaSqM = area(zctaFeature);
-  const pgeAreaSqM = sumIntersectionArea(zctaFeature, zctaBbox, pgePolygons);
-  const sceAreaSqM = sumIntersectionArea(zctaFeature, zctaBbox, scePolygons);
-  const pgePercent = Math.min(1, pgeAreaSqM / zctaAreaSqM);
-  const scePercent = Math.min(1, sceAreaSqM / zctaAreaSqM);
-  const dominantUtility = getDominantUtility(pgePercent, scePercent);
+  const utilityIntersections = UTILITY_IDS.map(utilityId => {
+    const utility = UTILITY_CONFIG[utilityId];
+    const areaSqM = sumIntersectionArea(zctaFeature, zctaBbox, utilityPolygonsById[utilityId] ?? []);
+    const percentRaw = Math.min(1, areaSqM / zctaAreaSqM);
+    return {
+      utility: utility.label,
+      areaSqKm: round(areaSqM / 1_000_000),
+      percentOfZcta: round(percentRaw),
+      percentRaw,
+      isMaterial: percentRaw >= THRESHOLDS.multiUtil,
+      isDominant: false,
+    };
+  });
+  const dominantUtility = getDominantUtility(utilityIntersections);
+  for (const intersection of utilityIntersections) {
+    intersection.isDominant = intersection.utility === dominantUtility;
+  }
 
   const rawCcaAreas = sumCcaIntersectionAreas(zctaFeature, zctaBbox, ccaPolygons);
   const ccaIntersections = buildCcaIntersections({
@@ -332,7 +336,7 @@ function buildCandidate({
   });
 
   const flags = {
-    split_utility_zip: pgePercent >= THRESHOLDS.multiUtil && scePercent >= THRESHOLDS.multiUtil,
+    split_utility_zip: utilityIntersections.filter(intersection => intersection.percentRaw >= THRESHOLDS.multiUtil).length > 1,
     multiple_cca_overlap: ccaIntersections.filter(cca => cca.percentOfZcta >= THRESHOLDS.multiCCA).length > 1,
     unsupported_cca_polygon: ccaIntersections.some(cca => !cca.rateBacked),
     excluded_missing_cca_rates: false,
@@ -345,26 +349,8 @@ function buildCandidate({
       !topCca.rateBacked
   );
 
-  const utilityIntersections = [
-    {
-      utility: 'PG&E',
-      areaSqKm: round(pgeAreaSqM / 1_000_000),
-      percentOfZcta: round(pgePercent),
-      isMaterial: pgePercent >= THRESHOLDS.multiUtil,
-      isDominant: dominantUtility === 'PG&E',
-    },
-    {
-      utility: 'SCE',
-      areaSqKm: round(sceAreaSqM / 1_000_000),
-      percentOfZcta: round(scePercent),
-      isMaterial: scePercent >= THRESHOLDS.multiUtil,
-      isDominant: dominantUtility === 'SCE',
-    },
-  ];
-
   const suggestedResolution = buildSuggestedResolution({
-    pgePercent,
-    scePercent,
+    utilityIntersections,
     dominantUtility,
     flags,
     ccaIntersections,
@@ -376,16 +362,24 @@ function buildCandidate({
     ccaIntersections,
     suggestedResolution,
   });
+  const utilityAreaPct = Object.fromEntries(
+    UTILITY_IDS.map(utilityId => {
+      const utility = UTILITY_CONFIG[utilityId];
+      return [
+        utilityId,
+        utilityIntersections.find(intersection => intersection.utility === utility.label)?.percentOfZcta ?? 0,
+      ];
+    })
+  );
 
   return {
     zcta,
     zctaAreaSqKm: round(zctaAreaSqM / 1_000_000),
     sourceHashes,
     geometrySignature,
-    pgeAreaPct: round(pgePercent),
-    sceAreaPct: round(scePercent),
+    utilityAreaPct,
     dominantUtility,
-    utilityIntersections,
+    utilityIntersections: utilityIntersections.map(({ percentRaw, ...intersection }) => intersection),
     ccaIntersections,
     flags,
     suggestedAction: suggestedResolution.action,
@@ -458,12 +452,26 @@ export function buildOverlayCandidates({
   sourceHashes,
   existingCandidates = null,
 }) {
-  const pgeFeatures = utilityGeojson.features.filter(feature => feature.properties?.Acronym === UTILITY_SOURCE_IDS.pge);
-  const sceFeatures = utilityGeojson.features.filter(feature => feature.properties?.Acronym === UTILITY_SOURCE_IDS.sce);
+  const utilityFeaturesById = Object.fromEntries(
+    UTILITY_IDS.map(utilityId => {
+      const utility = UTILITY_CONFIG[utilityId];
+      return [
+        utilityId,
+        utilityGeojson.features.filter(feature => feature.properties?.Acronym === utility.label),
+      ];
+    })
+  );
   const ccaFeatures = ccaGeojson.features.filter(feature => feature.properties?.Type === 'CCA');
 
-  const pgePolygons = flattenIndexedFeatures(pgeFeatures, () => ({ utility: 'PG&E' }));
-  const scePolygons = flattenIndexedFeatures(sceFeatures, () => ({ utility: 'SCE' }));
+  const utilityPolygonsById = Object.fromEntries(
+    UTILITY_IDS.map(utilityId => {
+      const utility = UTILITY_CONFIG[utilityId];
+      return [
+        utilityId,
+        flattenIndexedFeatures(utilityFeaturesById[utilityId], () => ({ utility: utility.label })),
+      ];
+    })
+  );
   const ccaPolygons = flattenIndexedFeatures(ccaFeatures, feature => ({
     acronym: feature.properties?.Acronym,
     name: feature.properties?.Utility,
@@ -476,8 +484,7 @@ export function buildOverlayCandidates({
         zcta,
         buildCandidate({
           zctaFeature,
-          pgePolygons,
-          scePolygons,
+          utilityPolygonsById,
           ccaPolygons,
           ccaServiceAreaMap,
           sourceHashes,

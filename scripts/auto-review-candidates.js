@@ -3,20 +3,39 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { PATHS, formatJson, readJson } from './territory-utils.js';
+import { UTILITY_CONFIG } from './utility-config.js';
 
 const TODAY = new Date().toISOString().slice(0, 10);
 
 // ZIPs with utility coverage below this threshold and no dominant utility suggest no-coverage.
 const LOW_COVERAGE_THRESHOLD = 0.20;
 
-const BUNDLED = { 'PG&E': 'pge-only', SCE: 'sce-only' };
+const BUNDLED = Object.fromEntries(
+  Object.values(UTILITY_CONFIG).map(utility => [utility.label, utility.directServiceAreaId])
+);
+
+function getUtilityPercent(candidate, utility) {
+  const utilityAreaPct = candidate.utilityAreaPct?.[utility.id];
+  if (utilityAreaPct != null) return utilityAreaPct;
+  const intersection = candidate.utilityIntersections?.find(entry => entry.utility === utility.label);
+  if (intersection) return intersection.percentOfZcta ?? 0;
+  const legacyAreaPct = candidate[`${utility.id}AreaPct`];
+  if (legacyAreaPct != null) return legacyAreaPct;
+  return 0;
+}
+
+function getUtilityAreaPct(candidate) {
+  return Object.fromEntries(
+    Object.values(UTILITY_CONFIG).map(utility => [utility.id, getUtilityPercent(candidate, utility)])
+  );
+}
 
 // Heuristic suggestion for a candidate whose suggestedAction === 'review'.
 // Returns { action, serviceAreaId, multiUtilityCandidates, reason, confidence }.
 // action may be null when no confident suggestion is available.
 export function computeAutoSuggest(candidate) {
-  const { dominantUtility, flags, ccaIntersections, pgeAreaPct, sceAreaPct } = candidate;
-  const utilPct = Math.max(pgeAreaPct, sceAreaPct);
+  const { dominantUtility, flags, ccaIntersections } = candidate;
+  const utilPct = Math.max(...Object.values(getUtilityAreaPct(candidate)));
   const bundledId = dominantUtility ? BUNDLED[dominantUtility] : null;
   const backedCcas = (ccaIntersections ?? []).filter(c => c.rateBacked && c.serviceAreaId);
   const topCca = (ccaIntersections ?? [])[0] ?? null;
@@ -152,7 +171,7 @@ function buildQueueEntry(zip, candidate) {
     zip,
     suggestedReason: candidate.suggestedReason,
     dominantUtility: candidate.dominantUtility,
-    utilityPct: { pge: candidate.pgeAreaPct, sce: candidate.sceAreaPct },
+    utilityPct: getUtilityAreaPct(candidate),
     flags: Object.fromEntries(Object.entries(candidate.flags ?? {}).filter(([, v]) => v)),
     ccaIntersections: (candidate.ccaIntersections ?? []).map(c => ({
       acronym: c.acronym,

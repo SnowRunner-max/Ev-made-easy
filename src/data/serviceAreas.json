@@ -20,6 +20,7 @@
   "serviceAreas": {
     "pge-3ce-sbco": {
       "name": "PG&E + 3CE (Santa Barbara County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "3CE",
       "shortLabel": "PG&E + 3CE",
@@ -30,6 +31,7 @@
     },
     "pge-sjce-scc": {
       "name": "PG&E + SJCE (Santa Clara County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "SJCE",
       "shortLabel": "PG&E + SJCE",
@@ -40,6 +42,7 @@
     },
     "pge-pce-smc": {
       "name": "PG&E + PCE (San Mateo County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "PCE",
       "shortLabel": "PG&E + PCE",
@@ -50,6 +53,7 @@
     },
     "pge-scp-son": {
       "name": "PG&E + SCP (Sonoma County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "SCP",
       "shortLabel": "PG&E + SCP",
@@ -60,6 +64,7 @@
     },
     "pge-ava-eba": {
       "name": "PG&E + Ava (East Bay)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "Ava",
       "shortLabel": "PG&E + Ava",
@@ -70,6 +75,7 @@
     },
     "pge-svce-sv": {
       "name": "PG&E + SVCE (Silicon Valley)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "SVCE",
       "shortLabel": "PG&E + SVCE",
@@ -80,6 +86,7 @@
     },
     "pge-mce-mar": {
       "name": "PG&E + MCE (Marin County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "MCE",
       "shortLabel": "PG&E + MCE",
@@ -90,6 +97,7 @@
     },
     "pge-rcea-hum": {
       "name": "PG&E + RCEA (Humboldt County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "RCEA",
       "shortLabel": "PG&E + RCEA",
@@ -100,6 +108,7 @@
     },
     "pge-vce-yol": {
       "name": "PG&E + VCE (Yolo County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "VCE",
       "shortLabel": "PG&E + VCE",
@@ -110,6 +119,7 @@
     },
     "pge-pioneer-pla": {
       "name": "PG&E + Pioneer (Placer County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "Pioneer",
       "shortLabel": "PG&E + Pioneer",
@@ -120,6 +130,7 @@
     },
     "pge-cpsf-sf": {
       "name": "PG&E + CleanPowerSF (San Francisco)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "CleanPowerSF",
       "shortLabel": "PG&E + CleanPowerSF",
@@ -130,6 +141,7 @@
     },
     "pge-kccp-mon": {
       "name": "PG&E + KCCP (Monterey County)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": "KCCP",
       "shortLabel": "PG&E + KCCP",
@@ -140,6 +152,7 @@
     },
     "pge-only": {
       "name": "PG&E (Direct Service)",
+      "utilityId": "pge",
       "utility": "PG&E",
       "cca": null,
       "shortLabel": "PG&E Direct",
@@ -150,6 +163,7 @@
     },
     "sce-cpa-la": {
       "name": "SCE + Clean Power Alliance",
+      "utilityId": "sce",
       "utility": "SCE",
       "cca": "CPA",
       "shortLabel": "SCE + CPA",
@@ -160,6 +174,7 @@
     },
     "sce-sbce-sb": {
       "name": "SCE + Santa Barbara Clean Energy (City of Santa Barbara)",
+      "utilityId": "sce",
       "utility": "SCE",
       "cca": "SBCE",
       "shortLabel": "SCE + SBCE",
@@ -170,6 +185,7 @@
     },
     "sce-3ce-sb": {
       "name": "SCE + Central Coast Community Energy (Santa Barbara County)",
+      "utilityId": "sce",
       "utility": "SCE",
       "cca": "3CE",
       "shortLabel": "SCE + 3CE",
@@ -180,6 +196,7 @@
     },
     "sce-only": {
       "name": "SCE (Direct Service)",
+      "utilityId": "sce",
       "utility": "SCE",
       "cca": null,
       "shortLabel": "SCE Direct",
@@ -190,6 +207,7 @@
     },
     "tdpud-truckee": {
       "name": "Truckee Donner Public Utility District",
+      "utilityId": "tdpud",
       "utility": "TDPUD",
       "cca": null,
       "shortLabel": "TDPUD",
@@ -200,6 +218,7 @@
     },
     "liberty-tahoe": {
       "name": "Liberty Utilities (California Tahoe)",
+      "utilityId": "liberty",
       "utility": "Liberty",
       "cca": null,
       "shortLabel": "Liberty Tahoe",

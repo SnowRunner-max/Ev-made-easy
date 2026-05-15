@@ -13,24 +13,23 @@ This directory holds all runtime rate data consumed by the app. The app supports
 | `serviceAreas.json` | Service area registry: maps `serviceAreaId` → utility, CCAs, default plan |
 | `pgeTerritory.json` | ZIP-to-`serviceAreaId` lookup for PG&E territory |
 | `sceTerritory.json` | ZIP-to-`serviceAreaId` lookup for SCE territory |
-| `multiUtilityZips.json` | ZIPs that span a PG&E/SCE boundary — triggers the UtilityPicker disambiguation flow |
+| `multiUtilityZips.json` | ZIPs that span a supported utility boundary — triggers the UtilityPicker disambiguation flow |
 | `vehicles.json` | EV model database (battery size, efficiency, etc.) |
+| `utilityRegistry.js` | Runtime utility registry: bundled provider IDs, rate-plan imports, territory imports, metadata keys |
+| `effectivePlanConfig.js` | Shared helper for provider options, CCA tiers, and delivery/generation rate composition |
 
 ---
 
 ## How a ZIP becomes a rate
 
 1. **`useLocationLookup.js`** takes a ZIP and checks `pgeTerritory.json`, `sceTerritory.json`, and `multiUtilityZips.json` to resolve a `serviceAreaId` (e.g. `"pge-3ce-sbco"` or `"sce-cpa-la"`).
-2. **`App.jsx / RATE_PLAN_REGISTRY`** maps each `serviceAreaId` to a rate data import:
+2. **`utilityRegistry.js / RATE_PLAN_REGISTRY`** maps each service area's `utilityId` to a rate data import:
    ```js
-   const RATE_PLAN_REGISTRY = {
-     'pge-3ce-sbco':  ratePlans,      // → ratePlans.json
-     'sce-cpa-la':    sceRatePlans,   // → sceRatePlans.json
-     // … one entry per service area
-   };
+   serviceAreas['pge-3ce-sbco'].utilityId // "pge" -> ratePlans.json
+   serviceAreas['sce-cpa-la'].utilityId   // "sce" -> sceRatePlans.json
    ```
-3. **`serviceAreas.json`** provides the CCA list and default plan for the resolved area, which drives the provider selector and plan selector UI.
-4. **`getEffectiveConfig`** in `App.jsx` combines delivery rates + CCA generation rates from the resolved rate file into a single `planConfig` passed to the rate engine.
+3. **`serviceAreas.json`** provides `utilityId`, CCA list, default plan, and default provider for the resolved area.
+4. **`effectivePlanConfig.js`** combines delivery rates + CCA generation rates from the resolved rate file into a single `planConfig` passed to the rate engine and UI.
 
 ---
 
@@ -40,19 +39,11 @@ This directory holds all runtime rate data consumed by the app. The app supports
 
 2. **Add a territory lookup** — `src/data/sdgeTerritory.json` mapping ZIP → `serviceAreaId`. Follow the shape of `pgeTerritory.json` or `sceTerritory.json`.
 
-3. **Register service areas** — Add entries to `serviceAreas.json` for each SDG&E service area (one per distinct CCA or CCA-less zone). Each entry needs `utility`, `utilityLabel`, `defaultPlan`, and `ccas`.
+3. **Register the utility** — Add an `sdge` entry to `utilityRegistry.js` with the SDG&E bundled provider ID, direct service-area ID, rate-plan import, territory import, and metadata keys.
 
-4. **Wire up the registry** — In `App.jsx`, import the new rate file and add one entry per service area to `RATE_PLAN_REGISTRY`:
-   ```js
-   import sdgeRatePlans from './data/sdgeRatePlans.json';
-   // …
-   const RATE_PLAN_REGISTRY = {
-     // existing entries …
-     'sdge-ceg-sd': sdgeRatePlans,
-   };
-   ```
+4. **Register service areas** — Add entries to `serviceAreas.json` for each SDG&E service area (one per distinct CCA or CCA-less zone). Each entry needs `utilityId`, `utility`, `defaultPlanId`, `defaultProvider`, and `ccas`.
 
-5. **Hook up the ZIP lookup** — In `useLocationLookup.js`, add a lookup step for `sdgeTerritory.json` alongside the existing PG&E and SCE lookups.
+5. **Hook up the ZIP lookup** — Once `sdge` is in `utilityRegistry.js`, `useLocationLookup.js` automatically checks the SDG&E territory in registry order.
 
 6. **Add tests** — At minimum: provider defaults for a representative ZIP, tier selector smoke test, and a cross-utility reset test (see existing SBCE tests in `App.test.jsx` for the pattern).
 

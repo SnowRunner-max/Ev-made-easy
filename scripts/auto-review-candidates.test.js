@@ -12,8 +12,7 @@ function candidate(overrides = {}) {
     sourceHashes: SOURCE_HASHES,
     geometrySignature: 'sig',
     dominantUtility: null,
-    pgeAreaPct: 0,
-    sceAreaPct: 0,
+    utilityAreaPct: { pge: 0, sce: 0 },
     flags: {
       split_utility_zip: false,
       multiple_cca_overlap: false,
@@ -90,7 +89,7 @@ describe('autoReviewCandidates', () => {
       '94102',
       candidate({
         dominantUtility: 'PG&E',
-        pgeAreaPct: 1.0,
+        utilityAreaPct: { pge: 1.0, sce: 0 },
         suggestedAction: 'assign',
         suggestedServiceAreaId: 'pge-cpsf-sf',
         suggestedReason: 'Dominant CCA polygon is mapped to a rate-backed service area.',
@@ -110,7 +109,7 @@ describe('autoReviewCandidates', () => {
       '90601',
       candidate({
         dominantUtility: 'SCE',
-        sceAreaPct: 1.0,
+        utilityAreaPct: { pge: 0, sce: 1.0 },
         suggestedAction: 'assign',
         suggestedServiceAreaId: 'sce-cpa-la',
         suggestedReason: 'Dominant CCA polygon is mapped to a rate-backed service area.',
@@ -128,7 +127,7 @@ describe('autoReviewCandidates', () => {
       '90220',
       candidate({
         dominantUtility: 'SCE',
-        sceAreaPct: 1.0,
+        utilityAreaPct: { pge: 0, sce: 1.0 },
         suggestedAction: 'review',
         suggestedReason: 'Top CCA polygon does not reach the dominant-area threshold.',
         ccaIntersections: [{ acronym: 'CPA', percentOfZcta: 0.28, rateBacked: true, serviceAreaId: 'sce-cpa-la' }],
@@ -139,6 +138,7 @@ describe('autoReviewCandidates', () => {
     expect(updatedCandidates.candidates['90220'].review.status).toBe('unreviewed');
     expect(reviewQueue.queue).toHaveLength(1);
     expect(reviewQueue.queue[0].zip).toBe('90220');
+    expect(reviewQueue.queue[0].utilityPct).toEqual({ pge: 0, sce: 1, tdpud: 0, liberty: 0 });
     expect(stats.queued).toBe(1);
     expect(stats.autoApproved).toBe(0);
   });
@@ -175,8 +175,8 @@ describe('autoReviewCandidates', () => {
     const input = overlayCandidates([
       ['90001', candidate({ suggestedAction: 'no-coverage' })],
       ['90002', candidate({ suggestedAction: 'no-coverage' })],
-      ['90003', candidate({ dominantUtility: 'SCE', sceAreaPct: 1.0, suggestedAction: 'assign', suggestedServiceAreaId: 'sce-only', suggestedReason: 'Direct SCE.' })],
-      ['90004', candidate({ dominantUtility: 'SCE', sceAreaPct: 1.0, suggestedAction: 'review', suggestedReason: 'Top CCA polygon does not reach the dominant-area threshold.', ccaIntersections: [] })],
+      ['90003', candidate({ dominantUtility: 'SCE', utilityAreaPct: { pge: 0, sce: 1.0 }, suggestedAction: 'assign', suggestedServiceAreaId: 'sce-only', suggestedReason: 'Direct SCE.' })],
+      ['90004', candidate({ dominantUtility: 'SCE', utilityAreaPct: { pge: 0, sce: 1.0 }, suggestedAction: 'review', suggestedReason: 'Top CCA polygon does not reach the dominant-area threshold.', ccaIntersections: [] })],
     ]);
     const { stats } = autoReviewCandidates({ overlayCandidates: input, reviewDate: '2026-05-04' });
 
@@ -192,8 +192,7 @@ describe('computeAutoSuggest', () => {
   it('suggests no-coverage with high confidence when utility coverage is very low', () => {
     const result = computeAutoSuggest({
       dominantUtility: null,
-      pgeAreaPct: 0.05,
-      sceAreaPct: 0.10,
+      utilityAreaPct: { pge: 0.05, sce: 0.10 },
       flags: { split_utility_zip: false, multiple_cca_overlap: false, unsupported_cca_polygon: false, excluded_missing_cca_rates: false },
       ccaIntersections: [],
     });
@@ -201,11 +200,24 @@ describe('computeAutoSuggest', () => {
     expect(result.confidence).toBe('high');
   });
 
+  it('uses dynamic utilityAreaPct before legacy PG&E/SCE percent fields', () => {
+    const result = computeAutoSuggest({
+      dominantUtility: null,
+      utilityAreaPct: { pge: 0.01, sce: 0.12 },
+      pgeAreaPct: 1.0,
+      sceAreaPct: 1.0,
+      flags: { split_utility_zip: false, multiple_cca_overlap: false, unsupported_cca_polygon: false, excluded_missing_cca_rates: false },
+      ccaIntersections: [],
+    });
+    expect(result.action).toBe('no-coverage');
+    expect(result.confidence).toBe('high');
+    expect(result.reason).toContain('12%');
+  });
+
   it('suggests no-coverage with low confidence when utility coverage is moderate but below threshold', () => {
     const result = computeAutoSuggest({
       dominantUtility: null,
-      pgeAreaPct: 0.0,
-      sceAreaPct: 0.46,
+      utilityAreaPct: { pge: 0.0, sce: 0.46 },
       flags: { split_utility_zip: false, multiple_cca_overlap: false, unsupported_cca_polygon: false, excluded_missing_cca_rates: false },
       ccaIntersections: [],
     });
@@ -216,8 +228,7 @@ describe('computeAutoSuggest', () => {
   it('suggests bundled utility with high confidence when CCA is unsupported and no multi-CCA overlap', () => {
     const result = computeAutoSuggest({
       dominantUtility: 'SCE',
-      pgeAreaPct: 0.0,
-      sceAreaPct: 1.0,
+      utilityAreaPct: { pge: 0.0, sce: 1.0 },
       flags: { split_utility_zip: false, multiple_cca_overlap: false, unsupported_cca_polygon: true, excluded_missing_cca_rates: false },
       ccaIntersections: [{ acronym: 'AVCE', percentOfZcta: 0.80, rateBacked: false, serviceAreaId: null }],
     });
@@ -229,8 +240,7 @@ describe('computeAutoSuggest', () => {
   it('suggests bundled utility with medium confidence when top CCA is rate-backed but below threshold', () => {
     const result = computeAutoSuggest({
       dominantUtility: 'SCE',
-      pgeAreaPct: 0.0,
-      sceAreaPct: 1.0,
+      utilityAreaPct: { pge: 0.0, sce: 1.0 },
       flags: { split_utility_zip: false, multiple_cca_overlap: false, unsupported_cca_polygon: false, excluded_missing_cca_rates: false },
       ccaIntersections: [{ acronym: 'CPA', percentOfZcta: 0.28, rateBacked: true, serviceAreaId: 'sce-cpa-la' }],
     });
@@ -244,8 +254,7 @@ describe('computeAutoSuggest', () => {
   it('suggests bundled utility for multiple CCAs with none rate-backed', () => {
     const result = computeAutoSuggest({
       dominantUtility: 'PG&E',
-      pgeAreaPct: 1.0,
-      sceAreaPct: 0.0,
+      utilityAreaPct: { pge: 1.0, sce: 0.0 },
       flags: { split_utility_zip: false, multiple_cca_overlap: true, unsupported_cca_polygon: true, excluded_missing_cca_rates: false },
       ccaIntersections: [
         { acronym: 'AVCE', percentOfZcta: 0.60, rateBacked: false, serviceAreaId: null },
@@ -260,8 +269,7 @@ describe('computeAutoSuggest', () => {
   it('suggests the single rate-backed CCA when multiple CCAs overlap but only one has rates', () => {
     const result = computeAutoSuggest({
       dominantUtility: 'SCE',
-      pgeAreaPct: 0.0,
-      sceAreaPct: 1.0,
+      utilityAreaPct: { pge: 0.0, sce: 1.0 },
       flags: { split_utility_zip: false, multiple_cca_overlap: true, unsupported_cca_polygon: true, excluded_missing_cca_rates: false },
       ccaIntersections: [
         { acronym: 'CPA', percentOfZcta: 0.55, rateBacked: true, serviceAreaId: 'sce-cpa-la' },
@@ -276,8 +284,7 @@ describe('computeAutoSuggest', () => {
   it('returns null action when multiple rate-backed CCAs overlap', () => {
     const result = computeAutoSuggest({
       dominantUtility: 'SCE',
-      pgeAreaPct: 0.0,
-      sceAreaPct: 1.0,
+      utilityAreaPct: { pge: 0.0, sce: 1.0 },
       flags: { split_utility_zip: false, multiple_cca_overlap: true, unsupported_cca_polygon: false, excluded_missing_cca_rates: false },
       ccaIntersections: [
         { acronym: 'CPA', percentOfZcta: 0.55, rateBacked: true, serviceAreaId: 'sce-cpa-la' },

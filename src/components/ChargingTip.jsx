@@ -1,5 +1,5 @@
 import { useCurrentRate } from '../hooks/useCurrentRate';
-import { getDaySchedule, getPacificDateStr } from '../engine/rateEngine';
+import { getDaySchedule, getPacificDateStr, PERIOD_DISPLAY } from '../engine/rateEngine';
 import { getPacificHour, formatPacificTime, buildPacificTime } from '../utils/pacificTime';
 import { PERIOD_COLORS } from '../constants/periodColors';
 
@@ -26,7 +26,7 @@ function buildMessage(period, season, rate, nextChange, planConfig, now) {
   const partPeakData = planConfig.rates[season].partPeak;
   const pctVsOffPeak = savingsPct(offPeakRate, rate);
 
-  if (period === 'offPeak') {
+  if (period === 'offPeak' || period === 'superOffPeak') {
     return "You're in the cheapest charging window. Now is the best time to charge your EV.";
   }
 
@@ -48,6 +48,7 @@ function buildMessage(period, season, rate, nextChange, planConfig, now) {
     );
   }
 
+  const currentLabel = PERIOD_DISPLAY[period]?.label ?? 'This rate period';
   const nextChangeTime = formatPacificTime(nextChange.time);
   if (nextChange.newPeriod === 'peak') {
     return (
@@ -56,7 +57,7 @@ function buildMessage(period, season, rate, nextChange, planConfig, now) {
     );
   }
   return (
-    `Rates drop at ${nextChangeTime}! ` +
+    `${currentLabel} rates drop at ${nextChangeTime}. ` +
     `Off-peak rates are ~${pctVsOffPeak}% cheaper — worth waiting if you can.`
   );
 }
@@ -68,7 +69,7 @@ export default function ChargingTip({ planConfig }) {
   return (
     <div
       data-testid="charging-tip"
-      className={`w-full rounded-xl px-4 py-3.5 text-sm leading-relaxed ${PERIOD_COLORS[period].tip}`}
+      className={`w-full rounded-xl px-4 py-3.5 text-sm leading-relaxed ${(PERIOD_COLORS[period] ?? PERIOD_COLORS.offPeak).tip}`}
     >
       <p data-testid="tip-message">{message}</p>
     </div>

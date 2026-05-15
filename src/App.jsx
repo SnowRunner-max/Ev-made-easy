@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { RATE_PLAN_REGISTRY } from './data/ratePlanRegistry';
 import serviceAreasData from './data/serviceAreas.json';
 import vehiclesData from './data/vehicles.json';
-import { getUtilityConfig } from './data/utilityConfig';
+import {
+  buildEffectivePlanConfig,
+  getProviderOptions,
+  getTierState,
+  normalizeProvider,
+} from './data/effectivePlanConfig';
 import { calcChargeSummary } from './engine/costCalculator';
-import { useCurrentRate } from './hooks/useCurrentRate';
 import LocationInput from './components/LocationInput';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
@@ -12,88 +16,13 @@ import TierSelector from './components/TierSelector';
 import RateDisplay from './components/RateDisplay';
 import Timeline from './components/Timeline';
 import { VehicleInputs, CostOutput } from './components/Calculator';
+import VehicleInputsCompact from './components/VehicleInputsCompact';
 import DonutChart from './components/DonutChart';
 import ChargingTip from './components/ChargingTip';
+import CostFacts from './components/CostFacts';
 import Footer from './components/Footer';
 
 const CUSTOM_ID = 'custom';
-
-function buildRateMatrix(v2Rates, provider, ccaTier) {
-  const seasons = Object.keys(v2Rates.delivery);
-  return Object.fromEntries(
-    seasons.map(season => [
-      season,
-      Object.fromEntries(
-        Object.keys(v2Rates.delivery[season]).map(period => {
-          const delivery = v2Rates.delivery[season][period];
-          const bundled  = v2Rates.totalBundled[season][period];
-          let generation, combined;
-          const isBundledProvider = !v2Rates.ccaGeneration?.[provider];
-          if (isBundledProvider) {
-            generation = v2Rates.generation[season][period];
-            combined   = bundled;
-          } else {
-            const ccaEntry = v2Rates.ccaGeneration[provider];
-            const tier = ccaTier ?? ccaEntry.defaultTier;
-            generation = ccaEntry.tiers[tier][season][period];
-            combined   = delivery + generation;
-          }
-          return [period, { combined, delivery, generation }];
-        })
-      ),
-    ])
-  );
-}
-
-function getEffectiveConfig(planConfig, provider, ccaTier, serviceAreaConfig) {
-  let providerLabel;
-  const isBundledProvider = !planConfig.rates.ccaGeneration?.[provider];
-  if (isBundledProvider) {
-    const utilityName = serviceAreaConfig.utility;
-    providerLabel = `${utilityName} Bundled Service`;
-  } else {
-    const ccaEntry = planConfig.rates.ccaGeneration[provider];
-    const activeTier = ccaTier ?? ccaEntry.defaultTier;
-    providerLabel = `${ccaEntry.name} — ${ccaEntry.tiers[activeTier].label}`;
-  }
-
-  if (!planConfig.touPeriods) {
-    const r = planConfig.rates;
-    const delivery = r.delivery.tier1;
-    let generation, combined;
-    if (isBundledProvider) {
-      generation = r.generation.allUsage;
-      combined   = r.totalBundled.tier1;
-    } else {
-      const ccaEntry = r.ccaGeneration[provider];
-      const tier = ccaTier ?? ccaEntry.defaultTier;
-      generation = ccaEntry.tiers[tier].allUsage;
-      combined   = delivery + generation;
-    }
-    return { ...planConfig, _displayProvider: providerLabel, _flatRate: { combined, delivery, generation } };
-  }
-
-  const rates = buildRateMatrix(planConfig.rates, provider, ccaTier);
-  return { ...planConfig, rates, _displayProvider: providerLabel };
-}
-
-const PLAN_HINTS = {
-  'EV2-A':   'For customers with an EV, battery storage, or heat pump. Whole-house metering.',
-  'E-ELEC':  'All-electric home rate for customers with space/water heating and an EV or battery storage.',
-  'EV-B':    'Requires a separately metered EV outlet (second meter). Best for high overnight charging.',
-  'E-TOU-C': 'Standard residential TOU rate. Peak 4–9 PM every day including weekends.',
-  'E-TOU-D': 'Standard residential TOU rate. Peak 5–8 PM on weekdays only.',
-  'E-1':         'Traditional tiered rate. No time-of-use pricing — rate varies by monthly usage tier.',
-  'TOU-D-4-9PM': 'Standard SCE residential TOU. Peak 4–9 PM every day.',
-  'TOU-D-PRIME': 'EV-optimized with super off-peak midnight pricing. Best for overnight charging.',
-  'TDPUD-TOU-PRIMARY': 'TDPUD optional residential TOU. Lowest prices run 9 PM–11 AM.',
-  'TDPUD-TOU-SECONDARY': 'TDPUD optional residential TOU for secondary residences.',
-  'TDPUD-FIXED-PRIMARY': 'TDPUD fixed bundled energy rate for primary residences.',
-  'TDPUD-FIXED-SECONDARY': 'TDPUD fixed bundled energy rate for secondary residences.',
-  'LIBERTY-D1-TOU-EV': 'Liberty EV TOU plan with lower overnight rates.',
-  'LIBERTY-D1-TOU': 'Liberty residential TOU plan.',
-  'LIBERTY-D1': 'Liberty standard domestic residential rate.',
-};
 
 export default function App() {
   const [locationResult, setLocationResult] = useState({
@@ -117,33 +46,9 @@ export default function App() {
     return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
   }
 
-  // Derive available provider options for the current plan
-  const utilityConfig = getUtilityConfig(serviceArea.utility);
-  const bundledKey = utilityConfig?.bundledProvider ?? serviceArea.defaultProvider;
-  const bundledLabel = `${serviceArea.utility} Bundled`;
-  const providerOptions = [
-    { value: bundledKey, label: bundledLabel },
-    ...serviceArea.ccas
-      .filter(ccaId => planConfig.rates.ccaGeneration?.[ccaId] != null)
-      .map(ccaId => {
-        const ccaData = planConfig.rates.ccaGeneration[ccaId];
-        return { value: ccaId, label: `${ccaData.name} (CCA)` };
-      }),
-  ];
-
-  // If current provider was filtered out (plan doesn't support it), fall back to bundled
-  const effectiveProvider = providerOptions.some(o => o.value === provider) ? provider : bundledKey;
-
-  // Derive tier options for the selected CCA
-  const isBundledProvider = !planConfig.rates.ccaGeneration?.[effectiveProvider];
-  const ccaEntry = !isBundledProvider
-    ? planConfig.rates.ccaGeneration[effectiveProvider]
-    : null;
-  const tierOptions = ccaEntry
-    ? Object.entries(ccaEntry.tiers).map(([value, tier]) => ({ value, label: tier.label }))
-    : [];
-  const effectiveTier = ccaEntry ? (ccaTier ?? ccaEntry.defaultTier) : null;
-  const showTierSelector = ccaEntry != null && tierOptions.length > 1;
+  const providerOptions = getProviderOptions(planConfig, serviceArea);
+  const effectiveProvider = normalizeProvider(provider, providerOptions, serviceArea);
+  const { tierOptions, effectiveTier, showTierSelector } = getTierState(planConfig, effectiveProvider, ccaTier);
 
   function handleLocationResolved(resolved) {
     if (resolved.serviceAreaId !== locationResult.serviceAreaId) {
@@ -164,7 +69,12 @@ export default function App() {
     setCcaTier(null); // reset tier when switching CCA
   }
 
-  const effectivePlanConfig = getEffectiveConfig(planConfig, effectiveProvider, effectiveTier, serviceArea);
+  const effectivePlanConfig = buildEffectivePlanConfig({
+    planConfig,
+    serviceArea,
+    providerId: effectiveProvider,
+    tierId: effectiveTier,
+  });
   const supportsProviderToggle = !!planConfig.touPeriods && providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
@@ -287,7 +197,9 @@ export default function App() {
                 <div className="space-y-1.5">
                   <span className="text-xs text-[var(--text-secondary)] font-semibold">Rate Plan</span>
                   <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => setPlanId(id)} />
-                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{PLAN_HINTS[planId]}</p>
+                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
+                    {planConfig.uiHint ?? planConfig.description}
+                  </p>
                 </div>
                 <div className="space-y-1.5">
                   <span className="text-xs text-[var(--text-secondary)] font-semibold">Vehicle Type</span>
@@ -414,141 +326,6 @@ export default function App() {
           <span className="font-sans text-[10px] font-bold uppercase tracking-widest">Account</span>
         </button>
       </nav>
-    </div>
-  );
-}
-
-/**
- * Compact vehicle picker (no slider) — used inside the Configuration card.
- * The full VehicleInputs with slider lives in the full-width section below.
- */
-function VehicleInputsCompact({ selectedId, customKwh, batteryKwh, onSelectedIdChange, onCustomKwhChange }) {
-  const isCustom = selectedId === CUSTOM_ID;
-
-  return (
-    <div className="space-y-2">
-      <select
-        data-testid="vehicle-select-compact"
-        value={selectedId}
-        onChange={e => onSelectedIdChange(e.target.value)}
-        className="w-full px-3 py-2.5 text-sm text-[var(--text-primary)] bg-surface-container-highest border-none rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-paprika/20 cursor-pointer transition-colors font-medium"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236B6B7B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'right 12px center',
-        }}
-      >
-        {vehiclesData.vehicles.map(v => (
-          <option key={v.id} value={v.id}>
-            {v.make} {v.model}{v.trim ? ` (${v.trim})` : ''} — {v.usableBatteryKwh} kWh
-          </option>
-        ))}
-        <option value={CUSTOM_ID}>Custom battery size…</option>
-      </select>
-      {isCustom && (
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min="1"
-            max="500"
-            value={customKwh}
-            onChange={e => onCustomKwhChange(e.target.value)}
-            placeholder="Battery size"
-            className="w-24 px-3 py-2 text-sm bg-surface-container-highest border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-paprika/20"
-          />
-          <span className="text-xs text-[var(--text-muted)]">kWh</span>
-        </div>
-      )}
-      <p data-testid="battery-display" className="text-[10px] text-[var(--text-muted)]">
-        Battery: <span className="font-semibold text-[var(--text-secondary)]">{batteryKwh} kWh</span>
-      </p>
-    </div>
-  );
-}
-
-/**
- * Simplified Cost Facts view — nutrition-label style.
- * Shows delivery / generation totals for the 80% charge scenario.
- */
-function CostFacts({ planConfig, summary }) {
-  const { period, season } = useCurrentRate(planConfig);
-
-  if (!planConfig.touPeriods || !summary?.to80) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <p className="text-sm text-pewter text-center">Select a vehicle and charge level to see cost facts.</p>
-      </div>
-    );
-  }
-
-  const rateData = planConfig.rates[season]?.[period];
-  if (!rateData) return null;
-
-  const kwh = summary.to80.kwhNeeded;
-  const deliveryCost = rateData.delivery * kwh;
-  const generationCost = rateData.generation * kwh;
-  const totalCost = summary.to80.costNow;
-  const costPerKwh = rateData.combined;
-
-  const isCCA = planConfig._displayProvider && !planConfig._displayProvider.includes('Bundled Service');
-  const utilityName = planConfig._displayProvider?.replace(' Bundled Service', '') || 'Utility';
-
-  return (
-    <div className="flex-1 overflow-y-auto">
-      {/* Nutrition label container */}
-      <div className="border border-white/15 rounded-sm p-5">
-
-        {/* Header */}
-        <div className="border-b-8 border-white pb-2 mb-2">
-          <h3 className="font-display text-3xl font-black uppercase tracking-tight leading-none">Cost Facts</h3>
-          <div className="flex justify-between items-baseline mt-1">
-            <span className="text-[10px] text-white/60 font-bold">
-              Session: {kwh.toFixed(1)} kWh delivered
-            </span>
-            <span className="text-[10px] text-white/60 font-bold">{planConfig.name}</span>
-          </div>
-        </div>
-
-        {/* Total */}
-        <div className="flex justify-between items-end border-b-4 border-white pb-1 mb-1">
-          <span className="font-black text-lg uppercase">Total Cost</span>
-          <span className="font-display text-3xl font-black">${totalCost.toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between border-b border-white/20 py-1 text-xs">
-          <span className="font-bold text-white/60">Cost per kWh</span>
-          <span className="text-white/90">${costPerKwh.toFixed(4)}</span>
-        </div>
-
-        {/* Utility delivery */}
-        <div className="mt-5">
-          <div className="flex justify-between items-baseline">
-            <span className="font-black text-sm uppercase">{utilityName} Delivery</span>
-            <span className="font-bold text-sm">${deliveryCost.toFixed(2)}</span>
-          </div>
-          <div className="border-b-4 border-white mb-2" />
-          <div className="flex justify-between text-[11px] border-b border-white/20 py-1.5 text-white/70">
-            <span>Delivery charges</span>
-            <span className="font-medium text-white">${(rateData.delivery).toFixed(4)}/kWh</span>
-          </div>
-        </div>
-
-        {/* Generation */}
-        <div className="mt-5">
-          <div className="flex justify-between items-baseline">
-            <span className="font-black text-sm uppercase">Generation</span>
-            <span className="font-bold text-sm">${generationCost.toFixed(2)}</span>
-          </div>
-          <div className="border-b-4 border-white mb-2" />
-          <div className="flex justify-between text-[11px] border-b border-white/20 py-1.5 text-white/70">
-            <span>{isCCA ? planConfig._displayProvider : `${utilityName} Generation`}</span>
-            <span className="font-medium text-white">${(rateData.generation).toFixed(4)}/kWh</span>
-          </div>
-        </div>
-
-        <footer className="mt-5 text-[9px] leading-tight text-white/40 italic">
-          * Based on {planConfig.name} rate schedule charging {kwh.toFixed(1)} kWh from current charge level to 80%.
-        </footer>
-      </div>
     </div>
   );
 }
