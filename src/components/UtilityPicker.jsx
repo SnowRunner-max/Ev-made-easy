@@ -4,10 +4,17 @@
 //   onSelect: (serviceAreaId) => void
 
 export default function UtilityPicker({ candidates, serviceAreas, onSelect }) {
+  const knownAreas = candidates.map(id => serviceAreas[id]).filter(Boolean);
+  const utilityIds = new Set(knownAreas.map(area => area.utilityId ?? area.utility).filter(Boolean));
+  const hasCcaChoice = knownAreas.length > 1 && knownAreas.every(area => area.cca);
+  const prompt = hasCcaChoice && utilityIds.size === 1
+    ? 'Multiple CCA options may apply here. Which CCA serves your address?'
+    : 'Multiple service options may apply here. Which one serves your address?';
+
   return (
     <div className="mt-1 rounded-lg bg-[var(--color-surface-container)] p-3 space-y-2">
       <p className="text-[11px] font-medium text-[var(--text-primary)] leading-snug">
-        Multiple service options may apply here. Which one serves your address?
+        {prompt}
       </p>
       <div className="flex flex-col gap-1.5">
         {candidates.map((id) => {

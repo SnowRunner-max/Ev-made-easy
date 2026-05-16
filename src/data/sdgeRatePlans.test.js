@@ -24,6 +24,11 @@ describe('SDG&E rate plan integrity', () => {
     }
   });
 
+  it('keeps bundled DR total equal to delivery plus generation', () => {
+    const dr = sdgeRatePlans.ratePlans.DR;
+    expect(dr.rates.delivery.tier1 + dr.rates.generation.allUsage).toBeCloseTo(dr.rates.totalBundled.tier1, 5);
+  });
+
   it('backs SDCP and CEA generation for every TOU period', () => {
     for (const [planId, plan] of Object.entries(sdgeRatePlans.ratePlans)) {
       for (const providerId of ['sdcp', 'cea']) {

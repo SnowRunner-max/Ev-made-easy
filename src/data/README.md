@@ -10,6 +10,7 @@ This directory holds all runtime rate data consumed by the app. The app supports
 |---|---|
 | `ratePlans.json` | PG&E delivery + CCA generation rates (schema v3.0) |
 | `sceRatePlans.json` | SCE delivery + CCA generation rates (same schema) |
+| `sdgeRatePlans.json` | SDG&E delivery + CCA generation rates (same schema) |
 | `serviceAreas.json` | Service area registry: maps `serviceAreaId` → utility, CCAs, default plan |
 | `pgeTerritory.json` | ZIP-to-`serviceAreaId` lookup for PG&E territory |
 | `sceTerritory.json` | ZIP-to-`serviceAreaId` lookup for SCE territory |
@@ -22,7 +23,7 @@ This directory holds all runtime rate data consumed by the app. The app supports
 
 ## How a ZIP becomes a rate
 
-1. **`useLocationLookup.js`** takes a ZIP and checks `pgeTerritory.json`, `sceTerritory.json`, and `multiUtilityZips.json` to resolve a `serviceAreaId` (e.g. `"pge-3ce-sbco"` or `"sce-cpa-la"`).
+1. **`useLocationLookup.js`** takes a ZIP, checks `multiUtilityZips.json`, then iterates the registry-driven `getUtilityTerritories()` results from `utilityRegistry.js` to resolve a `serviceAreaId` (e.g. `"pge-3ce-sbco"`, `"sce-cpa-la"`, or `"sdge-cea-sd"`).
 2. **`utilityRegistry.js / RATE_PLAN_REGISTRY`** maps each service area's `utilityId` to a rate data import:
    ```js
    serviceAreas['pge-3ce-sbco'].utilityId // "pge" -> ratePlans.json
@@ -51,13 +52,13 @@ This directory holds all runtime rate data consumed by the app. The app supports
 
 ## Schema version
 
-Both `ratePlans.json` and `sceRatePlans.json` use **schema v3.0** (field names: `delivery / generation / totalBundled / ccaGeneration`). The schema was bumped from v2.0 in the refactor documented in commit `2840d97`. See `PGE_README.md` and `SCE_README.md` for full field-level documentation.
+`ratePlans.json`, `sceRatePlans.json`, and `sdgeRatePlans.json` use **schema v3.0** (field names: `delivery / generation / totalBundled / ccaGeneration`). The schema was bumped from v2.0 in the refactor documented in commit `2840d97`. See `PGE_README.md` and `SCE_README.md` for full field-level documentation.
 
 ---
 
 ## Territory data pipeline
 
-Territory JSON files are runtime artifacts, but they are checked in so the client app stays fast and static. The lookup contract is unchanged: `useLocationLookup.js` reads `pgeTerritory.json`, `sceTerritory.json`, and `multiUtilityZips.json` and resolves a ZIP to a `serviceAreaId` only when the utility territory and supported rate data are verified.
+Territory JSON files are runtime artifacts, but they are checked in so the client app stays fast and static. The lookup contract is unchanged: `useLocationLookup.js` checks `multiUtilityZips.json`, then iterates the registered utility territory imports from `getUtilityTerritories()` and resolves a ZIP to a `serviceAreaId` only when the utility territory and supported rate data are verified.
 
 ### Commands
 

@@ -1,3 +1,4 @@
 - [Territory Pipeline Architecture](project_territory_pipeline.md) — Build-time ZIP pipeline rules; any multiUtilityZips.json addition requires pipeline audit trail
 - [Utility-Agnostic Refactor Findings](feedback_utility_agnostic_refactor.md) — Known issues from codex/plan-codebase-refactor: two-registry divergence, hardcoded PGE/SCE in overlay pipeline, missing test files, component label asymmetries
 - [Tahoe Utility Expansion](project_tahoe_utilities.md) — TDPUD + Liberty rate modeling decisions, known issues, and schema conventions
+- [SDG&E Support Expansion](project_sdge_support.md) — SDG&E third-utility schema decisions, ccaRateDate Footer bug, missing boundary tests, and what was verified correct

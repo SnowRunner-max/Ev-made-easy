@@ -4,6 +4,29 @@ import { getUtilityConfigForServiceArea } from '../data/utilityRegistry';
 
 const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
+const CCA_RATE_DATE_KEYS_BY_PROVIDER = {
+  '3ce': ['3ceRateSheetDate', 'cceRateSheetDate'],
+  cpa: ['cpaRateSheetDate'],
+  sbce: ['sbceRateEffectiveDate'],
+  sdcp: ['sdcpRateEffectiveDate'],
+  cea: ['ceaRateEffectiveDate'],
+};
+
+const CCA_RATE_DATE_FALLBACK_KEYS = [
+  'cceRateSheetDate',
+  'cpaRateSheetDate',
+  'sbceRateEffectiveDate',
+  '3ceRateSheetDate',
+  'sdcpRateEffectiveDate',
+  'ceaRateEffectiveDate',
+];
+
+function getCcaRateDate(globalMetadata, provider) {
+  const providerKeys = CCA_RATE_DATE_KEYS_BY_PROVIDER[provider] ?? [];
+  const keys = providerKeys.length ? providerKeys : CCA_RATE_DATE_FALLBACK_KEYS;
+  return keys.map(key => globalMetadata?.[key]).find(Boolean);
+}
+
 function RateTable({ rates, seasons }) {
   const seasonKeys = Object.keys(seasons);
   const periodKeys = PERIOD_ORDER.filter(p => seasonKeys.some(s => rates[s][p] !== undefined));
@@ -104,12 +127,7 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
   const adviceLetterKey = utility?.metadataKeys.adviceLetter;
   const effectiveDate = globalMetadata?.[effectiveDateKey];
   const adviceLetter = globalMetadata?.[adviceLetterKey];
-  const ccaRateDate = globalMetadata?.cceRateSheetDate
-    ?? globalMetadata?.cpaRateSheetDate
-    ?? globalMetadata?.sbceRateEffectiveDate
-    ?? globalMetadata?.['3ceRateSheetDate']
-    ?? globalMetadata?.sdcpRateEffectiveDate
-    ?? globalMetadata?.ceaRateEffectiveDate;
+  const ccaRateDate = getCcaRateDate(globalMetadata, provider);
 
   return (
     <footer

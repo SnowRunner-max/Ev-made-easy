@@ -144,12 +144,24 @@ describe('getCurrentPeriod — SDG&E EV-TOU-5 (super off-peak midnight-6 AM, pea
     expect(getCurrentPeriod(new Date('2026-01-15T02:00:00-08:00'), sdgeEvTou5Config)).toBe('superOffPeak');
   });
 
+  it('offPeak exactly at the 6 AM transition', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T06:00:00-08:00'), sdgeEvTou5Config)).toBe('offPeak');
+  });
+
   it('offPeak at 10 AM', () => {
     expect(getCurrentPeriod(new Date('2026-01-15T10:00:00-08:00'), sdgeEvTou5Config)).toBe('offPeak');
   });
 
+  it('peak exactly at the 4 PM transition', () => {
+    expect(getCurrentPeriod(new Date('2026-07-15T16:00:00-07:00'), sdgeEvTou5Config)).toBe('peak');
+  });
+
   it('peak at 5 PM', () => {
     expect(getCurrentPeriod(new Date('2026-07-15T17:00:00-07:00'), sdgeEvTou5Config)).toBe('peak');
+  });
+
+  it('offPeak exactly at the 9 PM transition', () => {
+    expect(getCurrentPeriod(new Date('2026-07-15T21:00:00-07:00'), sdgeEvTou5Config)).toBe('offPeak');
   });
 });
 
