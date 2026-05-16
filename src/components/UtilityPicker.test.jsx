@@ -18,7 +18,7 @@ describe('UtilityPicker — prompt text', () => {
       />
     );
 
-    expect(screen.getByText(/Multiple utilities serve this address/i)).toBeInTheDocument();
+    expect(screen.getByText(/Multiple service options may apply here/i)).toBeInTheDocument();
   });
 });
 

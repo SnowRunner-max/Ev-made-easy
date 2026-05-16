@@ -2,10 +2,12 @@ import ratePlans from './ratePlans.json';
 import sceRatePlans from './sceRatePlans.json';
 import tdpudRatePlans from './tdpudRatePlans.json';
 import libertyRatePlans from './libertyRatePlans.json';
+import sdgeRatePlans from './sdgeRatePlans.json';
 import pgeTerritory from './pgeTerritory.json';
 import sceTerritory from './sceTerritory.json';
 import tdpudTerritory from './tdpudTerritory.json';
 import libertyTerritory from './libertyTerritory.json';
+import sdgeTerritory from './sdgeTerritory.json';
 
 export const UTILITY_REGISTRY = {
   pge: {
@@ -53,6 +55,18 @@ export const UTILITY_REGISTRY = {
     territory: libertyTerritory,
     metadataKeys: {
       effectiveDate: 'effectiveDate',
+      adviceLetter: null,
+    },
+  },
+  sdge: {
+    id: 'sdge',
+    label: 'SDG&E',
+    bundledProviderId: 'sdge',
+    directServiceAreaId: 'sdge-only',
+    ratePlans: sdgeRatePlans,
+    territory: sdgeTerritory,
+    metadataKeys: {
+      effectiveDate: 'sdgeEffectiveDate',
       adviceLetter: null,
     },
   },

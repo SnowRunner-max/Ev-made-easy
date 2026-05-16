@@ -38,6 +38,46 @@ describe('location resolver', () => {
     });
   });
 
+  it('resolves promoted SDG&E service-area examples', () => {
+    const resolver = createLocationResolver({
+      zipcodes: {
+        lookup: vi.fn(zip => ({
+          '92101': { zip: '92101', city: 'San Diego', state: 'CA' },
+          '92008': { zip: '92008', city: 'Carlsbad', state: 'CA' },
+          '92135': { zip: '92135', city: 'San Diego', state: 'CA' },
+          '92025': { zip: '92025', city: 'Escondido', state: 'CA' },
+        })[zip] ?? null),
+        lookupByName: vi.fn(() => []),
+      },
+      utilityTerritories: [
+        { utilityId: 'sdge', label: 'SDG&E', zips: {
+          '92101': 'sdge-sdcp-sd',
+          '92008': 'sdge-cea-sd',
+          '92135': 'sdge-only',
+        } },
+      ],
+      multiUtilityZips: { zips: { '92025': ['sdge-cea-sd', 'sdge-sdcp-sd'] } },
+    });
+
+    expect(resolver('92101')).toEqual({
+      ok: true,
+      data: { serviceAreaId: 'sdge-sdcp-sd', displayLabel: 'San Diego, CA', zip: '92101' },
+    });
+    expect(resolver('92008')).toEqual({
+      ok: true,
+      data: { serviceAreaId: 'sdge-cea-sd', displayLabel: 'Carlsbad, CA', zip: '92008' },
+    });
+    expect(resolver('92135')).toEqual({
+      ok: true,
+      data: { serviceAreaId: 'sdge-only', displayLabel: 'San Diego, CA', zip: '92135' },
+    });
+    expect(resolver('92025')).toMatchObject({
+      ok: false,
+      errorCode: 'multi_utility',
+      candidates: ['sdge-cea-sd', 'sdge-sdcp-sd'],
+    });
+  });
+
   it('resolves a future third utility city through configured territories', () => {
     expect(buildResolver()('San Diego')).toEqual({
       ok: true,

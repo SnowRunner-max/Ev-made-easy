@@ -56,6 +56,12 @@
         "pge": "pge-rcea-hum"
       }
     },
+    "CEA": {
+      "ccaId": "cea",
+      "serviceAreaIds": {
+        "sdge": "sdge-cea-sd"
+      }
+    },
     "SBCE": {
       "ccaId": "sbce",
       "serviceAreaIds": {
@@ -66,6 +72,12 @@
       "ccaId": "scp",
       "serviceAreaIds": {
         "pge": "pge-scp-son"
+      }
+    },
+    "SDCP": {
+      "ccaId": "sdcp",
+      "serviceAreaIds": {
+        "sdge": "sdge-sdcp-sd"
       }
     },
     "SJCE": {
@@ -91,9 +103,6 @@
     "AVCE": {
       "reason": "No rate-backed service-area ID yet."
     },
-    "CEA": {
-      "reason": "No rate-backed service-area ID yet."
-    },
     "DCE": {
       "reason": "No rate-backed service-area ID yet."
     },
@@ -113,9 +122,6 @@
       "reason": "No rate-backed service-area ID yet."
     },
     "RMEA": {
-      "reason": "No rate-backed service-area ID yet."
-    },
-    "SDCP": {
       "reason": "No rate-backed service-area ID yet."
     },
     "SJP": {

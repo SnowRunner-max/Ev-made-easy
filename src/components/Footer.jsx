@@ -107,7 +107,9 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
   const ccaRateDate = globalMetadata?.cceRateSheetDate
     ?? globalMetadata?.cpaRateSheetDate
     ?? globalMetadata?.sbceRateEffectiveDate
-    ?? globalMetadata?.['3ceRateSheetDate'];
+    ?? globalMetadata?.['3ceRateSheetDate']
+    ?? globalMetadata?.sdcpRateEffectiveDate
+    ?? globalMetadata?.ceaRateEffectiveDate;
 
   return (
     <footer

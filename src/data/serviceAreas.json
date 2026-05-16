@@ -15,7 +15,8 @@
     { "id": "roseville",      "name": "Roseville",      "serviceAreaId": "pge-pioneer-pla" },
     { "id": "san-francisco",  "name": "San Francisco",  "serviceAreaId": "pge-cpsf-sf" },
     { "id": "king-city",      "name": "King City",      "serviceAreaId": "pge-kccp-mon" },
-    { "id": "santa-barbara",  "name": "Santa Barbara",  "serviceAreaId": "sce-sbce-sb" }
+    { "id": "santa-barbara",  "name": "Santa Barbara",  "serviceAreaId": "sce-sbce-sb" },
+    { "id": "san-diego",      "name": "San Diego",      "serviceAreaId": "sdge-sdcp-sd" }
   ],
   "serviceAreas": {
     "pge-3ce-sbco": {
@@ -226,6 +227,39 @@
       "defaultProvider": "liberty",
       "providerHint": "This area is served by Liberty Utilities/CalPeco bundled electric service.",
       "ccas": []
+    },
+    "sdge-only": {
+      "name": "SDG&E (Direct Service)",
+      "utilityId": "sdge",
+      "utility": "SDG&E",
+      "cca": null,
+      "shortLabel": "SDG&E Direct",
+      "defaultPlanId": "EV-TOU-5",
+      "defaultProvider": "sdge",
+      "providerHint": "This area is served directly by SDG&E bundled electric service.",
+      "ccas": []
+    },
+    "sdge-sdcp-sd": {
+      "name": "SDG&E + San Diego Community Power",
+      "utilityId": "sdge",
+      "utility": "SDG&E",
+      "cca": "SDCP",
+      "shortLabel": "SDG&E + SDCP",
+      "defaultPlanId": "EV-TOU-5",
+      "defaultProvider": "sdcp",
+      "providerHint": "Most residents in San Diego Community Power territory are served by SDCP for generation. SDG&E handles delivery.",
+      "ccas": ["sdcp"]
+    },
+    "sdge-cea-sd": {
+      "name": "SDG&E + Clean Energy Alliance",
+      "utilityId": "sdge",
+      "utility": "SDG&E",
+      "cca": "CEA",
+      "shortLabel": "SDG&E + CEA",
+      "defaultPlanId": "EV-TOU-5",
+      "defaultProvider": "cea",
+      "providerHint": "This area is served by Clean Energy Alliance for generation. SDG&E handles delivery.",
+      "ccas": ["cea"]
     }
   }
 }

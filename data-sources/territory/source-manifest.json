@@ -1,8 +1,8 @@
 {
-  "accuracyPolicy": "Do not resolve PG&E/SCE ZIPs whose utility territory, CCA service area, and rate backing are not verified.",
+  "accuracyPolicy": "Do not resolve ZIPs for supported utilities whose utility territory, CCA service area, and rate backing are not verified.",
   "lastReviewed": "2026-04-19",
   "rateSourceCatalog": "../source-catalog.json",
-  "sourceMode": "pinned-boundary-snapshots-bootstrap-runtime-zips",
+  "sourceMode": "pinned-boundary-snapshots-reviewed-zips",
   "sources": [
     {
       "id": "current-runtime-territory-artifacts",
@@ -11,33 +11,37 @@
       "paths": [
         "src/data/pgeTerritory.json",
         "src/data/sceTerritory.json",
-        "src/data/multiUtilityZips.json"
+        "src/data/multiUtilityZips.json",
+        "src/data/tdpudTerritory.json",
+        "src/data/libertyTerritory.json",
+        "src/data/sdgeTerritory.json"
       ]
     },
     {
       "id": "local-rate-source-catalog",
       "intendedUse": "Documents the local authoritative rate workbooks/PDFs used to decide whether a service area is rate-backed before ZIP coverage is expanded.",
-      "name": "Local PG&E, CCA, and SCE raw rate source catalog",
+      "name": "Local supported utility and CCA raw rate source catalog",
       "path": "data-sources/source-catalog.json",
       "status": "cataloged"
     },
     {
       "arcgisDataLastEdit": "2025-08-28T16:01:56Z",
       "arcgisLayerUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_IOU_POU/FeatureServer/0",
-      "bytes": 6051254,
-      "capturedAt": "2026-04-19",
+      "bytes": 6334493,
+      "capturedAt": "2026-05-15",
       "entities": [
         "Pacific Gas & Electric Company",
-        "Southern California Edison"
+        "Southern California Edison",
+        "San Diego Gas & Electric"
       ],
-      "featureCount": 2,
+      "featureCount": 3,
       "id": "cec-iou-pou",
-      "intendedUse": "Pinned utility territory polygon source for PG&E/SCE coverage expansion. Overlay against ZIP/ZCTA geography before changing runtime ZIP mappings.",
+      "intendedUse": "Pinned utility territory polygon source for supported utility coverage expansion. Overlay against ZIP/ZCTA geography before changing runtime ZIP mappings.",
       "license": "Creative Commons Attribution",
-      "localPath": "data-sources/territory/raw/cec-lse-iou-pou-pge-sce.geojson",
+      "localPath": "data-sources/territory/raw/cec-lse-iou-pou-pge-sce-sdge.geojson",
       "name": "California Energy Commission Electric Load Serving Entities (IOU & POU)",
-      "queryUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_IOU_POU/FeatureServer/0/query?where=Acronym%20in%20(%27PG%26E%27%2C%27SCE%27)&outFields=OBJECTID,Acronym,Utility,Type,OnlineName,Audit,URL&returnGeometry=true&outSR=4326&f=geojson",
-      "sha256": "3069e651b7ce2b63ea15d5641e276f6e41280153c7706f9805bfe6898536a79d",
+      "queryUrl": "https://services3.arcgis.com/bWPjFyq029ChCGur/arcgis/rest/services/ElectricLoadServingEntities_IOU_POU/FeatureServer/0/query?where=Acronym%20in%20(%27PG%26E%27%2C%27SCE%27%2C%27SDG%26E%27)&outFields=OBJECTID,Acronym,Utility,Type,OnlineName,Audit,URL&returnGeometry=true&outSR=4326&f=geojson",
+      "sha256": "9306d11630729c4991a0750c73abdb88cdddf28f5beba514de5c297cf9e472be",
       "sourceLastUpdated": "2026-04-17",
       "status": "pinned",
       "url": "https://lab.data.ca.gov/dataset/electric-load-serving-entities-iou-pou"

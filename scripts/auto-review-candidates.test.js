@@ -138,7 +138,7 @@ describe('autoReviewCandidates', () => {
     expect(updatedCandidates.candidates['90220'].review.status).toBe('unreviewed');
     expect(reviewQueue.queue).toHaveLength(1);
     expect(reviewQueue.queue[0].zip).toBe('90220');
-    expect(reviewQueue.queue[0].utilityPct).toEqual({ pge: 0, sce: 1, tdpud: 0, liberty: 0 });
+    expect(reviewQueue.queue[0].utilityPct).toEqual({ pge: 0, sce: 1, tdpud: 0, liberty: 0, sdge: 0 });
     expect(stats.queued).toBe(1);
     expect(stats.autoApproved).toBe(0);
   });

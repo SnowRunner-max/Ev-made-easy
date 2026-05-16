@@ -25,13 +25,13 @@
       "files": [
         {
           "path": "data-sources/cca_source/raw_sources/2026-January-Rate-Sheet-2024-Vintage.pdf",
-          "bytes": 1412986,
-          "sha256": "d0cb5ff8ceb8475d25163c94f891a25e61bf41cb241ff575eda74267be025b1c"
+          "bytes": 132,
+          "sha256": "4f7be60f6f64d4e142b7c89e527a48fe022ab99990b16949d39e6d4f491eb4d9"
         },
         {
           "path": "data-sources/cca_source/raw_sources/CCA_Generation_Rates.xlsx",
-          "bytes": 33217,
-          "sha256": "ad1a9dc2edbf081feeef0a4da7e89185f424666cc5df50785e96e52782f247c3"
+          "bytes": 130,
+          "sha256": "913bce22f44160a545f8cf9d03eb4f429106caacf7bb196634ad97b05f5b2140"
         },
         {
           "path": "data-sources/cca_source/raw_sources/CCA_Generation_Rates_Research.md",
@@ -40,43 +40,43 @@
         },
         {
           "path": "data-sources/cca_source/raw_sources/CPSF_ResidentialRates2025.pdf",
-          "bytes": 348083,
-          "sha256": "69dc5cff1c4c193c39fbd8d3626f77b9d8bff13b82d0bae053a5006d44488fc5"
+          "bytes": 131,
+          "sha256": "3c4050ec102525356fb9438bd9183bc16adf7535ca4cb33ecd0c1166c8024ee5"
         },
         {
           "path": "data-sources/cca_source/raw_sources/MCE-Residential-Rates-05052023.pdf",
-          "bytes": 155981,
-          "sha256": "db92362d02205c24ccaed4c42e5508d5f4fd7077226b88cea3900acec9c55270"
+          "bytes": 131,
+          "sha256": "0b31e06d6b15dcc3c9626cfb524bbbea50f4944e8c8b8fc25698fa62dcdac3d2"
         },
         {
           "path": "data-sources/cca_source/raw_sources/PCE-Residential-Rates-Effective-02-10-2025.pdf",
-          "bytes": 140074,
-          "sha256": "30c8c338dd41205fcdc7ab6c4143e8c0b3042f38294ab4be565681096d57211e"
+          "bytes": 131,
+          "sha256": "4f89f6ce380684f262cf1fb550f65a1ea6e7a12817af68ce013921cd6d299873"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Residential-Rates-2025-01.pdf",
-          "bytes": 179324,
-          "sha256": "562626e814a39fae8b579e24e704248ce35886ecb7b6d275db75042d1a21bd97"
+          "bytes": 131,
+          "sha256": "5b96606a6fe191aaaab01a2d2afc205981d98cef94b52383ef535c674b3988a8"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Residential-Rates_Effective-9.1.25.pdf",
-          "bytes": 73372,
-          "sha256": "cf620f8d451bca7a8d98a66b796e8b51df405b70164dc9516e3cbedb5a30959d"
+          "bytes": 130,
+          "sha256": "25be063025921b964b2578c625de5ea1df6d6c15f2f1bac2b035e88cbe732678"
         },
         {
           "path": "data-sources/cca_source/raw_sources/SJCE-Residential-Rates-March-1-2025.pdf",
-          "bytes": 224056,
-          "sha256": "23184e6f58f7c5e3a6b1029b039dedd236035a2817836993c3abb076ef4e33b4"
+          "bytes": 131,
+          "sha256": "ddd91992b0863c89e6ae4799f75217a43e757e2818dcc1e8ae37294999773b41"
         },
         {
           "path": "data-sources/cca_source/raw_sources/SVCE-4-2025-Residential-Rate-2.pdf",
-          "bytes": 96308,
-          "sha256": "c0add478a3844f1b89c290f342dd8663011aa317ab51f2a315d96b7c3e781809"
+          "bytes": 130,
+          "sha256": "5c6127fa8702d091d4941e7880809855a2ea49c2ba1a951f61c22ed3807d46a8"
         },
         {
           "path": "data-sources/cca_source/raw_sources/VCE-Jan-2025-Residential-Rate-Sheets.pdf",
-          "bytes": 85694,
-          "sha256": "0126fe70a1dd38e1fe7bcc2f4debd52083af717969a7d0c8d518060db7c5930d"
+          "bytes": 130,
+          "sha256": "8d5627e0820d86c9dcb186544334a09de1c714944d86081c948a7c90e3fe5eb0"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Verification_Report.md",
@@ -90,13 +90,13 @@
         },
         {
           "path": "data-sources/cca_source/raw_sources/kccp-rcc.pdf",
-          "bytes": 510405,
-          "sha256": "f08fbbd91fa08410c7003dfb67090a04ecf47f89220b5d6f1208311073a62395"
+          "bytes": 131,
+          "sha256": "4a58a0b135041f0a473ac43ff4c138e303fc4f10d474daaddd160f63a7794aa5"
         },
         {
           "path": "data-sources/cca_source/raw_sources/pio-rcc-placer.pdf",
-          "bytes": 707189,
-          "sha256": "b0dea8d53e54ca38adcafaa62ad9108522e8960dbec577c29ae2e815ff33b58a"
+          "bytes": 131,
+          "sha256": "693309096ef46975b190317bbce903687b4b29e22db62f1ebc9f328c1accb52d"
         }
       ]
     },
@@ -183,6 +183,52 @@
           "path": "data-sources/sce_source/raw_sources/SCE SJP Joint Rate Comparisons | Rate Plans & Pricing | SCE.html",
           "bytes": 232971,
           "sha256": "63aca8681e54cedb25d4806790670e77c97e3eff859d4e735992151ae99d40ac"
+        }
+      ]
+    },
+    {
+      "id": "sdge-rate-sources",
+      "description": "Authoritative SDG&E delivery and SDG&E-territory CCA generation source documents.",
+      "files": [
+        {
+          "path": "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-02-01.pdf",
+          "bytes": 464494,
+          "sha256": "2d01c56bd9a092243aa8edcfa55f4b9e2165485ee87069f8d779a7c615701995"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/DR-total-rates-2026-04-01.pdf",
+          "bytes": 154477,
+          "sha256": "575fe0ca200024af015005ab7c9605dd9bf3673ef4a254c4f76f85f3073a2d50"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-04-01.pdf",
+          "bytes": 155166,
+          "sha256": "701e6ed9566ede8364da1e9e71935260ec4b5d01bd91a6b32c12641d51651814"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-04-01.pdf",
+          "bytes": 176233,
+          "sha256": "27a0b2b68f84489c943669192237fb280d3324f9ca59e99b53395141f47476cd"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-01-01.pdf",
+          "bytes": 491443,
+          "sha256": "05aa508c81910e9d9c4b1c6e4ba2cc79c0102bcd50f300e90e744737f02fce5c"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-MB-total-rates-2026-04-01.pdf",
+          "bytes": 157186,
+          "sha256": "8d11c86e94d91b9b4b7d2ac118d7e9e13b772c33aed9936675de5107fb3eb1b9"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-04-01.pdf",
+          "bytes": 155210,
+          "sha256": "0c589c531323972ab7357a244834fb78a6dce7d2cc698087d1d24c26240f8da2"
+        },
+        {
+          "path": "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-04-01.pdf",
+          "bytes": 156934,
+          "sha256": "a255c80ce290b699e6b46b463cebffd18415bcf783b7638e4455e3389b9790f4"
         }
       ]
     }

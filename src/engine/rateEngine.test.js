@@ -3,6 +3,7 @@ import ratesData from './__fixtures__/rates.json';
 import ratePlans from '../data/ratePlans.json';
 import tdpudRatePlans from '../data/tdpudRatePlans.json';
 import libertyRatePlans from '../data/libertyRatePlans.json';
+import sdgeRatePlans from '../data/sdgeRatePlans.json';
 import {
   getCurrentPeriod,
   getSeason,
@@ -27,6 +28,7 @@ const tdpudTouPrimaryConfig = tdpudRatePlans.ratePlans['TDPUD-TOU-PRIMARY'];
 const tdpudTouSecondaryConfig = tdpudRatePlans.ratePlans['TDPUD-TOU-SECONDARY'];
 const tdpudFixedPrimaryConfig = tdpudRatePlans.ratePlans['TDPUD-FIXED-PRIMARY'];
 const libertyTouEvConfig = libertyRatePlans.ratePlans['LIBERTY-D1-TOU-EV'];
+const sdgeEvTou5Config = sdgeRatePlans.ratePlans['EV-TOU-5'];
 
 // Helper to get Pacific hour from a Date
 function pacificHour(date) {
@@ -137,6 +139,20 @@ describe('getCurrentPeriod — TDPUD TOU (off-peak 9 PM-11 AM, mid-peak 11 AM-4 
   });
 });
 
+describe('getCurrentPeriod — SDG&E EV-TOU-5 (super off-peak midnight-6 AM, peak 4-9 PM)', () => {
+  it('superOffPeak at 2 AM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T02:00:00-08:00'), sdgeEvTou5Config)).toBe('superOffPeak');
+  });
+
+  it('offPeak at 10 AM', () => {
+    expect(getCurrentPeriod(new Date('2026-01-15T10:00:00-08:00'), sdgeEvTou5Config)).toBe('offPeak');
+  });
+
+  it('peak at 5 PM', () => {
+    expect(getCurrentPeriod(new Date('2026-07-15T17:00:00-07:00'), sdgeEvTou5Config)).toBe('peak');
+  });
+});
+
 // ── getSeason ────────────────────────────────────────────────────────────────
 
 describe('getSeason — EV2-A (summer = June–Sep)', () => {
@@ -159,6 +175,20 @@ describe('getSeason — EV-B (summer = May–Oct)', () => {
   });
   it('winter for November 1', () => {
     expect(getSeason(new Date('2026-11-01T12:00:00-08:00'), evbConfig)).toBe('winter');
+  });
+});
+
+describe('getSeason — SDG&E EV-TOU-5 (summer = June–Oct)', () => {
+  it('winter for May 31', () => {
+    expect(getSeason(new Date('2026-05-31T12:00:00-07:00'), sdgeEvTou5Config)).toBe('winter');
+  });
+
+  it('summer for October 31', () => {
+    expect(getSeason(new Date('2026-10-31T12:00:00-07:00'), sdgeEvTou5Config)).toBe('summer');
+  });
+
+  it('winter for November 1', () => {
+    expect(getSeason(new Date('2026-11-01T12:00:00-08:00'), sdgeEvTou5Config)).toBe('winter');
   });
 });
 
@@ -215,6 +245,23 @@ describe('getRate — EV2-A (provider=bundled)', () => {
     expect(peak.colorScheme).toBe('red');
     const offPeak = getRate(new Date('2026-01-15T02:00:00-08:00'), ev2aConfig, 'bundled');
     expect(offPeak.colorScheme).toBe('emerald');
+  });
+});
+
+describe('getRate — SDG&E EV-TOU-5 (provider=bundled)', () => {
+  it('winter super off-peak rate and components', () => {
+    const r = getRate(new Date('2026-01-15T02:00:00-08:00'), sdgeEvTou5Config, 'bundled');
+    expect(r.rate).toBeCloseTo(0.12115, 4);
+    expect(r.delivery).toBeCloseTo(0.04705, 4);
+    expect(r.generation).toBeCloseTo(0.07410, 4);
+    expect(r.period).toBe('superOffPeak');
+    expect(r.season).toBe('winter');
+  });
+
+  it('summer peak rate', () => {
+    const r = getRate(new Date('2026-07-15T17:00:00-07:00'), sdgeEvTou5Config, 'bundled');
+    expect(r.rate).toBeCloseTo(0.80292, 4);
+    expect(r.season).toBe('summer');
   });
 });
 

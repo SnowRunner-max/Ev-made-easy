@@ -1,6 +1,6 @@
 # src/data — Rate Registry Reference
 
-This directory holds all runtime rate data consumed by the app. The app supports multiple delivery utilities (currently PG&E and SCE), each with multiple CCA generation providers.
+This directory holds all runtime rate data consumed by the app. The app supports multiple delivery utilities, each with optional CCA generation providers.
 
 ---
 
