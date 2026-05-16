@@ -100,19 +100,11 @@ export default function App() {
         data-testid="app-header"
         className="bg-surface-container sticky top-0 z-10 h-14 flex items-center justify-between px-6 max-w-[1120px] mx-auto w-full"
       >
-        {/* Left: brand + nav */}
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-paprika rounded-lg flex items-center justify-center text-sm leading-none">
-              ⚡
-            </div>
-            <span className="font-display text-xl font-black tracking-tight text-paprika">ChargeRate</span>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 bg-paprika rounded-lg flex items-center justify-center text-sm leading-none">
+            ⚡
           </div>
-          <nav className="hidden sm:flex items-center gap-1">
-            <span className="text-sm font-bold text-paprika border-b-2 border-paprika pb-0.5 px-1">
-              Dashboard
-            </span>
-          </nav>
+          <span className="font-display text-xl font-black tracking-tight text-paprika">ChargeRate</span>
         </div>
         {/* Right: selected city */}
         <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full">
@@ -316,21 +308,6 @@ export default function App() {
         provider={effectiveProvider}
       />
 
-      {/* ── Mobile bottom tab bar ── */}
-      <nav className="max-[860px]:flex hidden fixed bottom-0 left-0 right-0 bg-ink border-t border-white/10 z-20 pb-safe">
-        <button className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5">
-          <span className="material-symbols-outlined text-paprika" style={{ fontVariationSettings: "'FILL' 1" }}>calculate</span>
-          <span className="font-sans text-[10px] font-bold uppercase tracking-widest text-paprika">Calculator</span>
-        </button>
-        <button className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-pewter/60">
-          <span className="material-symbols-outlined">history</span>
-          <span className="font-sans text-[10px] font-bold uppercase tracking-widest">History</span>
-        </button>
-        <button className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 text-pewter/60">
-          <span className="material-symbols-outlined">person</span>
-          <span className="font-sans text-[10px] font-bold uppercase tracking-widest">Account</span>
-        </button>
-      </nav>
     </div>
   );
 }
