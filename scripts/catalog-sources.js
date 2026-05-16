@@ -28,6 +28,11 @@ const sourceGroups = [
     paths: ['data-sources/sce_source/SCE_Combined_Rates.xlsx'],
     roots: ['data-sources/sce_source/raw_sources'],
   },
+  {
+    id: 'sdge-rate-sources',
+    description: 'Authoritative SDG&E delivery and SDG&E-territory CCA generation source documents.',
+    roots: ['data-sources/sdge_source/raw_sources'],
+  },
 ];
 
 function walkFiles(rootRelativePath) {

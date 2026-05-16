@@ -43,15 +43,12 @@ export default function App() {
 
   const serviceArea = serviceAreasData.serviceAreas[locationResult.serviceAreaId];
   const ratePlansData = RATE_PLAN_REGISTRY[locationResult.serviceAreaId];
-  const planConfig = ratePlansData.ratePlans[planId];
+  const planConfig = ratePlansData.ratePlans[planId] ?? null;
+  const activePlanConfig = planConfig ?? Object.values(ratePlansData.ratePlans)[0];
 
-  if (!planConfig) {
-    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
-  }
-
-  const providerOptions = getProviderOptions(planConfig, serviceArea);
+  const providerOptions = getProviderOptions(activePlanConfig, serviceArea);
   const effectiveProvider = normalizeProvider(provider, providerOptions, serviceArea);
-  const { tierOptions, effectiveTier, showTierSelector } = getTierState(planConfig, effectiveProvider, ccaTier);
+  const { tierOptions, effectiveTier, showTierSelector } = getTierState(activePlanConfig, effectiveProvider, ccaTier);
 
   function handleLocationResolved(resolved) {
     if (resolved.serviceAreaId !== locationResult.serviceAreaId) {
@@ -73,10 +70,10 @@ export default function App() {
   }
 
   const effectivePlanConfig = useMemo(
-    () => buildEffectivePlanConfig({ planConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier }),
-    [planConfig, serviceArea, effectiveProvider, effectiveTier]
+    () => buildEffectivePlanConfig({ planConfig: activePlanConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier }),
+    [activePlanConfig, serviceArea, effectiveProvider, effectiveTier]
   );
-  const supportsProviderToggle = !!planConfig.touPeriods && providerOptions.length > 1;
+  const supportsProviderToggle = !!activePlanConfig.touPeriods && providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
   const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedVehicleId);
@@ -90,6 +87,10 @@ export default function App() {
       : null,
     [batteryKwh, summaryPct, effectivePlanConfig]
   );
+
+  if (!planConfig) {
+    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
+  }
 
   return (
     <div className="min-h-screen bg-surface font-sans">

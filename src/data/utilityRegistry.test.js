@@ -52,4 +52,20 @@ describe('effective plan config helpers', () => {
 
     expect(options).toEqual([{ value: 'sdge', label: 'SDG&E Bundled' }]);
   });
+
+  it('derives SDG&E provider options from bundled, SDCP, and CEA rate data', () => {
+    const sdcpArea = serviceAreasData.serviceAreas['sdge-sdcp-sd'];
+    const sdcpPlan = RATE_PLAN_REGISTRY['sdge-sdcp-sd'].ratePlans[sdcpArea.defaultPlanId];
+    expect(getProviderOptions(sdcpPlan, sdcpArea)).toEqual([
+      { value: 'sdge', label: 'SDG&E Bundled' },
+      { value: 'sdcp', label: 'San Diego Community Power (CCA)' },
+    ]);
+
+    const ceaArea = serviceAreasData.serviceAreas['sdge-cea-sd'];
+    const ceaPlan = RATE_PLAN_REGISTRY['sdge-cea-sd'].ratePlans[ceaArea.defaultPlanId];
+    expect(getProviderOptions(ceaPlan, ceaArea)).toEqual([
+      { value: 'sdge', label: 'SDG&E Bundled' },
+      { value: 'cea', label: 'Clean Energy Alliance (CCA)' },
+    ]);
+  });
 });

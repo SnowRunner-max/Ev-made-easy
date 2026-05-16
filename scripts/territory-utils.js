@@ -13,12 +13,14 @@ export const PATHS = {
   sceTerritory: path.join(REPO_ROOT, 'src/data/sceTerritory.json'),
   tdpudTerritory: path.join(REPO_ROOT, 'src/data/tdpudTerritory.json'),
   libertyTerritory: path.join(REPO_ROOT, 'src/data/libertyTerritory.json'),
+  sdgeTerritory: path.join(REPO_ROOT, 'src/data/sdgeTerritory.json'),
   multiUtilityZips: path.join(REPO_ROOT, 'src/data/multiUtilityZips.json'),
   serviceAreas: path.join(REPO_ROOT, 'src/data/serviceAreas.json'),
   pgeRatePlans: path.join(REPO_ROOT, 'src/data/ratePlans.json'),
   sceRatePlans: path.join(REPO_ROOT, 'src/data/sceRatePlans.json'),
   tdpudRatePlans: path.join(REPO_ROOT, 'src/data/tdpudRatePlans.json'),
   libertyRatePlans: path.join(REPO_ROOT, 'src/data/libertyRatePlans.json'),
+  sdgeRatePlans: path.join(REPO_ROOT, 'src/data/sdgeRatePlans.json'),
   ratePlanRegistry: path.join(REPO_ROOT, 'src/data/ratePlanRegistry.js'),
   territorySources: path.join(REPO_ROOT, 'data-sources/territory'),
   verifiedZips: path.join(REPO_ROOT, 'data-sources/territory/verified-zips.json'),
@@ -336,8 +338,15 @@ export function validateTerritoryData({
 }
 
 export function loadValidationInputs() {
+  const currentTerritoryData = loadCurrentTerritoryData();
   return {
-    ...loadCurrentTerritoryData(),
+    ...currentTerritoryData,
+    utilityTerritories: Object.fromEntries(
+      UTILITY_IDS.map(utilityId => {
+        const utility = UTILITY_CONFIG[utilityId];
+        return [utilityId, currentTerritoryData[utility.generatedKey]];
+      })
+    ),
     serviceAreas: readJson(PATHS.serviceAreas),
     ratePlanFiles: Object.fromEntries(
       UTILITY_IDS.map(utilityId => {

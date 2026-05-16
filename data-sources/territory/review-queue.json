@@ -1,14 +1,9 @@
 {
-  "count": 146,
-  "generatedAt": "2026-05-12T03:27:25.930Z",
+  "count": 155,
+  "generatedAt": "2026-05-16T15:36:35.590Z",
   "note": "Fill in each 'decision' field. Valid actions: assign, multiUtility, exclude, no-coverage. Leave action null to skip. Run 'npm run territory:apply-queue' to write decisions back, then 'npm run territory:promote'.",
   "queue": [
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -25,10 +20,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 34% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -36,8 +31,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3393
+        "sce": 0.3393,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90002"
     },
@@ -69,17 +67,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0935
+        "sce": 0.0935,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90008"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -96,10 +92,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 38% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -107,8 +103,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3778
+        "sce": 0.3778,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90023"
     },
@@ -140,8 +139,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0641
+        "sce": 0.0641,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90025"
     },
@@ -164,17 +166,15 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0523
+        "sce": 0.0523,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90032"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -191,10 +191,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 31% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -202,17 +202,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3127
+        "sce": 0.3127,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90043"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -229,10 +227,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 31% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -240,8 +238,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3121
+        "sce": 0.3121,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90044"
     },
@@ -273,17 +274,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1339
+        "sce": 0.1339,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90046"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -300,10 +299,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 33% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -311,8 +310,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3318
+        "sce": 0.3318,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90047"
     },
@@ -344,17 +346,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1588
+        "sce": 0.1588,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90048"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -373,15 +373,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Los Angeles is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 46% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.5037
+        "sce": 0.5037,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90059"
     },
@@ -413,17 +416,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0926
+        "sce": 0.0926,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90066"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -440,10 +441,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: West Hollywood is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 39% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -451,17 +452,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3886
+        "sce": 0.3886,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90069"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -478,10 +477,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Beverly Hills is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 39% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -489,17 +488,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3915
+        "sce": 0.3915,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90210"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -518,24 +515,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Compton is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 28% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90220"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -554,24 +549,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Compton is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 40% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90221"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -590,24 +583,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Compton is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 38% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90222"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -626,24 +617,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Gardena is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 12% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90249"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -662,24 +651,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Huntington Park is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 24% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9943
+        "sce": 0.9943,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90255"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -698,24 +685,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Lawndale is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 24% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90260"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -734,24 +719,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Palos Verdes Peninsula is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 33% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9256
+        "sce": 0.9256,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90274"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -770,24 +753,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: South Gate is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 2% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90280"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -806,24 +787,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Inglewood is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 7% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90303"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -842,15 +821,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: La Habra is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 2% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90631"
     },
@@ -882,8 +864,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90640"
     },
@@ -915,17 +900,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2534
+        "sce": 0.2534,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90704"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -942,10 +925,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Harbor City is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 25% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -953,17 +936,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2483
+        "sce": 0.2483,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90710"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -982,15 +963,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Lakewood is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 1% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90715"
     },
@@ -1022,8 +1006,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.375
+        "sce": 0.375,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90742"
     },
@@ -1046,17 +1033,15 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2056
+        "sce": 0.2056,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90743"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -1066,26 +1051,24 @@
       },
       "ccaIntersections": [],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Long Beach is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 46% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.4608
+        "sce": 0.4608,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90802"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1104,24 +1087,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Long Beach is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 2% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90808"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1140,24 +1121,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Long Beach is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 48% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9998
+        "sce": 0.9998,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "90810"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1176,24 +1155,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Duarte is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 6% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91010"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1212,24 +1189,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: La Canada Flintridge is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 21% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9664
+        "sce": 0.9664,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91011"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1248,15 +1223,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Monrovia is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 5% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91016"
     },
@@ -1288,17 +1266,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1776
+        "sce": 0.1776,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91104"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -1315,10 +1291,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Pasadena is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 43% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -1326,17 +1302,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.427
+        "sce": 0.427,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91107"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -1353,10 +1327,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: La Crescenta is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 40% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -1364,17 +1338,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.4026
+        "sce": 0.4026,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91214"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -1391,10 +1363,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Canoga Park is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 32% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -1402,17 +1374,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3153
+        "sce": 0.3153,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91304"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -1429,10 +1399,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: West Hills is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "Utility coverage 48% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -1440,8 +1410,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.4831
+        "sce": 0.4831,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91307"
     },
@@ -1473,17 +1446,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0519
+        "sce": 0.0519,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91364"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1502,24 +1473,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Covina is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 42% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91722"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1538,24 +1507,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Covina is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 3% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91723"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1574,24 +1541,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: South El Monte is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 41% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91733"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1610,24 +1575,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Glendora is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 1% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91740"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1646,24 +1609,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Glendora is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 34% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91741"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1682,24 +1643,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: La Puente is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 47% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91744"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1718,24 +1677,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: La Puente is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 49% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91746"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1754,24 +1711,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Monterey Park is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 2% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91755"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1790,24 +1745,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Diamond Bar is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 30% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91765"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1826,24 +1779,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Rosemead is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 22% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91770"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1862,24 +1813,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: San Dimas is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 2% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91773"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1898,15 +1847,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: San Gabriel is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 14% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91776"
     },
@@ -1944,17 +1896,15 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91789"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -1973,17 +1923,498 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: West Covina is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 4% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "91792"
+    },
+    {
+      "autoSuggest": {
+        "action": "no-coverage",
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 39% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.3847,
+          "rateBacked": false,
+          "serviceAreaId": null
+        }
+      ],
+      "decision": {
+        "action": "no-coverage",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 39% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "dominantUtility": null,
+      "flags": {
+        "unsupported_cca_polygon": true
+      },
+      "suggestedReason": "No utility reaches the dominant-area threshold.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 0.3854,
+        "tdpud": 0
+      },
+      "zip": "92004"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.6118,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.321,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 0.9328,
+        "tdpud": 0
+      },
+      "zip": "92014"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.6586,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.3552,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92025"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.7711,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.2838,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92026"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.7976,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.2063,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92027"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.7148,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.2867,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92029"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: CEA, SDCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.5773,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        },
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.4408,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: CEA, SDCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92069"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: CEA, SDCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.997,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        },
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.2161,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: CEA, SDCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92078"
+    },
+    {
+      "autoSuggest": {
+        "action": null,
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.7652,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        },
+        {
+          "acronym": "CEA",
+          "percentOfZcta": 0.2348,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-cea-sd"
+        }
+      ],
+      "decision": {
+        "action": null,
+        "multiUtilityCandidates": null,
+        "reason": "Multiple rate-backed CCAs overlap: SDCP, CEA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {
+        "multiple_cca_overlap": true
+      },
+      "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 1,
+        "tdpud": 0
+      },
+      "zip": "92084"
+    },
+    {
+      "autoSuggest": {
+        "action": "no-coverage",
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 49% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.4891,
+          "rateBacked": false,
+          "serviceAreaId": null
+        }
+      ],
+      "decision": {
+        "action": "no-coverage",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 49% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "dominantUtility": null,
+      "flags": {
+        "unsupported_cca_polygon": true
+      },
+      "suggestedReason": "No utility reaches the dominant-area threshold.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 0.4891,
+        "tdpud": 0
+      },
+      "zip": "92101"
+    },
+    {
+      "autoSuggest": {
+        "action": "assign",
+        "confidence": "medium",
+        "multiUtilityCandidates": null,
+        "reason": "SDCP covers only 8% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sdge-only"
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.0754,
+          "rateBacked": true,
+          "serviceAreaId": "sdge-sdcp-sd"
+        }
+      ],
+      "decision": {
+        "action": "assign",
+        "multiUtilityCandidates": null,
+        "reason": "SDCP covers only 8% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sdge-only"
+      },
+      "dominantUtility": "SDG&E",
+      "flags": {},
+      "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 0.5811,
+        "tdpud": 0
+      },
+      "zip": "92118"
+    },
+    {
+      "autoSuggest": {
+        "action": "no-coverage",
+        "confidence": "low",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 45% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "ccaIntersections": [
+        {
+          "acronym": "SDCP",
+          "percentOfZcta": 0.25,
+          "rateBacked": false,
+          "serviceAreaId": null
+        }
+      ],
+      "decision": {
+        "action": "no-coverage",
+        "multiUtilityCandidates": null,
+        "reason": "Utility coverage 45% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
+      },
+      "dominantUtility": null,
+      "flags": {
+        "unsupported_cca_polygon": true
+      },
+      "suggestedReason": "No utility reaches the dominant-area threshold.",
+      "utilityPct": {
+        "liberty": 0,
+        "pge": 0,
+        "sce": 0,
+        "sdge": 0.4476,
+        "tdpud": 0
+      },
+      "zip": "92155"
     },
     {
       "autoSuggest": {
@@ -2013,8 +2444,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92234"
     },
@@ -2037,8 +2471,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1866
+        "sce": 0.1866,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92241"
     },
@@ -2061,8 +2498,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0952
+        "sce": 0.0952,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92253"
     },
@@ -2094,8 +2534,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92258"
     },
@@ -2127,8 +2570,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9999
+        "sce": 0.9999,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92260"
     },
@@ -2151,8 +2597,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.0723
+        "sce": 0.0723,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92266"
     },
@@ -2175,8 +2624,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3321
+        "sce": 0.3321,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92276"
     },
@@ -2208,8 +2660,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92282"
     },
@@ -2241,8 +2696,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92307"
     },
@@ -2274,8 +2732,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92308"
     },
@@ -2298,8 +2759,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2895
+        "sce": 0.2895,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92363"
     },
@@ -2322,8 +2786,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2662
+        "sce": 0.2662,
+        "sdge": 0.0004,
+        "tdpud": 0
       },
       "zip": "92536"
     },
@@ -2355,8 +2822,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92549"
     },
@@ -2379,43 +2849,13 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2004
+        "sce": 0.2004,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92561"
-    },
-    {
-      "autoSuggest": {
-        "action": "assign",
-        "confidence": "high",
-        "multiUtilityCandidates": null,
-        "reason": "CCA polygon present but not rate-backed; using bundled utility service area",
-        "serviceAreaId": "sce-only"
-      },
-      "ccaIntersections": [
-        {
-          "acronym": "SDCP",
-          "percentOfZcta": 0.1855,
-          "rateBacked": false,
-          "serviceAreaId": null
-        }
-      ],
-      "decision": {
-        "action": "assign",
-        "multiUtilityCandidates": null,
-        "reason": "CCA polygon present but not rate-backed; using bundled utility service area",
-        "serviceAreaId": "sce-only"
-      },
-      "dominantUtility": "SCE",
-      "flags": {
-        "unsupported_cca_polygon": true
-      },
-      "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
-      "utilityPct": {
-        "pge": 0,
-        "sce": 0.8109
-      },
-      "zip": "92562"
     },
     {
       "autoSuggest": {
@@ -2445,34 +2885,13 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92583"
-    },
-    {
-      "autoSuggest": {
-        "action": "no-coverage",
-        "confidence": "low",
-        "multiUtilityCandidates": null,
-        "reason": "Utility coverage 43% does not reach the 50% dominant threshold",
-        "serviceAreaId": null
-      },
-      "ccaIntersections": [],
-      "decision": {
-        "action": "no-coverage",
-        "multiUtilityCandidates": null,
-        "reason": "Utility coverage 43% does not reach the 50% dominant threshold",
-        "serviceAreaId": null
-      },
-      "dominantUtility": null,
-      "flags": {},
-      "suggestedReason": "No utility reaches the dominant-area threshold.",
-      "utilityPct": {
-        "pge": 0,
-        "sce": 0.4251
-      },
-      "zip": "92653"
     },
     {
       "autoSuggest": {
@@ -2502,8 +2921,11 @@
       },
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9295
+        "sce": 0.9295,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92660"
     },
@@ -2526,41 +2948,15 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3582
+        "sce": 0.3582,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "92661"
     },
     {
-      "autoSuggest": {
-        "action": "no-coverage",
-        "confidence": "high",
-        "multiUtilityCandidates": null,
-        "reason": "Utility coverage 12% does not reach the 50% dominant threshold",
-        "serviceAreaId": null
-      },
-      "ccaIntersections": [],
-      "decision": {
-        "action": "no-coverage",
-        "multiUtilityCandidates": null,
-        "reason": "Utility coverage 12% does not reach the 50% dominant threshold",
-        "serviceAreaId": null
-      },
-      "dominantUtility": null,
-      "flags": {},
-      "suggestedReason": "No utility reaches the dominant-area threshold.",
-      "utilityPct": {
-        "pge": 0,
-        "sce": 0.1167
-      },
-      "zip": "92677"
-    },
-    {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "sce-3ce-sb"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -2583,10 +2979,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Carpinteria is in sce-3ce-sb territory (confidence: high)",
-        "serviceAreaId": "sce-3ce-sb"
+        "reason": "Multiple rate-backed CCAs overlap: CCCE, CPA — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "SCE",
       "flags": {
@@ -2594,17 +2990,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9946
+        "sce": 0.9946,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93013"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "sce-cpa-la"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -2623,15 +3017,18 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Port Hueneme is in sce-cpa-la territory",
-        "serviceAreaId": "sce-cpa-la"
+        "reason": "CPA covers only 31% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "sce-only"
       },
       "dominantUtility": "SCE",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.9145
+        "sce": 0.9145,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93041"
     },
@@ -2663,8 +3060,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1537
+        "sce": 0.1537,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93042"
     },
@@ -2694,8 +3094,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93210"
     },
@@ -2718,8 +3121,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.3451
+        "sce": 0.3451,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93513"
     },
@@ -2758,8 +3164,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93534"
     },
@@ -2798,8 +3207,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93536"
     },
@@ -2822,8 +3234,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.2865
+        "sce": 0.2865,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93545"
     },
@@ -2846,8 +3261,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 0.1812
+        "sce": 0.1812,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93549"
     },
@@ -2886,8 +3304,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93551"
     },
@@ -2926,8 +3347,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93552"
     },
@@ -2957,8 +3381,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0,
-        "sce": 1
+        "sce": 1,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93560"
     },
@@ -2988,17 +3415,15 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "93635"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "pge-cpsf-sf"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -3015,10 +3440,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: San Francisco is in pge-cpsf-sf territory",
-        "serviceAreaId": "pge-cpsf-sf"
+        "reason": "Utility coverage 47% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -3026,8 +3451,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4714,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94105"
     },
@@ -3059,17 +3487,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.062,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94128"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "pge-cpsf-sf"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -3086,10 +3512,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: San Francisco is in pge-cpsf-sf territory",
-        "serviceAreaId": "pge-cpsf-sf"
+        "reason": "Utility coverage 49% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -3097,17 +3523,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.487,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94130"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "pge-svce-sv"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -3130,10 +3554,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Palo Alto is in pge-svce-sv territory",
-        "serviceAreaId": "pge-svce-sv"
+        "reason": "Utility coverage 38% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -3141,8 +3565,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.3817,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94303"
     },
@@ -3174,8 +3601,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.1853,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94304"
     },
@@ -3205,17 +3635,15 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.9986,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94509"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-mce-mar"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3238,10 +3666,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Calistoga is in pge-mce-mar territory (confidence: high)",
-        "serviceAreaId": "pge-mce-mar"
+        "reason": "Multiple rate-backed CCAs overlap: SCP, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3249,8 +3677,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94515"
     },
@@ -3280,17 +3711,15 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94531"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "pge-mce-mar"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -3309,24 +3738,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Hercules is in pge-mce-mar territory",
-        "serviceAreaId": "pge-mce-mar"
+        "reason": "MCE covers only 4% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "pge-only"
       },
       "dominantUtility": "PG&E",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.999,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94547"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3349,10 +3776,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Livermore is in pge-ava-eba territory (confidence: high)",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Multiple rate-backed CCAs overlap: Ava, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3360,17 +3787,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94550"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3393,10 +3818,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Livermore is in pge-ava-eba territory (confidence: high)",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Multiple rate-backed CCAs overlap: Ava, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3404,17 +3829,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94551"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3437,10 +3860,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Pleasanton is in pge-ava-eba territory (confidence: high)",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Multiple rate-backed CCAs overlap: Ava, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3448,17 +3871,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94588"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -3475,10 +3896,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Oakland is in pge-ava-eba territory",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Utility coverage 46% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -3486,17 +3907,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4588,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94621"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3519,10 +3938,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Berkeley is in pge-ava-eba territory (confidence: high)",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Multiple rate-backed CCAs overlap: Ava, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3530,17 +3949,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94707"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3563,10 +3980,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Berkeley is in pge-ava-eba territory (confidence: high)",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Multiple rate-backed CCAs overlap: MCE, Ava — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3574,17 +3991,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94708"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "pge-ava-eba"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -3603,24 +4018,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Berkeley is in pge-ava-eba territory",
-        "serviceAreaId": "pge-ava-eba"
+        "reason": "Ava covers only 50% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "pge-only"
       },
       "dominantUtility": "PG&E",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.5031,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94710"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-scp-son"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3643,10 +4056,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Petaluma is in pge-scp-son territory (confidence: high)",
-        "serviceAreaId": "pge-scp-son"
+        "reason": "Multiple rate-backed CCAs overlap: MCE, SCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3654,17 +4067,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.9922,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "94952"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3687,10 +4098,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Coyote is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SJCE, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3698,17 +4109,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95013"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-3ce-sbco"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3731,10 +4140,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Hollister is in pge-3ce-sbco territory (confidence: high)",
-        "serviceAreaId": "pge-3ce-sbco"
+        "reason": "Multiple rate-backed CCAs overlap: CCCE, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3742,17 +4151,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95023"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-svce-sv"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3775,10 +4182,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Los Gatos is in pge-svce-sv territory (confidence: high)",
-        "serviceAreaId": "pge-svce-sv"
+        "reason": "Multiple rate-backed CCAs overlap: CCCE, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3786,8 +4193,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.9807,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95033"
     },
@@ -3817,17 +4227,15 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95050"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "B",
-        "serviceAreaId": "pge-svce-sv"
-      },
       "autoSuggest": {
         "action": "assign",
         "confidence": "medium",
@@ -3846,24 +4254,22 @@
       "decision": {
         "action": "assign",
         "multiUtilityCandidates": null,
-        "reason": "City-name confirms top CCA: Santa Clara is in pge-svce-sv territory",
-        "serviceAreaId": "pge-svce-sv"
+        "reason": "SVCE covers only 1% of ZCTA (below 50% threshold); using bundled utility as conservative default",
+        "serviceAreaId": "pge-only"
       },
       "dominantUtility": "PG&E",
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95051"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3886,10 +4292,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SJCE, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3897,17 +4303,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95119"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3930,10 +4334,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SVCE, SJCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3941,17 +4345,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95120"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -3974,10 +4376,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SVCE, SJCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -3985,17 +4387,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95127"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4018,10 +4418,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SVCE, SJCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4029,17 +4429,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95132"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4062,10 +4460,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SVCE, SJCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4073,17 +4471,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95138"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-sjce-scc"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4106,10 +4502,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: San Jose is in pge-sjce-scc territory (confidence: high)",
-        "serviceAreaId": "pge-sjce-scc"
+        "reason": "Multiple rate-backed CCAs overlap: SJCE, SVCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4117,8 +4513,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95148"
     },
@@ -4148,8 +4547,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.9825,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95219"
     },
@@ -4179,8 +4581,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95304"
     },
@@ -4210,8 +4615,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95377"
     },
@@ -4243,8 +4651,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.1232,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95537"
     },
@@ -4276,17 +4687,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.0672,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95552"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-rcea-hum"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4309,10 +4718,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Whitethorn is in pge-rcea-hum territory (confidence: high)",
-        "serviceAreaId": "pge-rcea-hum"
+        "reason": "Multiple rate-backed CCAs overlap: RCEA, SCP — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4320,17 +4729,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.971,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95589"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-vce-yol"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4353,10 +4760,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Davis is in pge-vce-yol territory (confidence: high)",
-        "serviceAreaId": "pge-vce-yol"
+        "reason": "Multiple rate-backed CCAs overlap: VCE, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4364,17 +4771,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95618"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-vce-yol"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4397,10 +4802,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Dixon is in pge-vce-yol territory (confidence: high)",
-        "serviceAreaId": "pge-vce-yol"
+        "reason": "Multiple rate-backed CCAs overlap: MCE, VCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4408,8 +4813,11 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95620"
     },
@@ -4439,8 +4847,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.7071,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95626"
     },
@@ -4470,8 +4881,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95629"
     },
@@ -4494,8 +4908,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.2898,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95632"
     },
@@ -4525,8 +4942,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95645"
     },
@@ -4556,8 +4976,11 @@
       "flags": {},
       "suggestedReason": "Top CCA polygon does not reach the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.99,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95668"
     },
@@ -4589,17 +5012,15 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4062,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95690"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "A",
-        "serviceAreaId": "pge-vce-yol"
-      },
       "autoSuggest": {
         "action": null,
         "confidence": "low",
@@ -4622,10 +5043,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": null,
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution: Winters is in pge-vce-yol territory (confidence: high)",
-        "serviceAreaId": "pge-vce-yol"
+        "reason": "Multiple rate-backed CCAs overlap: VCE, MCE — choose the dominant one or use multi-utility",
+        "serviceAreaId": null
       },
       "dominantUtility": "PG&E",
       "flags": {
@@ -4633,17 +5054,15 @@
       },
       "suggestedReason": "Multiple CCA polygons materially overlap inside the dominant utility territory.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 1,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95694"
     },
     {
-      "_cityResolution": {
-        "confidence": "high",
-        "path": "C",
-        "serviceAreaId": "pge-pioneer-pla"
-      },
       "autoSuggest": {
         "action": "no-coverage",
         "confidence": "low",
@@ -4660,10 +5079,10 @@
         }
       ],
       "decision": {
-        "action": "assign",
+        "action": "no-coverage",
         "multiUtilityCandidates": null,
-        "reason": "City-name resolution overrides no-coverage: Roseville is in pge-pioneer-pla territory",
-        "serviceAreaId": "pge-pioneer-pla"
+        "reason": "Utility coverage 48% does not reach the 50% dominant threshold",
+        "serviceAreaId": null
       },
       "dominantUtility": null,
       "flags": {
@@ -4671,8 +5090,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4785,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95747"
     },
@@ -4695,8 +5117,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.0824,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95837"
     },
@@ -4719,8 +5144,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4726,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "95971"
     },
@@ -4743,8 +5171,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4033,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96009"
     },
@@ -4767,8 +5198,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4301,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96051"
     },
@@ -4791,8 +5225,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.3051,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96103"
     },
@@ -4815,8 +5252,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.2617,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96106"
     },
@@ -4839,8 +5279,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.0527,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96124"
     },
@@ -4863,8 +5306,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.3532,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96126"
     },
@@ -4887,8 +5333,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.1919,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96132"
     },
@@ -4911,8 +5360,11 @@
       "flags": {},
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.4029,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96137"
     },
@@ -4944,8 +5396,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.0651,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96146"
     },
@@ -4977,8 +5432,11 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.214,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96150"
     },
@@ -5010,11 +5468,13 @@
       },
       "suggestedReason": "No utility reaches the dominant-area threshold.",
       "utilityPct": {
+        "liberty": 0,
         "pge": 0.2091,
-        "sce": 0
+        "sce": 0,
+        "sdge": 0,
+        "tdpud": 0
       },
       "zip": "96161"
     }
-  ],
-  "resolvedAt": "2026-05-12T03:27:25.950Z"
+  ]
 }

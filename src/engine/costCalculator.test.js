@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import ratePlans from '../data/ratePlans.json';
 import libertyRatePlans from '../data/libertyRatePlans.json';
 import tdpudRatePlans from '../data/tdpudRatePlans.json';
+import sdgeRatePlans from '../data/sdgeRatePlans.json';
 import { calcChargeCost, findCheapestWindow, calcChargeSummary } from './costCalculator';
 
 // All PST dates use January 15, 2026 (-08:00). EV-B weekday = Tuesday Jan 6.
@@ -10,6 +11,7 @@ const ev2aRaw = ratePlans.ratePlans['EV2-A'];
 const evbRaw  = ratePlans.ratePlans['EV-B'];
 const libertyTouEvRaw = libertyRatePlans.ratePlans['LIBERTY-D1-TOU-EV'];
 const tdpudTouPrimaryRaw = tdpudRatePlans.ratePlans['TDPUD-TOU-PRIMARY'];
+const sdgeEvTou5Raw = sdgeRatePlans.ratePlans['EV-TOU-5'];
 
 // Build effective planConfig with pre-computed combined rates (bundled provider)
 function buildEffectiveConfig(planConfig) {
@@ -72,6 +74,7 @@ const ev2aConfig = buildEffectiveConfig(ev2aRaw);
 const evbConfig  = buildEffectiveConfig(evbRaw);
 const libertyTouEvConfig = buildEffectiveConfig(libertyTouEvRaw);
 const tdpudTouPrimaryConfig = buildEffectiveConfig(tdpudTouPrimaryRaw);
+const sdgeEvTou5Config = buildEffectiveConfig(sdgeEvTou5Raw);
 
 // EV2-A bundled rates used in assertions:
 //   winter offPeak=0.22558, partPeak=0.39428, peak=0.41099
@@ -114,6 +117,18 @@ describe('calcChargeCost — EV2-A', () => {
   it('returns $0 when kwhNeeded is 0', () => {
     const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 0, 7.7, ev2aConfig);
     expect(totalCost).toBe(0);
+  });
+});
+
+describe('calcChargeCost — SDG&E EV-TOU-5', () => {
+  it('winter super off-peak 2 AM, 30 kWh costs 30 × 0.12115', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 30, 7.7, sdgeEvTou5Config);
+    expect(totalCost).toBeCloseTo(30 * 0.12115, 2);
+  });
+
+  it('summer peak 5 PM, 20 kWh costs 20 × 0.80292', () => {
+    const { totalCost } = calcChargeCost(new Date('2026-07-15T17:00:00-07:00'), 20, 7.7, sdgeEvTou5Config);
+    expect(totalCost).toBeCloseTo(20 * 0.80292, 2);
   });
 });
 
@@ -349,5 +364,20 @@ describe('ccaGeneration — E-1 flat rate with multiple CCAs', () => {
     const cfg = buildCCAConfig(e1Raw, 'kccp', 'singletier');
     expect(cfg._flatRate.generation).toBeCloseTo(0.07514, 4);
     expect(cfg._flatRate.combined).toBeCloseTo(0.19706 + 0.07514, 4);
+  });
+});
+
+describe('ccaGeneration — SDG&E EV-TOU-5 with SDCP and CEA', () => {
+  it('SDCP PowerOn uses flat generation across EV-TOU-5 periods', () => {
+    const cfg = buildCCAConfig(sdgeEvTou5Raw, 'sdcp', 'poweron');
+    expect(cfg.rates.winter.superOffPeak.generation).toBeCloseTo(0.10194, 4);
+    expect(cfg.rates.summer.peak.generation).toBeCloseTo(0.10194, 4);
+    expect(cfg.rates.winter.superOffPeak.combined).toBeCloseTo(0.04705 + 0.10194, 4);
+  });
+
+  it('CEA Clean Impact combines with SDG&E delivery', () => {
+    const cfg = buildCCAConfig(sdgeEvTou5Raw, 'cea', 'clean-impact');
+    expect(cfg.rates.winter.superOffPeak.generation).toBeCloseTo(0.09532, 4);
+    expect(cfg.rates.winter.superOffPeak.combined).toBeCloseTo(0.04705 + 0.09532, 4);
   });
 });

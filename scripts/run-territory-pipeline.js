@@ -10,6 +10,7 @@ import { applyReviewQueueFromFiles } from './apply-review-queue.js';
 import { promoteReviewedCandidatesFromFiles } from './promote-territory-candidates.js';
 import { buildTerritoryFromFiles } from './build-territory.js';
 import { validateTerritoryFromFiles } from './validate-territory.js';
+import { UTILITY_CONFIG, UTILITY_IDS } from './utility-config.js';
 
 function banner(title) {
   console.log(`\n── ${title} ${'─'.repeat(Math.max(0, 50 - title.length))}`);
@@ -131,17 +132,10 @@ export async function runTerritoryPipeline({
   // Step 11: Summary
   const { stats } = validationResult;
   console.log('\n══════════════ Territory Pipeline Summary ══════════════');
-  if (utility === 'pge' || utility === 'all') {
-    console.log(`  PG&E ZIPs:       ${stats.pgeZipCount}`);
-  }
-  if (utility === 'sce' || utility === 'all') {
-    console.log(`  SCE ZIPs:        ${stats.sceZipCount}`);
-  }
-  if (utility === 'tdpud' || utility === 'all') {
-    console.log(`  TDPUD ZIPs:      ${stats.tdpudZipCount ?? 0}`);
-  }
-  if (utility === 'liberty' || utility === 'all') {
-    console.log(`  Liberty ZIPs:    ${stats.libertyZipCount ?? 0}`);
+  for (const utilityId of UTILITY_IDS) {
+    if (utility !== utilityId && utility !== 'all') continue;
+    const config = UTILITY_CONFIG[utilityId];
+    console.log(`  ${config.label} ZIPs:       ${stats[config.statsKey] ?? 0}`);
   }
   console.log(`  Multi-utility:   ${stats.multiUtilityZipCount}`);
   console.log(`  Service areas:   ${stats.serviceAreaCount}`);

@@ -4,7 +4,9 @@ import ratePlans from '../data/ratePlans.json';
 import sceRatePlans from '../data/sceRatePlans.json';
 import tdpudRatePlans from '../data/tdpudRatePlans.json';
 import libertyRatePlans from '../data/libertyRatePlans.json';
+import sdgeRatePlans from '../data/sdgeRatePlans.json';
 import serviceAreasData from '../data/serviceAreas.json';
+import { buildEffectivePlanConfig } from '../data/effectivePlanConfig';
 import Footer from './Footer';
 
 function buildEffectiveConfig(planConfig) {
@@ -160,5 +162,30 @@ describe('Footer — expanded', () => {
     expect(screen.getByTestId('footer-details')).toHaveTextContent('Mid-Peak');
     expect(screen.getByTestId('footer-details')).toHaveTextContent('Super Off-Peak');
     expect(screen.getByTestId('footer-details')).toHaveTextContent('N/A');
+  });
+
+  it('shows the CEA effective date for SDG&E CEA customers', () => {
+    const ceaServiceArea = serviceAreasData.serviceAreas['sdge-cea-sd'];
+    const planConfig = buildEffectivePlanConfig({
+      planConfig: sdgeRatePlans.ratePlans['EV-TOU-5'],
+      serviceArea: ceaServiceArea,
+      providerId: 'cea',
+      tierId: 'clean-impact',
+    });
+
+    render(
+      <Footer
+        planConfig={planConfig}
+        globalMetadata={sdgeRatePlans._metadata}
+        city={{ name: 'Carlsbad' }}
+        serviceArea={ceaServiceArea}
+        provider="cea"
+      />
+    );
+    fireEvent.click(screen.getByTestId('footer-toggle'));
+
+    const details = screen.getByTestId('footer-details');
+    expect(details).toHaveTextContent('Clean Energy Alliance generation rates: 2026-02-01');
+    expect(details).not.toHaveTextContent('Clean Energy Alliance generation rates: 2026-01-01');
   });
 });

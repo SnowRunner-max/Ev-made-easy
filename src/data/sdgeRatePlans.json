@@ -1,0 +1,479 @@
+{
+  "_metadata": {
+    "version": "3.0.0",
+    "territory": "SDG&E",
+    "sdgeEffectiveDate": "2026-04-01",
+    "sdcpRateEffectiveDate": "2026-01-01",
+    "ceaRateEffectiveDate": "2026-02-01",
+    "sourceDate": "2026-05-15",
+    "sources": [
+      "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-04-01.pdf",
+      "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-04-01.pdf",
+      "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-04-01.pdf",
+      "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-04-01.pdf",
+      "data-sources/sdge_source/raw_sources/DR-total-rates-2026-04-01.pdf",
+      "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-01-01.pdf",
+      "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-02-01.pdf"
+    ],
+    "holidays": [
+      "New Year's Day",
+      "Presidents' Day",
+      "Memorial Day",
+      "Independence Day",
+      "Labor Day",
+      "Veterans Day",
+      "Thanksgiving Day",
+      "Christmas Day"
+    ],
+    "notes": [
+      "delivery + generation = totalBundled (±0.00001) — utility-agnostic field names (schema v3.0).",
+      "SDG&E bundled delivery values include UDC Total plus Schedule WF-NBC + DWR-BC Rate from SDG&E total rate tables.",
+      "SDG&E bundled generation values use Schedule EECC Rate from SDG&E total rate tables.",
+      "SDCP and CEA generation rates are residential average generation rates from SDG&E joint rate comparison PDFs; they are applied flat across each plan's TOU periods because the published joint comparison values are plan-level averages.",
+      "PCIA and franchise fees are shown in source documents but are not embedded in CCA generation rates.",
+      "Base Services Charge is recorded in fixedCharges metadata and is not included in EV charging session estimates."
+    ]
+  },
+  "ratePlans": {
+    "EV-TOU-5": {
+      "name": "EV-TOU-5",
+      "selectorLabel": "EV-TOU-5",
+      "scheduleCode": "EV-TOU-5",
+      "rateDesignation": "Domestic Time-of-Use for Households with Electric Vehicles",
+      "category": "EV Rate",
+      "status": "current",
+      "description": "SDG&E residential EV time-of-use plan with a 4-9 PM peak and overnight super off-peak period.",
+      "uiHint": "EV-optimized with overnight super off-peak pricing.",
+      "eligibility": "Residential customers with qualifying electric vehicles or qualifying home fueling equipment.",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "EV-TOU-5-total-rates-2026-04-01",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
+        "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        },
+        "winter": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.33273, "offPeak": 0.33273, "superOffPeak": 0.04705 },
+          "winter": { "peak": 0.33273, "offPeak": 0.33273, "superOffPeak": 0.04705 }
+        },
+        "generation": {
+          "summer": { "peak": 0.47019, "offPeak": 0.17311, "superOffPeak": 0.08147 },
+          "winter": { "peak": 0.19990, "offPeak": 0.14337, "superOffPeak": 0.07410 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.80292, "offPeak": 0.50584, "superOffPeak": 0.12852 },
+          "winter": { "peak": 0.53263, "offPeak": 0.47610, "superOffPeak": 0.12115 }
+        },
+        "ccaGeneration": {
+          "sdcp": {
+            "name": "San Diego Community Power",
+            "defaultTier": "poweron",
+            "tiers": {
+              "powerbase": {
+                "label": "PowerBase (45% renewable)",
+                "summer": { "peak": 0.09325, "offPeak": 0.09325, "superOffPeak": 0.09325 },
+                "winter": { "peak": 0.09325, "offPeak": 0.09325, "superOffPeak": 0.09325 }
+              },
+              "poweron": {
+                "label": "PowerOn (53% renewable + 2% carbon free)",
+                "summer": { "peak": 0.10194, "offPeak": 0.10194, "superOffPeak": 0.10194 },
+                "winter": { "peak": 0.10194, "offPeak": 0.10194, "superOffPeak": 0.10194 }
+              },
+              "power100": {
+                "label": "Power100 (100% renewable)",
+                "summer": { "peak": 0.11194, "offPeak": 0.11194, "superOffPeak": 0.11194 },
+                "winter": { "peak": 0.11194, "offPeak": 0.11194, "superOffPeak": 0.11194 }
+              }
+            }
+          },
+          "cea": {
+            "name": "Clean Energy Alliance",
+            "defaultTier": "clean-impact",
+            "tiers": {
+              "clean-impact": {
+                "label": "Clean Impact (50% renewable)",
+                "summer": { "peak": 0.09532, "offPeak": 0.09532, "superOffPeak": 0.09532 },
+                "winter": { "peak": 0.09532, "offPeak": 0.09532, "superOffPeak": 0.09532 }
+              },
+              "clean-impact-plus": {
+                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "summer": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 },
+                "winter": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 }
+              },
+              "green-impact-premium": {
+                "label": "Green Impact Premium (100% renewable)",
+                "summer": { "peak": 0.14153, "offPeak": 0.14153, "superOffPeak": 0.14153 },
+                "winter": { "peak": 0.14153, "offPeak": 0.14153, "superOffPeak": 0.14153 }
+              }
+            }
+          }
+        }
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.39688,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/meter/day",
+          "note": "SDG&E Base Services Charge is $0.79343/day standard and $0.39688/day for DRAH/FERA in the 4/1/2026 total rate tables."
+        }
+      }
+    },
+    "EV-TOU-2": {
+      "name": "EV-TOU-2",
+      "selectorLabel": "EV-TOU-2",
+      "scheduleCode": "EV-TOU-2",
+      "rateDesignation": "Domestic Time-of-Use for Households with Electric Vehicles",
+      "category": "EV Rate",
+      "status": "current",
+      "description": "SDG&E residential EV time-of-use plan with a 4-9 PM peak and overnight super off-peak period.",
+      "uiHint": "EV TOU option with whole-house service.",
+      "eligibility": "Residential customers with qualifying electric vehicles.",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "EV-TOU-and-EV-TOU-2-total-rates-2026-04-01",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
+        "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        },
+        "winter": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.31934, "offPeak": 0.31934, "superOffPeak": 0.17837 },
+          "winter": { "peak": 0.31934, "offPeak": 0.31934, "superOffPeak": 0.17837 }
+        },
+        "generation": {
+          "summer": { "peak": 0.47019, "offPeak": 0.17311, "superOffPeak": 0.08147 },
+          "winter": { "peak": 0.19990, "offPeak": 0.14337, "superOffPeak": 0.07410 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.78953, "offPeak": 0.49245, "superOffPeak": 0.25984 },
+          "winter": { "peak": 0.51924, "offPeak": 0.46271, "superOffPeak": 0.25247 }
+        },
+        "ccaGeneration": {
+          "sdcp": {
+            "name": "San Diego Community Power",
+            "defaultTier": "poweron",
+            "tiers": {
+              "powerbase": {
+                "label": "PowerBase (45% renewable)",
+                "summer": { "peak": 0.10631, "offPeak": 0.10631, "superOffPeak": 0.10631 },
+                "winter": { "peak": 0.10631, "offPeak": 0.10631, "superOffPeak": 0.10631 }
+              },
+              "poweron": {
+                "label": "PowerOn (53% renewable + 2% carbon free)",
+                "summer": { "peak": 0.11588, "offPeak": 0.11588, "superOffPeak": 0.11588 },
+                "winter": { "peak": 0.11588, "offPeak": 0.11588, "superOffPeak": 0.11588 }
+              },
+              "power100": {
+                "label": "Power100 (100% renewable)",
+                "summer": { "peak": 0.12588, "offPeak": 0.12588, "superOffPeak": 0.12588 },
+                "winter": { "peak": 0.12588, "offPeak": 0.12588, "superOffPeak": 0.12588 }
+              }
+            }
+          },
+          "cea": {
+            "name": "Clean Energy Alliance",
+            "defaultTier": "clean-impact",
+            "tiers": {
+              "clean-impact": {
+                "label": "Clean Impact (50% renewable)",
+                "summer": { "peak": 0.11591, "offPeak": 0.11591, "superOffPeak": 0.11591 },
+                "winter": { "peak": 0.11591, "offPeak": 0.11591, "superOffPeak": 0.11591 }
+              },
+              "clean-impact-plus": {
+                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "summer": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 },
+                "winter": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 }
+              },
+              "green-impact-premium": {
+                "label": "Green Impact Premium (100% renewable)",
+                "summer": { "peak": 0.16212, "offPeak": 0.16212, "superOffPeak": 0.16212 },
+                "winter": { "peak": 0.16212, "offPeak": 0.16212, "superOffPeak": 0.16212 }
+              }
+            }
+          }
+        }
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.39688,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/meter/day"
+        }
+      }
+    },
+    "TOU-ELEC": {
+      "name": "TOU-ELEC",
+      "selectorLabel": "TOU-ELEC",
+      "scheduleCode": "TOU-ELEC",
+      "rateDesignation": "Domestic Time-of-Use for EVs, Energy Storage, or Electric Heat Pumps",
+      "category": "Residential TOU",
+      "status": "current",
+      "description": "SDG&E whole-house TOU plan for customers with qualifying EV, energy storage, or electric heat pump technology.",
+      "uiHint": "Whole-house electrification TOU plan.",
+      "eligibility": "Residential customers with qualifying EV, storage, or electric heat pump technology.",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "TOU-ELEC-total-rates-2026-04-01",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
+        "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        },
+        "winter": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.26879, "offPeak": 0.26879, "superOffPeak": 0.26879 },
+          "winter": { "peak": 0.26879, "offPeak": 0.26879, "superOffPeak": 0.26879 }
+        },
+        "generation": {
+          "summer": { "peak": 0.45690, "offPeak": 0.12945, "superOffPeak": 0.08637 },
+          "winter": { "peak": 0.24311, "offPeak": 0.11774, "superOffPeak": 0.07856 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.72569, "offPeak": 0.39824, "superOffPeak": 0.35516 },
+          "winter": { "peak": 0.51190, "offPeak": 0.38653, "superOffPeak": 0.34735 }
+        },
+        "ccaGeneration": {
+          "sdcp": {
+            "name": "San Diego Community Power",
+            "defaultTier": "poweron",
+            "tiers": {
+              "powerbase": {
+                "label": "PowerBase (45% renewable)",
+                "summer": { "peak": 0.09362, "offPeak": 0.09362, "superOffPeak": 0.09362 },
+                "winter": { "peak": 0.09362, "offPeak": 0.09362, "superOffPeak": 0.09362 }
+              },
+              "poweron": {
+                "label": "PowerOn (53% renewable + 2% carbon free)",
+                "summer": { "peak": 0.10234, "offPeak": 0.10234, "superOffPeak": 0.10234 },
+                "winter": { "peak": 0.10234, "offPeak": 0.10234, "superOffPeak": 0.10234 }
+              },
+              "power100": {
+                "label": "Power100 (100% renewable)",
+                "summer": { "peak": 0.11234, "offPeak": 0.11234, "superOffPeak": 0.11234 },
+                "winter": { "peak": 0.11234, "offPeak": 0.11234, "superOffPeak": 0.11234 }
+              }
+            }
+          },
+          "cea": {
+            "name": "Clean Energy Alliance",
+            "defaultTier": "clean-impact",
+            "tiers": {
+              "clean-impact": {
+                "label": "Clean Impact (50% renewable)",
+                "summer": { "peak": 0.11336, "offPeak": 0.11336, "superOffPeak": 0.11336 },
+                "winter": { "peak": 0.11336, "offPeak": 0.11336, "superOffPeak": 0.11336 }
+              },
+              "clean-impact-plus": {
+                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "summer": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 },
+                "winter": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 }
+              },
+              "green-impact-premium": {
+                "label": "Green Impact Premium (100% renewable)",
+                "summer": { "peak": 0.15957, "offPeak": 0.15957, "superOffPeak": 0.15957 },
+                "winter": { "peak": 0.15957, "offPeak": 0.15957, "superOffPeak": 0.15957 }
+              }
+            }
+          }
+        }
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.39688,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/meter/day"
+        }
+      }
+    },
+    "TOU-DR1": {
+      "name": "TOU-DR1",
+      "selectorLabel": "TOU-DR1",
+      "scheduleCode": "TOU-DR1",
+      "rateDesignation": "Residential Time-of-Use Service",
+      "category": "Residential TOU",
+      "status": "current",
+      "description": "SDG&E standard residential time-of-use schedule.",
+      "uiHint": "Standard residential TOU plan.",
+      "eligibility": "Standard residential customers",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "TOU-DR1-total-rates-2026-04-01",
+      "seasons": {
+        "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
+        "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
+      },
+      "touPeriods": {
+        "summer": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        },
+        "winter": {
+          "peak": { "start": "16:00", "end": "21:00", "days": "all", "label": "4pm-9pm every day" },
+          "superOffPeak": { "start": "00:00", "end": "06:00", "days": "all", "label": "Midnight-6am every day" },
+          "offPeak": { "label": "All other hours (6am-4pm, 9pm-midnight)" }
+        }
+      },
+      "rates": {
+        "delivery": {
+          "summer": { "peak": 0.34652, "offPeak": 0.34652, "superOffPeak": 0.34652 },
+          "winter": { "peak": 0.34652, "offPeak": 0.34652, "superOffPeak": 0.34652 }
+        },
+        "generation": {
+          "summer": { "peak": 0.34920, "offPeak": 0.12853, "superOffPeak": 0.04121 },
+          "winter": { "peak": 0.27475, "offPeak": 0.19304, "superOffPeak": 0.10228 }
+        },
+        "totalBundled": {
+          "summer": { "peak": 0.69572, "offPeak": 0.47505, "superOffPeak": 0.38773 },
+          "winter": { "peak": 0.62127, "offPeak": 0.53956, "superOffPeak": 0.44880 }
+        },
+        "ccaGeneration": {
+          "sdcp": {
+            "name": "San Diego Community Power",
+            "defaultTier": "poweron",
+            "tiers": {
+              "powerbase": {
+                "label": "PowerBase (45% renewable)",
+                "summer": { "peak": 0.12009, "offPeak": 0.12009, "superOffPeak": 0.12009 },
+                "winter": { "peak": 0.12009, "offPeak": 0.12009, "superOffPeak": 0.12009 }
+              },
+              "poweron": {
+                "label": "PowerOn (53% renewable + 2% carbon free)",
+                "summer": { "peak": 0.13021, "offPeak": 0.13021, "superOffPeak": 0.13021 },
+                "winter": { "peak": 0.13021, "offPeak": 0.13021, "superOffPeak": 0.13021 }
+              },
+              "power100": {
+                "label": "Power100 (100% renewable)",
+                "summer": { "peak": 0.14021, "offPeak": 0.14021, "superOffPeak": 0.14021 },
+                "winter": { "peak": 0.14021, "offPeak": 0.14021, "superOffPeak": 0.14021 }
+              }
+            }
+          },
+          "cea": {
+            "name": "Clean Energy Alliance",
+            "defaultTier": "clean-impact",
+            "tiers": {
+              "clean-impact": {
+                "label": "Clean Impact (50% renewable)",
+                "summer": { "peak": 0.13789, "offPeak": 0.13789, "superOffPeak": 0.13789 },
+                "winter": { "peak": 0.13789, "offPeak": 0.13789, "superOffPeak": 0.13789 }
+              },
+              "clean-impact-plus": {
+                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "summer": { "peak": 0.17760, "offPeak": 0.17760, "superOffPeak": 0.17760 },
+                "winter": { "peak": 0.17760, "offPeak": 0.17760, "superOffPeak": 0.17760 }
+              },
+              "green-impact-premium": {
+                "label": "Green Impact Premium (100% renewable)",
+                "summer": { "peak": 0.18410, "offPeak": 0.18410, "superOffPeak": 0.18410 },
+                "winter": { "peak": 0.18410, "offPeak": 0.18410, "superOffPeak": 0.18410 }
+              }
+            }
+          }
+        }
+      },
+      "baselineCredit": {
+        "rate": -0.10892,
+        "note": "Applied to usage up to 130% of baseline. Rates shown are pre-credit."
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.39688,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/meter/day"
+        }
+      }
+    },
+    "DR": {
+      "name": "DR",
+      "selectorLabel": "DR",
+      "scheduleCode": "DR",
+      "rateDesignation": "Residential Service",
+      "category": "Tiered (Non-TOU)",
+      "status": "current",
+      "description": "SDG&E optional non-time-of-use domestic residential electric service.",
+      "uiHint": "Flat residential rate with baseline tiers.",
+      "eligibility": "Standard residential customers",
+      "meteringScope": "wholeHouse",
+      "tariffSource": "DR-total-rates-2026-04-01",
+      "rates": {
+        "delivery": { "tier1": 0.23760 },
+        "generation": { "allUsage": 0.18274 },
+        "totalBundled": { "tier1": 0.42034 },
+        "ccaGeneration": {
+          "sdcp": {
+            "name": "San Diego Community Power",
+            "defaultTier": "poweron",
+            "tiers": {
+              "powerbase": { "label": "PowerBase (45% renewable)", "allUsage": 0.12710 },
+              "poweron": { "label": "PowerOn (53% renewable + 2% carbon free)", "allUsage": 0.13808 },
+              "power100": { "label": "Power100 (100% renewable)", "allUsage": 0.14808 }
+            }
+          },
+          "cea": {
+            "name": "Clean Energy Alliance",
+            "defaultTier": "clean-impact",
+            "tiers": {
+              "clean-impact": { "label": "Clean Impact (50% renewable)", "allUsage": 0.14630 },
+              "clean-impact-plus": { "label": "Clean Impact Plus (50% renewable + 75% carbon free)", "allUsage": 0.18603 },
+              "green-impact-premium": { "label": "Green Impact Premium (100% renewable)", "allUsage": 0.19252 }
+            }
+          }
+        }
+      },
+      "tiers": {
+        "baseline": 0.42034,
+        "above130Percent": 0.52926
+      },
+      "fixedCharges": {
+        "type": "incomeBasedBSC",
+        "baseServicesCharge": {
+          "tier1": 0.39688,
+          "tier2": 0.39688,
+          "tier3": 0.79343,
+          "unit": "$/meter/day"
+        }
+      }
+    }
+  }
+}
