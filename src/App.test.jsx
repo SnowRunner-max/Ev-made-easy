@@ -35,7 +35,7 @@ describe('App — structure', () => {
 
   it('header includes app title', () => {
     render(<App />);
-    expect(screen.getByTestId('app-header')).toHaveTextContent(/ChargeRate/i);
+    expect(screen.getByTestId('app-header')).toHaveTextContent(/My EV Rate/i);
   });
 
   it('renders rate badge, timeline, calculator, charging tip', () => {
@@ -53,9 +53,10 @@ describe('App — location input', () => {
     expect(screen.getByTestId('location-input')).toBeInTheDocument();
   });
 
-  it('header shows Buellton, CA by default', () => {
+  it('header shows placeholder when no location selected', () => {
     render(<App />);
-    expect(screen.getByTestId('app-header')).toHaveTextContent('Buellton, CA');
+    expect(screen.getByTestId('app-header')).toHaveTextContent('—');
+    expect(screen.getByTestId('app-header')).not.toHaveTextContent('Buellton');
   });
 
   it('resolving a new location updates the header display label', () => {

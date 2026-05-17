@@ -29,7 +29,7 @@ const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
 export default function App() {
   const [locationResult, setLocationResult] = useState({
     serviceAreaId: 'pge-3ce-sbco',
-    displayLabel: 'Buellton, CA',
+    displayLabel: '',
     zip: '93427',
   });
   const [planId, setPlanId] = useState('EV2-A');
@@ -101,15 +101,13 @@ export default function App() {
         className="bg-surface-container sticky top-0 z-10 h-14 flex items-center justify-between px-6 max-w-[1120px] mx-auto w-full"
       >
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-paprika rounded-lg flex items-center justify-center text-sm leading-none">
-            ⚡
-          </div>
-          <span className="font-display text-xl font-black tracking-tight text-paprika">ChargeRate</span>
+          <img src="/MyEVRate.png" alt="" className="w-7 h-7" />
+          <span className="font-display text-xl font-black tracking-tight text-paprika">My EV Rate</span>
         </div>
         {/* Right: selected city */}
         <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full">
           <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
-            {locationResult.displayLabel}
+            {locationResult.displayLabel || '—'}
           </span>
         </div>
       </header>
