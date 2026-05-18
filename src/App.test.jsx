@@ -52,6 +52,14 @@ describe('App — structure', () => {
     expect(screen.getByTestId('calculator')).toBeInTheDocument();
     expect(screen.getByTestId('charging-tip')).toBeInTheDocument();
   });
+
+  it('does not expose default pricing before a valid location is selected', () => {
+    render(<App />);
+    expect(screen.queryByText(/Total Estimated Cost/i)).not.toBeInTheDocument();
+    expect(screen.queryByTestId('rate-badge')).not.toBeInTheDocument();
+    expect(screen.getByTestId('app-footer')).toHaveTextContent('Enter a location to see rate details and sources.');
+    expect(screen.queryByTestId('footer-toggle')).not.toBeInTheDocument();
+  });
 });
 
 describe('App — location input', () => {

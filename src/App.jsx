@@ -84,10 +84,10 @@ export default function App() {
     : (selectedVehicle?.usableBatteryKwh ?? 60);
 
   const summary = useMemo(
-    () => batteryKwh > 0 && summaryPct < 100
+    () => hasValidLocation && batteryKwh > 0 && summaryPct < 100
       ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, effectivePlanConfig)
       : null,
-    [batteryKwh, summaryPct, effectivePlanConfig]
+    [hasValidLocation, batteryKwh, summaryPct, effectivePlanConfig]
   );
 
   if (!planConfig) {
@@ -317,6 +317,7 @@ export default function App() {
         city={{ name: locationResult.displayLabel.replace(', CA', ''), serviceAreaId: locationResult.serviceAreaId }}
         serviceArea={serviceArea}
         provider={effectiveProvider}
+        hasValidLocation={hasValidLocation}
       />
 
     </div>
