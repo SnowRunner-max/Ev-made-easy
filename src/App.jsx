@@ -39,6 +39,7 @@ export default function App() {
   const [customKwh, setCustomKwh] = useState('');
   const [currentPct, setCurrentPct] = useState(20);
   const [showCostFacts, setShowCostFacts] = useState(false);
+  const [hasValidLocation, setHasValidLocation] = useState(false);
   const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
 
   const serviceArea = serviceAreasData.serviceAreas[locationResult.serviceAreaId];
@@ -51,6 +52,7 @@ export default function App() {
   const { tierOptions, effectiveTier, showTierSelector } = getTierState(activePlanConfig, effectiveProvider, ccaTier);
 
   function handleLocationResolved(resolved) {
+    setHasValidLocation(true);
     if (resolved.serviceAreaId !== locationResult.serviceAreaId) {
       const newArea = serviceAreasData.serviceAreas[resolved.serviceAreaId];
       setPlanId(newArea.defaultPlanId);
@@ -163,14 +165,14 @@ export default function App() {
                     onLocationCleared={handleLocationCleared}
                   />
                 </div>
-                {supportsProviderToggle && (
+                {hasValidLocation && supportsProviderToggle && (
                   <div className="space-y-1.5">
                     <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Provider</span>
                     <ProviderSelector provider={effectiveProvider} onChange={handleProviderChange} options={providerOptions} />
                     <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{serviceArea.providerHint}</p>
                   </div>
                 )}
-                {supportsProviderToggle && showTierSelector && (
+                {hasValidLocation && supportsProviderToggle && showTierSelector && (
                   <div className="space-y-1.5">
                     <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Tier</span>
                     <TierSelector
@@ -184,14 +186,14 @@ export default function App() {
             </div>
 
             {/* CONFIGURATION */}
-            <div className="space-y-4">
+            <div className={`space-y-4${!hasValidLocation ? ' opacity-40' : ''}`}>
               <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
                 Configuration
               </label>
               <div className="bg-surface-container-high p-5 rounded-xl space-y-5">
                 <div className="space-y-1.5">
                   <span className="text-xs text-[var(--text-secondary)] font-semibold">Rate Plan</span>
-                  <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => setPlanId(id)} />
+                  <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => setPlanId(id)} disabled={!hasValidLocation} />
                   <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
                     {planConfig.uiHint ?? planConfig.description}
                   </p>
@@ -204,6 +206,7 @@ export default function App() {
                     batteryKwh={batteryKwh}
                     onSelectedIdChange={setSelectedVehicleId}
                     onCustomKwhChange={setCustomKwh}
+                    disabled={!hasValidLocation}
                   />
                 </div>
               </div>
@@ -211,7 +214,10 @@ export default function App() {
           </div>
 
           {/* CURRENT CHARGE — full width */}
-          <section data-testid="calculator" className="mb-8">
+          <section
+            data-testid="calculator"
+            className={`mb-8${!hasValidLocation ? ' opacity-40 pointer-events-none' : ''}`}
+          >
             <VehicleInputs
               selectedId={selectedVehicleId}
               customKwh={customKwh}
@@ -225,7 +231,7 @@ export default function App() {
           </section>
 
           {/* TODAY'S RATE SCHEDULE — full width */}
-          <section className="mb-8">
+          <section className={`mb-8${!hasValidLocation ? ' opacity-40' : ''}`}>
             <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)] mb-3">
               Today&apos;s Rate Schedule
             </label>
@@ -235,12 +241,14 @@ export default function App() {
           </section>
 
           {/* Charging tip */}
-          <ChargingTip planConfig={effectivePlanConfig} />
+          <div className={!hasValidLocation ? 'opacity-40' : ''}>
+            <ChargingTip planConfig={effectivePlanConfig} />
+          </div>
         </div>
 
         {/* ════ RIGHT PANEL: Energy Pricing (sticky, dark) ════ */}
         <div
-          className="bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto flex flex-col relative"
+          className={`bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto flex flex-col relative${!hasValidLocation ? ' max-[860px]:hidden' : ''}`}
         >
           {/* Ambient glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-paprika/10 blur-[100px] pointer-events-none -mr-16 -mt-16" />
@@ -251,7 +259,12 @@ export default function App() {
               Energy Pricing
             </div>
 
-            {showCostFacts ? (
+            {!hasValidLocation ? (
+              <div className="flex flex-col items-center justify-center text-center py-20 gap-4">
+                <span className="material-symbols-outlined text-4xl text-pewter/40">bolt</span>
+                <p className="text-base font-semibold text-pewter/60">Enter your location<br/>to see live EV rates.</p>
+              </div>
+            ) : showCostFacts ? (
               <CostFacts
                 planConfig={effectivePlanConfig}
                 summary={summary}
@@ -277,7 +290,7 @@ export default function App() {
             )}
 
             {/* FLIP / BACK button — inline, below cost cards */}
-            <div className="mt-5">
+            {hasValidLocation && <div className="mt-5">
               <button
                 onClick={() => setShowCostFacts(v => !v)}
                 className="w-full py-4 bg-paprika hover:bg-paprika-hover rounded-xl font-display text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-paprika/20 active:scale-95 transition-all flex items-center justify-center gap-2"
@@ -292,7 +305,7 @@ export default function App() {
                   ? 'Showing detailed cost attribution for current session.'
                   : 'Calculated based on live TOU schedule.'}
               </p>
-            </div>
+            </div>}
           </div>
         </div>
       </div>

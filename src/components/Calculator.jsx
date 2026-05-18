@@ -84,10 +84,10 @@ export function VehicleInputs({
           </strong>
         </div>
         {/* Slider track with fill indicator */}
-        <div className="relative h-10 bg-surface-container-high rounded-full overflow-hidden flex items-center px-2">
+        <div className="relative h-10 bg-surface-container-high rounded-full overflow-hidden flex items-center">
           <div
             className="absolute inset-y-0 left-0 bg-paprika/20 rounded-full"
-            style={{ width: `${currentPct}%` }}
+            style={{ width: `calc(${currentPct}% + ${(50 - currentPct) * 0.28}px)` }}
           />
           <input
             data-testid="charge-slider"

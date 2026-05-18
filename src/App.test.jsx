@@ -25,6 +25,13 @@ beforeEach(() => {
 });
 afterEach(() => vi.useRealTimers());
 
+const DEFAULT_LOCATION = { serviceAreaId: 'pge-3ce-sbco', displayLabel: 'Buellton, CA', zip: '93427' };
+
+function renderWithLocation(location = DEFAULT_LOCATION) {
+  render(<App />);
+  act(() => capturedOnResolved(location));
+}
+
 describe('App — structure', () => {
   it('renders header, main, and footer', () => {
     render(<App />);
@@ -39,7 +46,7 @@ describe('App — structure', () => {
   });
 
   it('renders rate badge, timeline, calculator, charging tip', () => {
-    render(<App />);
+    renderWithLocation();
     expect(screen.getByTestId('rate-badge')).toBeInTheDocument();
     expect(screen.getByTestId('timeline')).toBeInTheDocument();
     expect(screen.getByTestId('calculator')).toBeInTheDocument();
@@ -66,7 +73,7 @@ describe('App — location input', () => {
   });
 
   it('resolving a location in a different service area resets planId and provider', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
     // Resolve to San José (different service area)
     act(() => capturedOnResolved({ serviceAreaId: 'pge-sjce-scc', displayLabel: 'San José, CA', zip: '95110' }));
@@ -74,7 +81,7 @@ describe('App — location input', () => {
   });
 
   it('resolving a location in the same service area preserves planId', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
     // Resolve to Solvang — same pge-3ce-sbco service area as Buellton
     act(() => capturedOnResolved({ serviceAreaId: 'pge-3ce-sbco', displayLabel: 'Solvang, CA', zip: '93463' }));
@@ -93,12 +100,12 @@ describe('App — location input', () => {
 
 describe('App — plan selector', () => {
   it('defaults to EV2-A', () => {
-    render(<App />);
+    renderWithLocation();
     expect(screen.getByTestId('plan-select').value).toBe('EV2-A');
   });
 
   it('switching plan updates the UI', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
     expect(screen.getByTestId('plan-select').value).toBe('E-ELEC');
   });
@@ -106,32 +113,32 @@ describe('App — plan selector', () => {
 
 describe('App — provider selector', () => {
   it('defaults to PG&E (pge)', () => {
-    render(<App />);
+    renderWithLocation();
     expect(screen.getByTestId('provider-select').value).toBe('pge');
   });
 
   it('switching to 3CE changes the displayed rate', () => {
-    render(<App />);
+    renderWithLocation();
     const before = screen.getByTestId('rate-value').textContent;
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     expect(screen.getByTestId('rate-value').textContent).not.toBe(before);
   });
 
   it('provider persists when switching plans', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-ELEC' } });
     expect(screen.getByTestId('provider-select').value).toBe('3ce');
   });
 
   it('provider selector visible on E-TOU-C (all TOU plans support toggle)', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-TOU-C' } });
     expect(screen.getByTestId('provider-select')).toBeInTheDocument();
   });
 
   it('provider selector hidden for E-1 (tiered, no touPeriods)', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-1' } });
     expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
   });
@@ -139,18 +146,18 @@ describe('App — provider selector', () => {
 
 describe('App — CCA tier selector', () => {
   it('tier selector hidden when provider is pge', () => {
-    render(<App />);
+    renderWithLocation();
     expect(screen.queryByTestId('tier-select')).not.toBeInTheDocument();
   });
 
   it('tier selector appears when CCA provider selected', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     expect(screen.getByTestId('tier-select')).toBeInTheDocument();
   });
 
   it('tier selector shows 3CE tiers (3cchoice, 3cprime)', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     const tierSelect = screen.getByTestId('tier-select');
     const options = tierSelect.querySelectorAll('option');
@@ -160,7 +167,7 @@ describe('App — CCA tier selector', () => {
   });
 
   it('switching tier changes the displayed rate', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     const before = screen.getByTestId('rate-value').textContent;
     fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
@@ -168,7 +175,7 @@ describe('App — CCA tier selector', () => {
   });
 
   it('tier resets to default when switching to a different service area', () => {
-    render(<App />);
+    renderWithLocation();
     fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
     fireEvent.change(screen.getByTestId('tier-select'), { target: { value: '3cprime' } });
     // Switch location to San José (different service area) — resets provider + tier
