@@ -13,22 +13,24 @@
   --color-pewter-light:    #EAEBED;
   --color-offwhite:        #FAFAF8;
 
-  /* Surface hierarchy (light-panel layering) */
-  --color-surface:                  #f8f9fb;
-  --color-surface-container:        #eceef0;
-  --color-surface-container-high:   #e6e8ea;
-  --color-surface-container-highest: #e1e3e5;
+  /* Surface hierarchy — warm palette */
+  --color-surface:                   #F4F2EE;  /* page bg */
+  --color-paper:                     #FAF8F4;  /* left panel bg */
+  --color-surface-container:         #EAE6DF;
+  --color-surface-container-high:    #E2DDD3;
+  --color-surface-container-highest: #D8D3C9;
 
   /* Typography */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-sans:    'Inter', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 :root {
-  /* Semantic text */
-  --text-primary:   #1a1a2e;
-  --text-secondary: #6B6B7B;
-  --text-muted:     #9B9BAB;
+  /* Semantic text — warm tones */
+  --text-primary:   #1a1b2e;
+  --text-secondary: #57534A;
+  --text-muted:     #8B7F70;
 
   /* TOU period colors — used in inline styles / donut chart */
   --green:        #2D8F5C;
@@ -43,6 +45,27 @@
   --color-tou-super-off-peak: #3B82F6;
 
   --topbar-h: 56px;
+}
+
+/* Eyebrow label utility */
+.eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Field label (input section headers) */
+.field-label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 /* Material Symbols */

@@ -41,7 +41,7 @@ describe('CostFacts', () => {
 
     render(<CostFacts planConfig={planConfig} summary={null} />);
 
-    expect(screen.getByText('Select a vehicle and charge level to see cost facts.')).toBeInTheDocument();
+    expect(screen.getByText('Select a vehicle and charge level to see cost breakdown.')).toBeInTheDocument();
   });
 
   it('renders session total and dynamic delivery/generation labels', () => {
@@ -49,7 +49,7 @@ describe('CostFacts', () => {
 
     render(<CostFacts planConfig={planConfig} summary={summary} />);
 
-    expect(screen.getByText('Session: 50.0 kWh delivered')).toBeInTheDocument();
+    expect(screen.getByText('for 50.0 kWh')).toBeInTheDocument();
     expect(screen.getByText('$10.00')).toBeInTheDocument();
     expect(screen.getByText('$0.2000')).toBeInTheDocument();
     expect(screen.getByText('SDG&E Delivery')).toBeInTheDocument();

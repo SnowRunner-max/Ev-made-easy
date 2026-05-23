@@ -3,85 +3,108 @@ import { useCountdown } from '../hooks/useCountdown';
 import { PERIOD_COLORS } from '../constants/periodColors';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
 
+const PERIOD_PILL_CLASS = {
+  peak:        'text-[#FFB7AC] bg-red/20',
+  partPeak:    'text-[#F1C994] bg-amber/20',
+  midPeak:     'text-[#F1C994] bg-amber/20',
+  offPeak:     'text-[#A5D9B7] bg-green/20',
+  superOffPeak:'text-[#93C5FD] bg-blue-500/15',
+};
+
+const PERIOD_DOT_COLOR = {
+  peak:        '#FFB7AC',
+  partPeak:    '#F1C994',
+  midPeak:     '#F1C994',
+  offPeak:     '#A5D9B7',
+  superOffPeak:'#93C5FD',
+};
+
 export default function RateDisplay({ planConfig }) {
   const { period, rate, season, periodLabel, nextChange } = useCurrentRate(planConfig);
   const { formatted } = useCountdown(nextChange.time);
 
-  // E-1 tiered plan
+  // E-1 tiered plan — no TOU
   if (!planConfig.touPeriods) {
     const flatRate = rate != null ? `$${rate.toFixed(2)}` : 'Tiered Rate';
     return (
       <div className="mb-6">
-        <div
-          data-testid="rate-badge"
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-[0.8px] mb-2 bg-pewter/20 text-pewter"
-        >
-          <span className="w-2 h-2 rounded-full bg-pewter animate-pulse" />
-          No TOU Pricing
-        </div>
-        <div className="text-xs uppercase tracking-[2px] text-apricot font-medium mb-1">
-          Current Energy Rate
+        <div className="flex items-center justify-between mb-5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-pewter/50">Live Rate</span>
+          <div
+            data-testid="rate-badge"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] bg-pewter/15 text-pewter/70"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-pewter/60 animate-pulse" />
+            No TOU Pricing
+          </div>
         </div>
         <div
           data-testid="rate-value"
-          className="font-display text-5xl tracking-tight leading-none text-white mb-1"
+          className="font-display tracking-tight leading-none text-white"
+          style={{ fontSize: '72px', letterSpacing: '-3px' }}
         >
           {flatRate}
-          {rate != null && <span className="text-[22px] font-light opacity-70 tracking-normal">/kWh</span>}
+          {rate != null && <span className="text-2xl font-normal opacity-50 tracking-normal">/kWh</span>}
         </div>
-        <div className="text-sm text-pewter">{planConfig.name} · No time-based pricing</div>
+        <p className="text-sm text-pewter/60 mt-3">{planConfig.name} · No time-based pricing</p>
       </div>
     );
   }
 
-  const colors = PERIOD_COLORS[period] ?? PERIOD_COLORS.offPeak;
+  const pillClass = PERIOD_PILL_CLASS[period] ?? PERIOD_PILL_CLASS.offPeak;
+  const dotColor  = PERIOD_DOT_COLOR[period] ?? PERIOD_DOT_COLOR.offPeak;
   const nextLabel = PERIOD_DISPLAY[nextChange.newPeriod]?.label ?? 'Next rate';
   const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
 
   return (
     <div className="mb-5">
-      {/* Period badge with pulsing dot */}
-      <div
-        data-testid="rate-badge"
-        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-[0.8px] mb-2 ${colors.darkBadge}`}
-      >
+      {/* Live Rate eyebrow + period pill */}
+      <div className="flex items-center justify-between mb-5">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-pewter/50">
+          Live Rate
+        </span>
         <span
-          className="w-2 h-2 rounded-full animate-pulse"
-          style={{ background: colors.dotColor }}
-        />
-        {periodLabel}
+          data-testid="rate-badge"
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.12em] ${pillClass}`}
+        >
+          <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: dotColor }} />
+          {periodLabel}
+        </span>
       </div>
 
-      {/* Label */}
-      <div className="text-xs uppercase tracking-[2px] text-apricot font-medium mb-1">
-        Current Energy Rate
-      </div>
-
-      {/* Hero rate number */}
+      {/* Hero rate */}
       <div
         data-testid="rate-value"
         aria-label={`Current rate: $${rate.toFixed(2)} per kWh, ${periodLabel}`}
-        className="font-display tracking-tight leading-none text-white mb-1"
-        style={{ fontSize: '56px', letterSpacing: '-2px' }}
+        className="font-display leading-none text-white"
+        style={{ fontSize: '80px', letterSpacing: '-3px' }}
       >
         ${rate.toFixed(2)}
-        <span className="text-[22px] font-light opacity-70 tracking-normal">/kWh</span>
+        <span className="text-2xl font-light opacity-50 tracking-normal">/kWh</span>
       </div>
 
       {/* Season / plan sublabel */}
-      <div className="text-sm text-pewter mb-6">
-        <span>{season === 'summer' ? 'Summer Rates' : 'Winter Rates'}</span>
-        {' · '}
-        <span>{planConfig.name}</span>
-      </div>
+      <p className="text-xs text-pewter/50 mt-2 mb-5">
+        {season === 'summer' ? 'Summer' : 'Winter'} · {planConfig.name}
+      </p>
 
       {/* Countdown */}
-      <p data-testid="countdown" className="text-sm text-pewter leading-relaxed">
-        {nextLabel} starts in{' '}
-        <span className="font-bold text-white">{formatted}</span>
-        {' '}— rate {direction}{' '}
-        <span className="font-bold text-white">${nextChange.newRate.toFixed(2)}/kWh</span>
-      </p>
+      <div
+        data-testid="countdown"
+        className="flex items-center gap-2 text-sm text-pewter/60"
+      >
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </svg>
+        <span>
+          {nextLabel} {direction}{' '}
+          <span className="font-semibold text-white">${nextChange.newRate.toFixed(2)}/kWh</span>
+          {' '}in <span className="font-semibold text-white">{formatted}</span>
+        </span>
+      </div>
+
+      <div className="mt-5 border-t border-white/[0.08]" />
     </div>
   );
 }

@@ -18,10 +18,8 @@ import RateDisplay from './components/RateDisplay';
 import Timeline from './components/Timeline';
 import { VehicleInputs, CostOutput } from './components/Calculator';
 import VehicleInputsCompact from './components/VehicleInputsCompact';
-import DonutChart from './components/DonutChart';
 import ChargingTip from './components/ChargingTip';
 import CostFacts from './components/CostFacts';
-import Footer from './components/Footer';
 
 const CUSTOM_ID = 'custom';
 const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
@@ -100,35 +98,35 @@ export default function App() {
       {/* ── Top Bar ── */}
       <header
         data-testid="app-header"
-        className="bg-surface-container sticky top-0 z-10 h-14 flex items-center justify-between px-6 max-w-[1120px] mx-auto w-full"
+        className="bg-paper sticky top-0 z-10 h-14 flex items-center justify-between px-6 max-w-[1120px] mx-auto w-full border-b border-surface-container"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <img src="/MyEVRate.png" alt="" className="w-7 h-7" />
-          <span className="font-display text-xl font-black tracking-tight text-paprika">My EV Rate</span>
+          <span className="font-display text-lg font-black tracking-tight text-ink">MyEVRate</span>
         </div>
-        {/* Right: selected city */}
-        <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1.5 rounded-full">
-          <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
-            {locationResult.displayLabel || '—'}
-          </span>
+        {/* Context strip — location + plan */}
+        <div className="flex items-center gap-4 text-xs font-medium text-[var(--text-secondary)]">
+          <div className="flex items-center gap-1.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-paprika shrink-0">
+              <path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z" />
+              <circle cx="12" cy="9" r="2.5" />
+            </svg>
+            <span>{locationResult.displayLabel || '—'}</span>
+          </div>
+          {hasValidLocation && (
+            <>
+              <span className="w-px h-4 bg-surface-container-high" />
+              <span>
+                <span className="text-[var(--text-muted)] mr-1">Plan</span>
+                <span className="font-semibold text-ink">{planId}</span>
+                {serviceArea?.cca && (
+                  <span className="text-[var(--text-muted)]"> · {serviceArea.utility} + {serviceArea.cca}</span>
+                )}
+              </span>
+            </>
+          )}
         </div>
       </header>
-
-      {/* ── Mobile sticky summary bar ── */}
-      {summary && (
-        <div className="max-[860px]:flex hidden bg-ink sticky top-14 z-10 px-5 py-3 items-center justify-between max-w-[1120px] mx-auto w-full">
-          <div>
-            <div className="text-[9px] uppercase tracking-widest text-pewter/60 font-bold">Total Estimated Cost</div>
-            <div className="font-display text-2xl font-black text-white">${summary.to80?.costNow.toFixed(2) ?? '—'}</div>
-          </div>
-          <div className="flex gap-4 text-[10px] text-pewter">
-            <div className="text-right">
-              <div className="text-pewter/60 text-[9px] uppercase tracking-widest">Session</div>
-              <div className="font-semibold text-white">{summary.to80?.kwhNeeded.toFixed(1) ?? '—'} kWh</div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── Two-Panel Layout ── */}
       <div
@@ -137,79 +135,61 @@ export default function App() {
       >
 
         {/* ════ LEFT PANEL: Input Laboratory ════ */}
-        <div className="bg-white px-10 py-9 max-[860px]:px-5 max-[860px]:py-6">
+        <div className="bg-paper px-10 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:order-2">
 
           {/* Panel heading */}
           <div className="mb-8">
-            <h1 className="font-display text-4xl font-black text-[var(--text-primary)] tracking-tight mb-1">
-              Energy Price by Rate
+            <p className="eyebrow mb-2.5">01 — Configure</p>
+            <h1 className="font-display text-[2.6rem] font-bold text-[var(--text-primary)] tracking-tight leading-none" style={{ maxWidth: '15ch' }}>
+              Your energy rate to charge your EV.
             </h1>
-            <p className="text-sm text-[var(--text-muted)]">
-              See today&apos;s electricity rates and estimate your EV charging cost.
-            </p>
           </div>
 
-          {/* Two-column sub-grid: Location & Utility | Configuration */}
-          <div className="grid grid-cols-2 max-[600px]:grid-cols-1 gap-6 mb-8">
+          {/* Two-column input grid — flat, no nested cards */}
+          <div className="grid grid-cols-2 max-[600px]:grid-cols-1 gap-x-6 gap-y-5 mb-8">
 
-            {/* LOCATION & UTILITY */}
-            <div className="space-y-4">
-              <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
-                Location &amp; Utility
-              </label>
-              <div className="bg-surface-container-high p-5 rounded-xl space-y-5">
-                <div className="space-y-1.5">
-                  <span className="text-xs text-[var(--text-secondary)] font-semibold">Location</span>
-                  <LocationInput
-                    onLocationResolved={handleLocationResolved}
-                    onLocationCleared={handleLocationCleared}
-                  />
-                </div>
-                {hasValidLocation && supportsProviderToggle && (
-                  <div className="space-y-1.5">
-                    <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Provider</span>
-                    <ProviderSelector provider={effectiveProvider} onChange={handleProviderChange} options={providerOptions} />
-                    <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{serviceArea.providerHint}</p>
-                  </div>
-                )}
-                {hasValidLocation && supportsProviderToggle && showTierSelector && (
-                  <div className="space-y-1.5">
-                    <span className="text-xs text-[var(--text-secondary)] font-semibold">Generation Tier</span>
-                    <TierSelector
-                      tier={effectiveTier}
-                      options={tierOptions}
-                      onChange={setCcaTier}
-                    />
-                  </div>
-                )}
-              </div>
+            {/* Location — always active */}
+            <div>
+              <p className="field-label">Location</p>
+              <LocationInput
+                onLocationResolved={handleLocationResolved}
+                onLocationCleared={handleLocationCleared}
+              />
             </div>
 
-            {/* CONFIGURATION */}
-            <div className={`space-y-4${!hasValidLocation ? ' opacity-40' : ''}`}>
-              <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)]">
-                Configuration
-              </label>
-              <div className="bg-surface-container-high p-5 rounded-xl space-y-5">
-                <div className="space-y-1.5">
-                  <span className="text-xs text-[var(--text-secondary)] font-semibold">Rate Plan</span>
-                  <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => setPlanId(id)} disabled={!hasValidLocation} />
-                  <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">
-                    {planConfig.uiHint ?? planConfig.description}
-                  </p>
-                </div>
-                <div className="space-y-1.5">
-                  <span className="text-xs text-[var(--text-secondary)] font-semibold">Vehicle Type</span>
-                  <VehicleInputsCompact
-                    selectedId={selectedVehicleId}
-                    customKwh={customKwh}
-                    batteryKwh={batteryKwh}
-                    onSelectedIdChange={setSelectedVehicleId}
-                    onCustomKwhChange={setCustomKwh}
-                    disabled={!hasValidLocation}
-                  />
-                </div>
+            {/* Rate Plan */}
+            <div className={!hasValidLocation ? 'opacity-40' : ''}>
+              <p className="field-label">Rate Plan</p>
+              <PlanSelector planId={planId} plans={ratePlansData.ratePlans} onChange={id => setPlanId(id)} disabled={!hasValidLocation} />
+            </div>
+
+            {/* Generation Provider — conditional */}
+            {hasValidLocation && supportsProviderToggle && (
+              <div>
+                <p className="field-label">Generation Provider</p>
+                <ProviderSelector provider={effectiveProvider} onChange={handleProviderChange} options={providerOptions} />
               </div>
+            )}
+
+            {/* Generation Tier — conditional */}
+            {hasValidLocation && supportsProviderToggle && showTierSelector && (
+              <div>
+                <p className="field-label">Generation Tier</p>
+                <TierSelector tier={effectiveTier} options={tierOptions} onChange={setCcaTier} />
+              </div>
+            )}
+
+            {/* Vehicle */}
+            <div className={!hasValidLocation ? 'opacity-40' : ''}>
+              <p className="field-label">Vehicle</p>
+              <VehicleInputsCompact
+                selectedId={selectedVehicleId}
+                customKwh={customKwh}
+                batteryKwh={batteryKwh}
+                onSelectedIdChange={setSelectedVehicleId}
+                onCustomKwhChange={setCustomKwh}
+                disabled={!hasValidLocation}
+              />
             </div>
           </div>
 
@@ -232,9 +212,7 @@ export default function App() {
 
           {/* TODAY'S RATE SCHEDULE — full width */}
           <section className={`mb-8${!hasValidLocation ? ' opacity-40' : ''}`}>
-            <label className="block text-xs font-bold uppercase tracking-widest text-[var(--text-secondary)] mb-3">
-              Today&apos;s Rate Schedule
-            </label>
+            <p className="field-label">Today&apos;s Rate Schedule</p>
             <div className="bg-surface-container-high p-5 rounded-xl">
               <Timeline planConfig={effectivePlanConfig} />
             </div>
@@ -246,19 +224,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* ════ RIGHT PANEL: Energy Pricing (sticky, dark) ════ */}
+        {/* ════ RIGHT PANEL: Live Rate (sticky, dark) ════ */}
         <div
-          className={`bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto flex flex-col relative${!hasValidLocation ? ' max-[860px]:hidden' : ''}`}
+          className={`bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static max-[860px]:order-1 sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto flex flex-col relative${!hasValidLocation ? ' max-[860px]:hidden' : ''}`}
         >
           {/* Ambient glow */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-paprika/10 blur-[100px] pointer-events-none -mr-16 -mt-16" />
 
           <div className="relative z-10">
-            {/* Panel label */}
-            <div className="text-[10px] font-bold uppercase tracking-[0.3em] text-pewter/50 mb-6">
-              Energy Pricing
-            </div>
-
             {!hasValidLocation ? (
               <div className="flex flex-col items-center justify-center text-center py-20 gap-4">
                 <span className="material-symbols-outlined text-4xl text-pewter/40">bolt</span>
@@ -268,57 +241,54 @@ export default function App() {
               <CostFacts
                 planConfig={effectivePlanConfig}
                 summary={summary}
+                globalMetadata={ratePlansData._metadata}
+                serviceArea={serviceArea}
+                provider={effectiveProvider}
               />
             ) : (
               <>
                 <RateDisplay planConfig={effectivePlanConfig} />
-                <DonutChart planConfig={effectivePlanConfig} />
 
                 {/* Cost estimate cards */}
-                <div className="text-[10px] uppercase tracking-[2px] text-apricot font-medium mb-3">
-                  Charging Cost Estimate
-                </div>
-                <CostOutput summary={summary} />
-                {!summary && (
-                  <p className="text-sm text-pewter mb-4">
-                    {currentPct >= 100
-                      ? 'Battery is already full.'
-                      : 'Select a vehicle and adjust the charge level to see estimates.'}
+                <div
+                  data-testid="cost-estimate-section"
+                  className="bg-white/5 rounded-xl p-5 mb-4"
+                >
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-pewter/60 mb-4">
+                    {isCustomVehicle ? 'Charging Cost Estimate' : `To Charge ${selectedVehicle?.name ?? 'your EV'}`}
                   </p>
-                )}
+                  <CostOutput summary={summary} />
+                  {!summary && (
+                    <p className="text-sm text-pewter">
+                      {currentPct >= 100
+                        ? 'Battery is already full.'
+                        : 'Select a vehicle and adjust the charge level to see estimates.'}
+                    </p>
+                  )}
+                </div>
               </>
             )}
 
-            {/* FLIP / BACK button — inline, below cost cards */}
-            {hasValidLocation && <div className="mt-5">
-              <button
-                onClick={() => setShowCostFacts(v => !v)}
-                className="w-full py-4 bg-paprika hover:bg-paprika-hover rounded-xl font-display text-sm font-black uppercase tracking-widest text-white shadow-lg shadow-paprika/20 active:scale-95 transition-all flex items-center justify-center gap-2"
-              >
-                {showCostFacts
-                  ? <><span className="material-symbols-outlined text-sm">arrow_back</span> Back to Summary</>
-                  : 'Flip for Breakdown'
-                }
-              </button>
-              <p className="text-[9px] text-center mt-2 text-white/30 italic">
-                {showCostFacts
-                  ? 'Showing detailed cost attribution for current session.'
-                  : 'Calculated based on live TOU schedule.'}
-              </p>
-            </div>}
+            {/* See cost breakdown / ← Summary button */}
+            {hasValidLocation && (
+              <div className="mt-4">
+                <button
+                  onClick={() => setShowCostFacts(v => !v)}
+                  className="w-full py-3 rounded-xl border border-white/15 text-white/60 hover:text-white hover:border-white/35 text-sm font-medium transition-colors flex items-center justify-between px-4"
+                >
+                  <span>{showCostFacts ? '← Summary' : 'See cost breakdown'}</span>
+                  {!showCostFacts && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* ── Footer ── */}
-      <Footer
-        planConfig={effectivePlanConfig}
-        globalMetadata={ratePlansData._metadata}
-        city={{ name: locationResult.displayLabel.replace(', CA', ''), serviceAreaId: locationResult.serviceAreaId }}
-        serviceArea={serviceArea}
-        provider={effectiveProvider}
-        hasValidLocation={hasValidLocation}
-      />
 
     </div>
   );

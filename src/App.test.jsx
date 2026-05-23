@@ -33,16 +33,15 @@ function renderWithLocation(location = DEFAULT_LOCATION) {
 }
 
 describe('App — structure', () => {
-  it('renders header, main, and footer', () => {
+  it('renders header and main', () => {
     render(<App />);
     expect(screen.getByTestId('app-header')).toBeInTheDocument();
     expect(screen.getByTestId('app-main')).toBeInTheDocument();
-    expect(screen.getByTestId('app-footer')).toBeInTheDocument();
   });
 
   it('header includes app title', () => {
     render(<App />);
-    expect(screen.getByTestId('app-header')).toHaveTextContent(/My EV Rate/i);
+    expect(screen.getByTestId('app-header')).toHaveTextContent(/MyEVRate/i);
   });
 
   it('renders rate badge, timeline, calculator, charging tip', () => {
@@ -57,8 +56,6 @@ describe('App — structure', () => {
     render(<App />);
     expect(screen.queryByText(/Total Estimated Cost/i)).not.toBeInTheDocument();
     expect(screen.queryByTestId('rate-badge')).not.toBeInTheDocument();
-    expect(screen.getByTestId('app-footer')).toHaveTextContent('Enter a location to see rate details and sources.');
-    expect(screen.queryByTestId('footer-toggle')).not.toBeInTheDocument();
   });
 });
 
@@ -253,6 +250,7 @@ describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
   it('uses SCE delivery labels instead of PG&E labels in SCE territory', () => {
     render(<App />);
     act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
+    fireEvent.click(screen.getByText('See cost breakdown'));
     expect(screen.getByText('SCE Delivery')).toBeInTheDocument();
     expect(screen.queryByText('PG&E Delivery')).not.toBeInTheDocument();
   });
@@ -266,7 +264,7 @@ describe('App — Tahoe utilities', () => {
     expect(screen.getByTestId('plan-select').value).toBe('LIBERTY-D1-TOU-EV');
     expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
     expect(screen.getByTestId('rate-value')).toHaveTextContent(/\$0\.\d{2}/);
-    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
+    expect(screen.getByTestId('cost-estimate-section')).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 
   it('selecting TDPUD Truckee uses TDPUD TOU plans and computes cost', () => {
@@ -276,6 +274,6 @@ describe('App — Tahoe utilities', () => {
     expect(screen.getByTestId('plan-select').value).toBe('TDPUD-TOU-PRIMARY');
     expect(screen.queryByTestId('provider-select')).not.toBeInTheDocument();
     expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.16');
-    expect(screen.getByText(/Charging Cost Estimate/i).parentElement).toHaveTextContent(/\$\d+\.\d{2}/);
+    expect(screen.getByTestId('cost-estimate-section')).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 });

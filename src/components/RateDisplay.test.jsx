@@ -40,7 +40,7 @@ describe('RateDisplay — TOU plan (EV2-A)', () => {
   it('off-peak badge has emerald color', () => {
     vi.setSystemTime(new Date('2026-01-15T02:00:00-08:00'));
     render(<RateDisplay planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('rate-badge').className).toMatch(/emerald/);
+    expect(screen.getByTestId('rate-badge').className).toMatch(/green/);
   });
 
   it('shows peak rate $0.41/kWh in winter (6 PM)', () => {
@@ -64,7 +64,7 @@ describe('RateDisplay — TOU plan (EV2-A)', () => {
   it('shows "Summer Rates" in summer', () => {
     vi.setSystemTime(new Date('2026-07-15T18:00:00-07:00'));
     render(<RateDisplay planConfig={ev2aConfig} />);
-    expect(screen.getByText('Summer Rates')).toBeInTheDocument();
+    expect(screen.getByText(/^Summer\b/)).toBeInTheDocument();
   });
 
   it('shows countdown with direction and next rate', () => {
