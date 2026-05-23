@@ -5,7 +5,7 @@ const CATEGORY_LABELS = {
   'Tiered (Non-TOU)': 'Tiered (Non-TOU) Rates',
 };
 
-export default function PlanSelector({ planId, plans, onChange }) {
+export default function PlanSelector({ planId, plans, onChange, disabled = false }) {
   // Group plans by category
   const grouped = {};
   for (const [id, plan] of Object.entries(plans)) {
@@ -25,7 +25,8 @@ export default function PlanSelector({ planId, plans, onChange }) {
       data-testid="plan-select"
       value={planId}
       onChange={e => onChange(e.target.value)}
-      className="w-full px-3 py-2.5 text-sm text-[var(--text-primary)] bg-surface-container-highest border-none rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-paprika/20 cursor-pointer transition-colors font-medium"
+      disabled={disabled}
+      className={`w-full px-3 py-2.5 text-sm text-[var(--text-primary)] bg-surface-container-highest border-none rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-paprika/20 transition-colors font-medium ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       style={{
         backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' stroke='%236B6B7B' stroke-width='1.5' fill='none'/%3E%3C/svg%3E")`,
         backgroundRepeat: 'no-repeat',

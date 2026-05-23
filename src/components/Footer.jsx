@@ -106,7 +106,7 @@ function TieredRateTable({ planConfig }) {
   );
 }
 
-export default function Footer({ planConfig, globalMetadata, city, serviceArea, provider }) {
+export default function Footer({ planConfig, globalMetadata, city, serviceArea, provider, hasValidLocation = true }) {
   const [expanded, setExpanded] = useState(false);
   const { rates, touPeriods, seasons, fixedCharges } = planConfig;
 
@@ -128,6 +128,17 @@ export default function Footer({ planConfig, globalMetadata, city, serviceArea, 
   const effectiveDate = globalMetadata?.[effectiveDateKey];
   const adviceLetter = globalMetadata?.[adviceLetterKey];
   const ccaRateDate = getCcaRateDate(globalMetadata, provider);
+
+  if (!hasValidLocation) {
+    return (
+      <footer
+        data-testid="app-footer"
+        className="border-t border-pewter-light bg-white px-10 py-5 text-xs text-[var(--text-muted)] max-w-[1120px] mx-auto w-full"
+      >
+        <p className="text-[var(--text-muted)]">Enter a location to see rate details and sources.</p>
+      </footer>
+    );
+  }
 
   return (
     <footer
