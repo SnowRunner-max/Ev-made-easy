@@ -138,21 +138,20 @@ export default function App() {
         <div className="bg-paper px-10 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:order-2">
 
           {/* Panel heading */}
-          {hasValidLocation ? (
-            <div className="mb-5">
+          {hasValidLocation && (
+            <div className="mb-5 min-[861px]:hidden">
               <p className="eyebrow mb-1">01 — Configure</p>
               <h1 className="font-display text-xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
                 Settings
               </h1>
             </div>
-          ) : (
-            <div className="mb-8">
-              <p className="eyebrow mb-2.5">01 — Configure</p>
-              <h1 className="font-display text-[2.6rem] font-bold text-[var(--text-primary)] tracking-tight leading-none" style={{ maxWidth: '15ch' }}>
-                Your energy rate to charge your EV.
-              </h1>
-            </div>
           )}
+          <div className={`mb-8${hasValidLocation ? ' max-[860px]:hidden' : ''}`}>
+            <p className="eyebrow mb-2.5">01 — Configure</p>
+            <h1 className="font-display text-[2.6rem] font-bold text-[var(--text-primary)] tracking-tight leading-none" style={{ maxWidth: '15ch' }}>
+              Your energy rate to charge your EV.
+            </h1>
+          </div>
 
           {/* Two-column input grid — flat, no nested cards */}
           <div className="grid grid-cols-2 max-[600px]:grid-cols-1 gap-x-6 gap-y-5 mb-8">
