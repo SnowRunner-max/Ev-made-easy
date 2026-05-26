@@ -138,12 +138,21 @@ export default function App() {
         <div className="bg-paper px-10 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:order-2">
 
           {/* Panel heading */}
-          <div className="mb-8">
-            <p className="eyebrow mb-2.5">01 — Configure</p>
-            <h1 className="font-display text-[2.6rem] font-bold text-[var(--text-primary)] tracking-tight leading-none" style={{ maxWidth: '15ch' }}>
-              Your energy rate to charge your EV.
-            </h1>
-          </div>
+          {hasValidLocation ? (
+            <div className="mb-5">
+              <p className="eyebrow mb-1">01 — Configure</p>
+              <h1 className="font-display text-xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+                Settings
+              </h1>
+            </div>
+          ) : (
+            <div className="mb-8">
+              <p className="eyebrow mb-2.5">01 — Configure</p>
+              <h1 className="font-display text-[2.6rem] font-bold text-[var(--text-primary)] tracking-tight leading-none" style={{ maxWidth: '15ch' }}>
+                Your energy rate to charge your EV.
+              </h1>
+            </div>
+          )}
 
           {/* Two-column input grid — flat, no nested cards */}
           <div className="grid grid-cols-2 max-[600px]:grid-cols-1 gap-x-6 gap-y-5 mb-8">
@@ -211,9 +220,9 @@ export default function App() {
           </section>
 
           {/* TODAY'S RATE SCHEDULE — full width */}
-          <section className={`mb-8${!hasValidLocation ? ' opacity-40' : ''}`}>
+          <section className={`mb-8 max-[860px]:mb-3${!hasValidLocation ? ' opacity-40' : ''}`}>
             <p className="field-label">Today&apos;s Rate Schedule</p>
-            <div className="bg-surface-container-high p-5 rounded-xl">
+            <div className="bg-surface-container-high p-5 max-[860px]:p-4 rounded-xl">
               <Timeline planConfig={effectivePlanConfig} />
             </div>
           </section>
@@ -226,10 +235,10 @@ export default function App() {
 
         {/* ════ RIGHT PANEL: Live Rate (sticky, dark) ════ */}
         <div
-          className={`bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static max-[860px]:order-1 sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto flex flex-col relative${!hasValidLocation ? ' max-[860px]:hidden' : ''}`}
+          className={`bg-ink text-white px-8 py-9 max-[860px]:px-5 max-[860px]:py-6 max-[860px]:static max-[860px]:order-1 sticky top-14 h-[calc(100vh-56px)] max-[860px]:h-auto overflow-y-auto overflow-x-hidden flex flex-col relative${!hasValidLocation ? ' max-[860px]:hidden' : ''}`}
         >
           {/* Ambient glow */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-paprika/10 blur-[100px] pointer-events-none -mr-16 -mt-16" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-paprika/10 blur-[100px] pointer-events-none -mr-16 max-[860px]:mr-0 -mt-16" />
 
           <div className="relative z-10">
             {!hasValidLocation ? (
