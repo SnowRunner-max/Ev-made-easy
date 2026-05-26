@@ -47,6 +47,20 @@
   --topbar-h: 56px;
 }
 
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  background: var(--color-surface);
+}
+
+body {
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+}
+
 /* Eyebrow label utility */
 .eyebrow {
   font-size: 10px;

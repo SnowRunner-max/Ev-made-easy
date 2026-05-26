@@ -1,6 +1,5 @@
 import { useCurrentRate } from '../hooks/useCurrentRate';
 import { useCountdown } from '../hooks/useCountdown';
-import { PERIOD_COLORS } from '../constants/periodColors';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
 
 const PERIOD_PILL_CLASS = {
@@ -57,7 +56,7 @@ export default function RateDisplay({ planConfig }) {
   const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
 
   return (
-    <div className="mb-5">
+    <div className="mb-3">
       {/* Live Rate eyebrow + period pill */}
       <div className="flex items-center justify-between mb-5">
         <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-pewter/50">
@@ -104,7 +103,7 @@ export default function RateDisplay({ planConfig }) {
         </span>
       </div>
 
-      <div className="mt-5 border-t border-white/[0.08]" />
+      <div className="mt-3 border-t border-white/[0.08]" />
     </div>
   );
 }
