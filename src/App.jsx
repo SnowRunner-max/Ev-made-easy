@@ -20,6 +20,7 @@ import { VehicleInputs, CostOutput } from './components/Calculator';
 import VehicleInputsCompact from './components/VehicleInputsCompact';
 import ChargingTip from './components/ChargingTip';
 import CostFacts from './components/CostFacts';
+import ChargerSpeedInput from './components/ChargerSpeedInput';
 
 const CUSTOM_ID = 'custom';
 const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
@@ -36,6 +37,7 @@ export default function App() {
   const [selectedVehicleId, setSelectedVehicleId] = useState(vehiclesData.vehicles[0].id);
   const [customKwh, setCustomKwh] = useState('');
   const [currentPct, setCurrentPct] = useState(20);
+  const [chargerKw, setChargerKw] = useState(vehiclesData.vehicles[0].maxAcChargingKw);
   const [showCostFacts, setShowCostFacts] = useState(false);
   const [hasValidLocation, setHasValidLocation] = useState(false);
   const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
@@ -69,6 +71,16 @@ export default function App() {
     setCcaTier(null); // reset tier when switching CCA
   }
 
+  function handleVehicleChange(newId) {
+    setSelectedVehicleId(newId);
+    if (newId !== CUSTOM_ID) {
+      const v = vehiclesData.vehicles.find(veh => veh.id === newId);
+      if (v) setChargerKw(v.maxAcChargingKw);
+    } else {
+      setChargerKw(vehiclesData._metadata.defaultChargingSpeedKw);
+    }
+  }
+
   const effectivePlanConfig = useMemo(
     () => buildEffectivePlanConfig({ planConfig: activePlanConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier }),
     [activePlanConfig, serviceArea, effectiveProvider, effectiveTier]
@@ -81,11 +93,13 @@ export default function App() {
     ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
     : (selectedVehicle?.usableBatteryKwh ?? 60);
 
+  const vehicleMaxKw = isCustomVehicle ? null : (selectedVehicle?.maxAcChargingKw ?? null);
+
   const summary = useMemo(
     () => hasValidLocation && batteryKwh > 0 && summaryPct < 100
-      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, effectivePlanConfig)
+      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, chargerKw, effectivePlanConfig)
       : null,
-    [hasValidLocation, batteryKwh, summaryPct, effectivePlanConfig]
+    [hasValidLocation, batteryKwh, summaryPct, chargerKw, effectivePlanConfig]
   );
 
   if (!planConfig) {
@@ -194,8 +208,19 @@ export default function App() {
                 selectedId={selectedVehicleId}
                 customKwh={customKwh}
                 batteryKwh={batteryKwh}
-                onSelectedIdChange={setSelectedVehicleId}
+                onSelectedIdChange={handleVehicleChange}
                 onCustomKwhChange={setCustomKwh}
+                disabled={!hasValidLocation}
+              />
+            </div>
+
+            {/* Charger Speed */}
+            <div className={!hasValidLocation ? 'opacity-40' : ''}>
+              <p className="field-label">Charger Speed</p>
+              <ChargerSpeedInput
+                chargerKw={chargerKw}
+                vehicleMaxKw={vehicleMaxKw}
+                onChange={setChargerKw}
                 disabled={!hasValidLocation}
               />
             </div>
@@ -211,7 +236,7 @@ export default function App() {
               customKwh={customKwh}
               currentPct={currentPct}
               batteryKwh={batteryKwh}
-              onSelectedIdChange={setSelectedVehicleId}
+              onSelectedIdChange={handleVehicleChange}
               onCustomKwhChange={setCustomKwh}
               onCurrentPctChange={setCurrentPct}
               sliderOnly
