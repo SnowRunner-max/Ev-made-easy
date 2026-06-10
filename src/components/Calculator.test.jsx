@@ -88,3 +88,49 @@ describe('Calculator — cost output', () => {
     expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(initialCost);
   });
 });
+
+describe('Calculator — charging duration display', () => {
+  // Uses fake timers matching the pattern in existing Calculator describe blocks.
+  // Time is fixed at 02:00 PT on 2026-01-15 (winter, off-peak for EV2-A).
+  // Default state of charge is 20%, so both to80 and to100 cards render.
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-15T02:00:00-08:00'));
+  });
+  afterEach(() => vi.useRealTimers());
+
+  it('renders data-testid="to80-duration" in the cost output', () => {
+    render(<Calculator planConfig={ev2aConfig} />);
+
+    // The default currentPct is 20%, so charging to 80% is always needed
+    expect(screen.getByTestId('to80-duration')).toBeInTheDocument();
+  });
+
+  it('renders data-testid="to100-duration" when currentPct is below 80', () => {
+    render(<Calculator planConfig={ev2aConfig} />);
+
+    // Default currentPct=20 is below both 80 and 100, so to100 card also renders
+    expect(screen.getByTestId('to100-duration')).toBeInTheDocument();
+  });
+
+  it('duration text changes after slider moves and the 120ms debounce elapses', () => {
+    render(<Calculator planConfig={ev2aConfig} />);
+
+    // Capture the duration text before any interaction
+    const initialDuration = screen.getByTestId('to80-duration').textContent;
+
+    // Move slider to 70% — kWhNeeded to 80% shrinks, so duration must change
+    fireEvent.change(screen.getByTestId('charge-slider'), { target: { value: '70' } });
+
+    // Debounce has NOT fired yet — duration should still show the old value
+    expect(screen.getByTestId('to80-duration')).toHaveTextContent(initialDuration);
+
+    // Advance past the 120ms debounce threshold
+    act(() => {
+      vi.advanceTimersByTime(120);
+    });
+
+    // Duration text must now reflect the new, smaller kWh needed
+    expect(screen.getByTestId('to80-duration').textContent).not.toBe(initialDuration);
+  });
+});

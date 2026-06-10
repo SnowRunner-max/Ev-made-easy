@@ -110,6 +110,15 @@ export function VehicleInputs({
   );
 }
 
+function formatDuration(hours) {
+  const totalMinutes = Math.round(hours * 60);
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  if (h === 0) return `${m} min`;
+  if (m === 0) return `${h} hr`;
+  return `${h} hr ${m} min`;
+}
+
 /**
  * Cost output cards — presentational, accepts the summary object from calcChargeSummary.
  * Used in the right (dark) panel.
@@ -146,9 +155,15 @@ function CostCard({ prefix, label, data }) {
         <div className="text-right">
           <span
             data-testid={`${prefix}-kwh`}
-            className="text-[10px] font-bold text-pewter uppercase tracking-wider"
+            className="text-[10px] font-bold text-pewter uppercase tracking-wider block"
           >
             +{data.kwhNeeded.toFixed(1)} kWh
+          </span>
+          <span
+            data-testid={`${prefix}-duration`}
+            className="text-[10px] text-pewter/70 block mt-0.5"
+          >
+            ~{formatDuration(data.hoursNeeded)}
           </span>
         </div>
       </div>
