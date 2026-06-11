@@ -9,30 +9,37 @@ export const PERIOD_DISPLAY = {
   superOffPeak: { label: 'Super Off-Peak', colorScheme: 'blue'    },
 };
 
+const PACIFIC_MONTH_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  month: 'numeric',
+});
+
+const PACIFIC_DATE_STR_FMT = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Los_Angeles',
+});
+
+const PACIFIC_WEEKDAY_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  weekday: 'short',
+});
+
 function getPacificMonth(date) {
-  return parseInt(
-    new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Los_Angeles',
-      month: 'numeric',
-    }).format(date)
-  );
+  return parseInt(PACIFIC_MONTH_FMT.format(date));
 }
 
 export function getPacificDateStr(date) {
   // en-CA locale produces YYYY-MM-DD format
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
-  }).format(date);
+  return PACIFIC_DATE_STR_FMT.format(date);
 }
 
 function getPacificDayOfWeek(date) {
   // Returns 0 (Sunday) through 6 (Saturday) in Pacific Time
-  const dayName = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    weekday: 'short',
-  }).format(date);
+  const dayName = PACIFIC_WEEKDAY_FMT.format(date);
   return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
 }
+
+// Cache of FERC holiday dates per year, since the computation is pure but repeated often.
+const fercHolidayCache = new Map();
 
 /**
  * Computes FERC-observed holiday dates for a given year.
@@ -40,6 +47,8 @@ function getPacificDayOfWeek(date) {
  * Returns an array of 'YYYY-MM-DD' strings.
  */
 function getFercHolidayDates(year) {
+  if (fercHolidayCache.has(year)) return fercHolidayCache.get(year);
+
   // nthWeekday: weekday 0=Sun..6=Sat; n>0 for nth occurrence, n<0 for last
   function nthWeekday(y, month, weekday, n) {
     const first = new Date(y, month - 1, 1);
@@ -63,7 +72,7 @@ function getFercHolidayDates(year) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
-  return [
+  const dates = [
     fmt(observed(new Date(year, 0, 1))),    // New Year's Day
     fmt(nthWeekday(year, 2, 1, 3)),          // Presidents' Day: 3rd Monday of Feb
     fmt(nthWeekday(year, 5, 1, -1)),         // Memorial Day: last Monday of May
@@ -73,6 +82,9 @@ function getFercHolidayDates(year) {
     fmt(nthWeekday(year, 11, 4, 4)),         // Thanksgiving: 4th Thursday of Nov
     fmt(observed(new Date(year, 11, 25))),   // Christmas Day
   ];
+
+  fercHolidayCache.set(year, dates);
+  return dates;
 }
 
 // --- Exported functions ---
