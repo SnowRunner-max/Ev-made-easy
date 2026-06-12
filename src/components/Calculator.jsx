@@ -1,10 +1,6 @@
-import { useMemo, useState } from 'react';
 import vehiclesData from '../data/vehicles.json';
-import { calcChargeSummary } from '../engine/costCalculator';
-import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 const CUSTOM_ID = 'custom';
-const CHARGE_SUMMARY_DEBOUNCE_MS = 120;
 
 /**
  * Vehicle picker + charge slider — presentational, accepts controlled props.
@@ -167,50 +163,6 @@ function CostCard({ prefix, label, data }) {
           </span>
         </div>
       </div>
-    </div>
-  );
-}
-
-/**
- * Calculator — self-contained stateful component.
- * Kept for test compatibility: all testids are present when rendered standalone.
- */
-export default function Calculator({ planConfig }) {
-  const [selectedId, setSelectedId] = useState(vehiclesData.vehicles[0].id);
-  const [customKwh, setCustomKwh] = useState('');
-  const [currentPct, setCurrentPct] = useState(20);
-
-  const isCustom = selectedId === CUSTOM_ID;
-  const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedId);
-  const batteryKwh = isCustom
-    ? Math.min(500, Math.max(1, parseFloat(customKwh) || 1))
-    : selectedVehicle.usableBatteryKwh;
-  const summaryPct = useDebouncedValue(currentPct, CHARGE_SUMMARY_DEBOUNCE_MS);
-
-  const summary = useMemo(
-    () => batteryKwh > 0 && summaryPct < 100
-      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, 7.7, planConfig)
-      : null,
-    [batteryKwh, summaryPct, planConfig]
-  );
-
-  return (
-    <div data-testid="calculator" className="w-full">
-      <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Cost to Charge</h2>
-      <VehicleInputs
-        selectedId={selectedId}
-        customKwh={customKwh}
-        currentPct={currentPct}
-        batteryKwh={batteryKwh}
-        onSelectedIdChange={setSelectedId}
-        onCustomKwhChange={setCustomKwh}
-        onCurrentPctChange={setCurrentPct}
-      />
-      {summary && (
-        <div className="mt-4">
-          <CostOutput summary={summary} />
-        </div>
-      )}
     </div>
   );
 }
