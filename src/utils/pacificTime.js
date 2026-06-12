@@ -3,16 +3,31 @@
  * All functions interpret dates in America/Los_Angeles timezone.
  */
 
+const PACIFIC_HOUR_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  hour: 'numeric',
+  hour12: false,
+});
+
+const PACIFIC_FRACTIONAL_HOUR_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  hour: 'numeric',
+  minute: 'numeric',
+  hour12: false,
+});
+
+const PACIFIC_12H_FMT = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  hour: 'numeric',
+  hour12: true,
+});
+
 /**
  * Returns the Pacific Time hour (0–23) for the given Date.
  * Normalizes the 'en-US' hour12:false quirk where midnight may return '24'.
  */
 export function getPacificHour(date) {
-  const formatted = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    hour12: false,
-  }).format(date);
+  const formatted = PACIFIC_HOUR_FMT.format(date);
   const hour = parseInt(formatted);
   return hour === 24 ? 0 : hour;
 }
@@ -22,12 +37,7 @@ export function getPacificHour(date) {
  * Used by Timeline to position the current-time marker precisely.
  */
 export function getPacificFractionalHour(date) {
-  const parts = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: false,
-  }).formatToParts(date);
+  const parts = PACIFIC_FRACTIONAL_HOUR_FMT.formatToParts(date);
   const hour = parseInt(parts.find(p => p.type === 'hour').value);
   const minute = parseInt(parts.find(p => p.type === 'minute').value);
   return (hour === 24 ? 0 : hour) + minute / 60;
@@ -37,11 +47,7 @@ export function getPacificFractionalHour(date) {
  * Formats a Date as a 12-hour Pacific Time string (e.g. "3 PM", "11 AM").
  */
 export function formatPacificTime(date) {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    hour12: true,
-  }).format(date);
+  return PACIFIC_12H_FMT.format(date);
 }
 
 /**
