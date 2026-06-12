@@ -168,6 +168,15 @@ describe('findCheapestWindow — EV-B', () => {
   });
 });
 
+describe('findCheapestWindow — SDG&E EV-TOU-5', () => {
+  it('picks a super off-peak start (midnight–6 AM) over off-peak for 30 kWh', () => {
+    const { startHour, totalCost } = findCheapestWindow(new Date('2026-01-15T10:00:00-08:00'), 30, 7.7, sdgeEvTou5Config);
+    expect(startHour).toBeLessThan(6);
+    // 30 kWh at 7.7 kW ≈ 3.9h, fits inside the 6h super off-peak window at 0.12115
+    expect(totalCost).toBeCloseTo(30 * 0.12115, 2);
+  });
+});
+
 describe('calcChargeSummary — EV2-A', () => {
   it('returns to80 and to100 objects', () => {
     const result = calcChargeSummary(new Date('2026-01-15T02:00:00-08:00'), 60, 20, 7.7, ev2aConfig);
