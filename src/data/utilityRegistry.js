@@ -80,8 +80,7 @@ export function getUtilityConfig(utilityId) {
 
 export function getUtilityConfigForServiceArea(serviceArea) {
   if (!serviceArea) return null;
-  if (serviceArea.utilityId) return getUtilityConfig(serviceArea.utilityId);
-  return Object.values(UTILITY_REGISTRY).find(utility => utility.label === serviceArea.utility) ?? null;
+  return getUtilityConfig(serviceArea.utilityId);
 }
 
 export function getUtilityTerritories() {
