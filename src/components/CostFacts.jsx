@@ -1,4 +1,3 @@
-import { useCurrentRate } from '../hooks/useCurrentRate';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
 import { PERIOD_ORDER } from '../constants/periodColors';
 import { getUtilityConfigForServiceArea } from '../data/utilityRegistry';
@@ -77,8 +76,8 @@ function RateTable({ rates, seasons }) {
   );
 }
 
-export default function CostFacts({ planConfig, summary, globalMetadata, serviceArea, provider }) {
-  const { period, season } = useCurrentRate(planConfig);
+export default function CostFacts({ planConfig, summary, globalMetadata, serviceArea, provider, currentRate }) {
+  const { period, season } = currentRate;
 
   if (!planConfig.touPeriods || !summary?.to80) {
     return (

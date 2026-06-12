@@ -1,10 +1,9 @@
-import { useCurrentRate } from '../hooks/useCurrentRate';
 import { useCountdown } from '../hooks/useCountdown';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
 import { PERIOD_COLORS } from '../constants/periodColors';
 
-export default function RateDisplay({ planConfig }) {
-  const { period, rate, season, periodLabel, nextChange } = useCurrentRate(planConfig);
+export default function RateDisplay({ planConfig, currentRate }) {
+  const { period, rate, season, periodLabel, nextChange } = currentRate;
   const { formatted } = useCountdown(nextChange.time);
 
   // E-1 tiered plan — no TOU

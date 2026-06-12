@@ -5,14 +5,13 @@ import { useSmartInterval } from './useSmartInterval';
 export function useCurrentRate(planConfig) {
   const [now, setNow] = useState(() => new Date());
 
+  const nextChange = getNextRateChange(now, planConfig);
+
   useSmartInterval(
     () => setNow(new Date()),
-    () => {
-      const current = new Date();
-      return getNextRateChange(current, planConfig).time.getTime() - current.getTime();
-    },
-    [planConfig]
+    () => nextChange.time.getTime() - now.getTime(),
+    [planConfig, nextChange.time.getTime()]
   );
 
-  return { ...getRate(now, planConfig), nextChange: getNextRateChange(now, planConfig) };
+  return { ...getRate(now, planConfig), nextChange, now };
 }

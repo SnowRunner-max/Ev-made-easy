@@ -1,4 +1,3 @@
-import { useCurrentRate } from '../hooks/useCurrentRate';
 import { getDaySchedule, getPacificDateStr, PERIOD_DISPLAY } from '../engine/rateEngine';
 import { getPacificHour, formatPacificTime, buildPacificTime } from '../utils/pacificTime';
 import { PERIOD_COLORS } from '../constants/periodColors';
@@ -92,9 +91,9 @@ function buildMessage(period, season, rate, nextChange, planConfig, now) {
   );
 }
 
-export default function ChargingTip({ planConfig }) {
-  const { period, season, rate, nextChange } = useCurrentRate(planConfig);
-  const message = buildMessage(period, season, rate, nextChange, planConfig, new Date());
+export default function ChargingTip({ planConfig, currentRate }) {
+  const { period, season, rate, nextChange, now } = currentRate;
+  const message = buildMessage(period, season, rate, nextChange, planConfig, now);
 
   return (
     <div

@@ -10,6 +10,7 @@ import {
 } from './data/effectivePlanConfig';
 import { calcChargeSummary } from './engine/costCalculator';
 import { useDebouncedValue } from './hooks/useDebouncedValue';
+import { useCurrentRate } from './hooks/useCurrentRate';
 import LocationInput from './components/LocationInput';
 import PlanSelector from './components/PlanSelector';
 import ProviderSelector from './components/ProviderSelector';
@@ -95,11 +96,13 @@ export default function App() {
 
   const vehicleMaxKw = isCustomVehicle ? null : (selectedVehicle?.maxAcChargingKw ?? null);
 
+  const currentRate = useCurrentRate(effectivePlanConfig);
+
   const summary = useMemo(
     () => hasValidLocation && batteryKwh > 0 && summaryPct < 100
       ? calcChargeSummary(new Date(), batteryKwh, summaryPct, chargerKw, effectivePlanConfig)
       : null,
-    [hasValidLocation, batteryKwh, summaryPct, chargerKw, effectivePlanConfig]
+    [hasValidLocation, batteryKwh, summaryPct, chargerKw, effectivePlanConfig, currentRate.period]
   );
 
   if (!planConfig) {
@@ -253,7 +256,7 @@ export default function App() {
 
           {/* Charging tip */}
           <div className={!hasValidLocation ? 'opacity-40' : ''}>
-            <ChargingTip planConfig={effectivePlanConfig} />
+            <ChargingTip planConfig={effectivePlanConfig} currentRate={currentRate} />
           </div>
         </div>
 
@@ -277,10 +280,11 @@ export default function App() {
                 globalMetadata={ratePlansData._metadata}
                 serviceArea={serviceArea}
                 provider={effectiveProvider}
+                currentRate={currentRate}
               />
             ) : (
               <>
-                <RateDisplay planConfig={effectivePlanConfig} />
+                <RateDisplay planConfig={effectivePlanConfig} currentRate={currentRate} />
 
                 {/* Cost estimate cards */}
                 <div

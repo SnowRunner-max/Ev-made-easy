@@ -277,3 +277,28 @@ describe('App — Tahoe utilities', () => {
     expect(screen.getByTestId('cost-estimate-section')).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 });
+
+describe('App — TOU boundary recompute', () => {
+  it('updates the rate badge and cost estimate after crossing the 4 PM peak boundary (EV2-A summer)', () => {
+    // Just before the 3pm-4pm part-peak window ends on a summer day
+    vi.setSystemTime(new Date('2026-07-15T15:59:00-07:00'));
+    render(<App />);
+    act(() => capturedOnResolved(DEFAULT_LOCATION));
+
+    expect(screen.getByTestId('rate-badge')).toHaveTextContent('Part-Peak');
+    const beforeCost = screen.getByTestId('to80-cost-now').textContent;
+
+    // Advance past the 4 PM boundary
+    act(() => vi.advanceTimersByTime(2 * 60_000));
+
+    expect(screen.getByTestId('rate-badge')).toHaveTextContent('Peak');
+    const afterCost = screen.getByTestId('to80-cost-now').textContent;
+    expect(afterCost).not.toBe(beforeCost);
+
+    // A fresh render at the post-boundary time should match the live-updated value
+    render(<App />);
+    act(() => capturedOnResolved(DEFAULT_LOCATION));
+    const freshCost = screen.getAllByTestId('to80-cost-now')[1].textContent;
+    expect(afterCost).toBe(freshCost);
+  });
+});
