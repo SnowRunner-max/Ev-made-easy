@@ -9,7 +9,10 @@ export function useCurrentRate(planConfig) {
 
   useSmartInterval(
     () => setNow(new Date()),
-    () => nextChange.time.getTime() - now.getTime(),
+    // Read the wall clock here, not the `now` state: useSmartInterval re-invokes
+    // this from a closure that effect deps only refresh after a boundary, so a
+    // captured `now` would freeze the delay and never tighten to the 1s cadence.
+    () => nextChange.time.getTime() - Date.now(),
     [planConfig, nextChange.time.getTime()]
   );
 
