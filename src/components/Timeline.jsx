@@ -63,10 +63,7 @@ export default function Timeline({ planConfig }) {
                   backgroundColor: PERIOD_COLORS[block.period].timelineColor,
                   borderRight: i < schedule.length - 1 ? '2px solid rgba(255,255,255,0.25)' : 'none',
                 }}
-              >
-                {/* sr-only text keeps rate-content tests passing */}
-                <span className="sr-only">${block.rate.toFixed(2)}</span>
-              </div>
+              />
             );
           })}
         </div>
@@ -82,6 +79,7 @@ export default function Timeline({ planConfig }) {
             return (
               <div
                 key={i}
+                data-testid={`segment-price-${block.period}-${i}`}
                 className="flex items-center justify-center overflow-visible"
                 style={{ width: `${widthPct}%` }}
               >

@@ -3,47 +3,39 @@ import { describe, it, expect, vi } from 'vitest';
 import ProviderSelector from './ProviderSelector';
 
 describe('ProviderSelector', () => {
-  it('renders provider-select', () => {
+  it('renders provider-toggle with one button per option', () => {
     render(<ProviderSelector provider="pge" onChange={() => {}} />);
-    expect(screen.getByTestId('provider-select')).toBeInTheDocument();
+    const toggle = screen.getByTestId('provider-toggle');
+    expect(toggle.querySelectorAll('button')).toHaveLength(2);
   });
 
-  it('has two options (PG&E Bundled and 3CE)', () => {
+  it('renders a button for each default option', () => {
     render(<ProviderSelector provider="pge" onChange={() => {}} />);
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'PG&E Bundled' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '3CE (CCA)' })).toBeInTheDocument();
   });
 
-  it('shows selected provider', () => {
+  it('marks the selected provider button as pressed', () => {
     render(<ProviderSelector provider="3ce" onChange={() => {}} />);
-    expect(screen.getByTestId('provider-select').value).toBe('3ce');
+    expect(screen.getByRole('button', { name: '3CE (CCA)' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'PG&E Bundled' })).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('calls onChange with new value', () => {
+  it('calls onChange with new value when a toggle button is clicked', () => {
     const onChange = vi.fn();
     render(<ProviderSelector provider="pge" onChange={onChange} />);
-    fireEvent.change(screen.getByTestId('provider-select'), { target: { value: '3ce' } });
+    fireEvent.click(screen.getByRole('button', { name: '3CE (CCA)' }));
     expect(onChange).toHaveBeenCalledWith('3ce');
   });
 });
 
 describe('ProviderSelector — toggle buttons', () => {
-  it('renders visible toggle buttons inside provider-toggle container', () => {
-    render(<ProviderSelector provider="pge" onChange={() => {}} />);
-    const toggle = screen.getByTestId('provider-toggle');
-    // Two buttons inside the toggle group (one per default option)
-    const buttons = toggle.querySelectorAll('button');
-    expect(buttons).toHaveLength(2);
-  });
-
   it('clicking a toggle button calls onChange with that option\'s value', () => {
     const onChange = vi.fn();
 
     render(<ProviderSelector provider="pge" onChange={onChange} />);
 
-    const toggle = screen.getByTestId('provider-toggle');
-    const buttons = toggle.querySelectorAll('button');
-    // Second button = '3CE (CCA)'
-    fireEvent.click(buttons[1]);
+    fireEvent.click(screen.getByRole('button', { name: '3CE (CCA)' }));
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith('3ce');
@@ -55,10 +47,7 @@ describe('ProviderSelector — toggle buttons', () => {
     // Start with '3ce' selected
     render(<ProviderSelector provider="3ce" onChange={onChange} />);
 
-    const toggle = screen.getByTestId('provider-toggle');
-    const buttons = toggle.querySelectorAll('button');
-    // First button = 'PG&E Bundled'
-    fireEvent.click(buttons[0]);
+    fireEvent.click(screen.getByRole('button', { name: 'PG&E Bundled' }));
 
     expect(onChange).toHaveBeenCalledWith('pge');
   });
@@ -70,26 +59,21 @@ describe('ProviderSelector — custom options', () => {
     { value: 'sbce', label: 'SBCE' },
   ];
 
-  it('renders exactly 2 options when passed 2 custom options', () => {
+  it('renders exactly 2 buttons when passed 2 custom options', () => {
     render(<ProviderSelector provider="sce" onChange={() => {}} options={sceOptions} />);
-    expect(screen.getAllByRole('option')).toHaveLength(2);
+    const toggle = screen.getByTestId('provider-toggle');
+    expect(toggle.querySelectorAll('button')).toHaveLength(2);
   });
 
   it('renders correct labels for custom options', () => {
     render(<ProviderSelector provider="sce" onChange={() => {}} options={sceOptions} />);
-    expect(screen.getByRole('option', { name: 'SCE Bundled' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'SBCE' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'SCE Bundled' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'SBCE' })).toBeInTheDocument();
   });
 
-  it('reflects the custom option value as selected', () => {
+  it('marks the custom selected option as pressed', () => {
     render(<ProviderSelector provider="sbce" onChange={() => {}} options={sceOptions} />);
-    expect(screen.getByTestId('provider-select').value).toBe('sbce');
-  });
-
-  it('toggle buttons show custom option labels', () => {
-    render(<ProviderSelector provider="sce" onChange={() => {}} options={sceOptions} />);
-    const toggle = screen.getByTestId('provider-toggle');
-    expect(toggle).toHaveTextContent('SCE Bundled');
-    expect(toggle).toHaveTextContent('SBCE');
+    expect(screen.getByRole('button', { name: 'SBCE' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'SCE Bundled' })).toHaveAttribute('aria-pressed', 'false');
   });
 });
