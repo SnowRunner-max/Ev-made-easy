@@ -1,22 +1,7 @@
 import { useCurrentRate } from '../hooks/useCurrentRate';
 import { useCountdown } from '../hooks/useCountdown';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
-
-const PERIOD_PILL_CLASS = {
-  peak:        'text-[#FFB7AC] bg-red/20',
-  partPeak:    'text-[#F1C994] bg-amber/20',
-  midPeak:     'text-[#F1C994] bg-amber/20',
-  offPeak:     'text-[#A5D9B7] bg-green/20',
-  superOffPeak:'text-[#93C5FD] bg-blue-500/15',
-};
-
-const PERIOD_DOT_COLOR = {
-  peak:        '#FFB7AC',
-  partPeak:    '#F1C994',
-  midPeak:     '#F1C994',
-  offPeak:     '#A5D9B7',
-  superOffPeak:'#93C5FD',
-};
+import { PERIOD_COLORS } from '../constants/periodColors';
 
 export default function RateDisplay({ planConfig }) {
   const { period, rate, season, periodLabel, nextChange } = useCurrentRate(planConfig);
@@ -50,8 +35,9 @@ export default function RateDisplay({ planConfig }) {
     );
   }
 
-  const pillClass = PERIOD_PILL_CLASS[period] ?? PERIOD_PILL_CLASS.offPeak;
-  const dotColor  = PERIOD_DOT_COLOR[period] ?? PERIOD_DOT_COLOR.offPeak;
+  const colors    = PERIOD_COLORS[period] ?? PERIOD_COLORS.offPeak;
+  const pillClass = colors.pillClass;
+  const dotColor  = colors.pillDotColor;
   const nextLabel = PERIOD_DISPLAY[nextChange.newPeriod]?.label ?? 'Next rate';
   const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
 

@@ -1,13 +1,11 @@
 import { getPacificHour, buildPacificTime } from '../utils/pacificTime';
+import { PERIOD_COLORS } from '../constants/periodColors';
 
-// Period display metadata — single source of truth for labels and color schemes
-export const PERIOD_DISPLAY = {
-  peak:         { label: 'Peak',           colorScheme: 'red'     },
-  midPeak:      { label: 'Mid-Peak',       colorScheme: 'amber'   },
-  partPeak:     { label: 'Part-Peak',      colorScheme: 'amber'   },
-  offPeak:      { label: 'Off-Peak',       colorScheme: 'emerald' },
-  superOffPeak: { label: 'Super Off-Peak', colorScheme: 'blue'    },
-};
+// Period labels and color schemes now live in constants/periodColors.js.
+// Re-exported here so existing engine consumers keep working.
+export const PERIOD_DISPLAY = Object.fromEntries(
+  Object.entries(PERIOD_COLORS).map(([period, { label, colorScheme }]) => [period, { label, colorScheme }])
+);
 
 const PACIFIC_MONTH_FMT = new Intl.DateTimeFormat('en-US', {
   timeZone: 'America/Los_Angeles',

@@ -1,49 +1,57 @@
 /**
- * Tailwind class sets and color values for each TOU period.
- * Single source of truth for period colors across all components.
+ * Single source of truth for all per-period display metadata: labels,
+ * ordering, and color treatments used across the engine and components.
  *
- * badge     — light-background rate badge (must keep emerald/red keywords for tests)
- * bg        — timeline segment background
- * tip       — left-panel charging tip box (must keep emerald/red/amber for tests)
- * darkBadge — right-panel dark background badge (keeps emerald/red for test compat)
- * dotColor  — hex for the pulsing indicator dot
+ * label         — human-readable period name (e.g. "Part-Peak")
+ * colorScheme   — semantic color name returned by the rate engine
+ * tip           — left-panel charging tip box (must keep emerald/red/amber for tests)
+ * timelineColor — hex background for Timeline segments and legend swatches
+ * pillClass     — rate badge classes for the dark Results Monolith (must keep green/amber/red for tests)
+ * pillDotColor  — hex for the pulsing indicator dot inside the rate badge
  */
+export const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
+
 export const PERIOD_COLORS = {
   offPeak: {
-    badge:     'bg-emerald-500 text-white',
-    bg:        'bg-emerald-500',
-    tip:       'bg-emerald-50 text-emerald-900',
-    darkBadge: 'bg-emerald-950/40 text-emerald-300',
-    dotColor:  '#5CDB95',
+    label:        'Off-Peak',
+    colorScheme:  'emerald',
+    tip:          'bg-emerald-50 text-emerald-900',
+    timelineColor: '#2D8F5C',
+    pillClass:    'text-[#A5D9B7] bg-green/20',
+    pillDotColor: '#A5D9B7',
   },
   partPeak: {
-    badge:     'bg-amber-500 text-white',
-    bg:        'bg-amber-500',
-    tip:       'bg-amber-50 text-amber-900',
-    darkBadge: 'bg-amber-950/40 text-amber-300',
-    dotColor:  '#EFC88B',
+    label:        'Part-Peak',
+    colorScheme:  'amber',
+    tip:          'bg-amber-50 text-amber-900',
+    timelineColor: '#B87B2B',
+    pillClass:    'text-[#F1C994] bg-amber/20',
+    pillDotColor: '#F1C994',
   },
   // Mid-peak and part-peak are distinct tariff keys but intentionally share the
   // same intermediate severity treatment in the UI palette.
   midPeak: {
-    badge:     'bg-amber-500 text-white',
-    bg:        'bg-amber-500',
-    tip:       'bg-amber-50 text-amber-900',
-    darkBadge: 'bg-amber-950/40 text-amber-300',
-    dotColor:  '#EFC88B',
+    label:        'Mid-Peak',
+    colorScheme:  'amber',
+    tip:          'bg-amber-50 text-amber-900',
+    timelineColor: '#B87B2B',
+    pillClass:    'text-[#F1C994] bg-amber/20',
+    pillDotColor: '#F1C994',
   },
   peak: {
-    badge:     'bg-red-500 text-white',
-    bg:        'bg-red-500',
-    tip:       'bg-red-50 text-red-900',
-    darkBadge: 'bg-red-950/40 text-red-400',
-    dotColor:  '#FF6B5A',
+    label:        'Peak',
+    colorScheme:  'red',
+    tip:          'bg-red-50 text-red-900',
+    timelineColor: '#C0392B',
+    pillClass:    'text-[#FFB7AC] bg-red/20',
+    pillDotColor: '#FFB7AC',
   },
   superOffPeak: {
-    badge:     'bg-blue-500 text-white',
-    bg:        'bg-blue-500',
-    tip:       'bg-blue-50 text-blue-900',
-    darkBadge: 'bg-blue-950/40 text-blue-300',
-    dotColor:  '#3B82F6',
+    label:        'Super Off-Peak',
+    colorScheme:  'blue',
+    tip:          'bg-blue-50 text-blue-900',
+    timelineColor: '#3B82F6',
+    pillClass:    'text-[#93C5FD] bg-blue-500/15',
+    pillDotColor: '#93C5FD',
   },
 };
