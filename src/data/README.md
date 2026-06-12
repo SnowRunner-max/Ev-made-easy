@@ -11,12 +11,18 @@ This directory holds all runtime rate data consumed by the app. The app supports
 | `ratePlans.json` | PG&E delivery + CCA generation rates (schema v3.0) |
 | `sceRatePlans.json` | SCE delivery + CCA generation rates (same schema) |
 | `sdgeRatePlans.json` | SDG&E delivery + CCA generation rates (same schema) |
-| `serviceAreas.json` | Service area registry: maps `serviceAreaId` → utility, CCAs, default plan |
+| `tdpudRatePlans.json` | TDPUD (Truckee) delivery + generation rates (same schema) |
+| `libertyRatePlans.json` | Liberty Utilities (Tahoe) delivery + generation rates (same schema) |
+| `serviceAreas.json` | Service area registry: maps `serviceAreaId` → `utilityId`, CCAs, default plan |
 | `pgeTerritory.json` | ZIP-to-`serviceAreaId` lookup for PG&E territory |
 | `sceTerritory.json` | ZIP-to-`serviceAreaId` lookup for SCE territory |
+| `sdgeTerritory.json` | ZIP-to-`serviceAreaId` lookup for SDG&E territory |
+| `tdpudTerritory.json` | ZIP-to-`serviceAreaId` lookup for TDPUD territory |
+| `libertyTerritory.json` | ZIP-to-`serviceAreaId` lookup for Liberty territory |
 | `multiUtilityZips.json` | ZIPs that span a supported utility boundary — triggers the UtilityPicker disambiguation flow |
 | `vehicles.json` | EV model database (battery size, efficiency, etc.) |
 | `utilityRegistry.js` | Runtime utility registry: bundled provider IDs, rate-plan imports, territory imports, metadata keys |
+| `ratePlanRegistry.js` | Derives `RATE_PLAN_REGISTRY`, mapping each `serviceAreaId` to its utility's rate data via `utilityRegistry.js` |
 | `effectivePlanConfig.js` | Shared helper for provider options, CCA tiers, and delivery/generation rate composition |
 
 ---
@@ -24,7 +30,7 @@ This directory holds all runtime rate data consumed by the app. The app supports
 ## How a ZIP becomes a rate
 
 1. **`useLocationLookup.js`** takes a ZIP, checks `multiUtilityZips.json`, then iterates the registry-driven `getUtilityTerritories()` results from `utilityRegistry.js` to resolve a `serviceAreaId` (e.g. `"pge-3ce-sbco"`, `"sce-cpa-la"`, or `"sdge-cea-sd"`).
-2. **`utilityRegistry.js / RATE_PLAN_REGISTRY`** maps each service area's `utilityId` to a rate data import:
+2. **`ratePlanRegistry.js / RATE_PLAN_REGISTRY`** maps each service area's `utilityId` (resolved via `utilityRegistry.js`) to a rate data import:
    ```js
    serviceAreas['pge-3ce-sbco'].utilityId // "pge" -> ratePlans.json
    serviceAreas['sce-cpa-la'].utilityId   // "sce" -> sceRatePlans.json
@@ -52,7 +58,7 @@ This directory holds all runtime rate data consumed by the app. The app supports
 
 ## Schema version
 
-`ratePlans.json`, `sceRatePlans.json`, and `sdgeRatePlans.json` use **schema v3.0** (field names: `delivery / generation / totalBundled / ccaGeneration`). The schema was bumped from v2.0 in the refactor documented in commit `2840d97`. See `PGE_README.md` and `SCE_README.md` for full field-level documentation.
+`ratePlans.json`, `sceRatePlans.json`, `sdgeRatePlans.json`, `tdpudRatePlans.json`, and `libertyRatePlans.json` use **schema v3.0** (field names: `delivery / generation / totalBundled / ccaGeneration`). The schema was bumped from v2.0 in the refactor documented in commit `2840d97`. See `PGE_README.md` and `SCE_README.md` for full field-level documentation.
 
 ---
 
