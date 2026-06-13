@@ -1,6 +1,6 @@
 # CLAUDE.md — EV Made Easy
 
-Real-time home EV charging cost calculator for PG&E and SCE service territories across Central and Southern California. Supports multiple CCAs per territory. Client-side React SPA, no backend.
+Real-time home EV charging cost calculator covering five California utility territories — PG&E, SCE, SDG&E, TDPUD (Truckee), and Liberty Utilities (Tahoe). Supports multiple CCAs per territory. Client-side React SPA, no backend.
 
 **Notion:** https://www.notion.so/32ae8e8770bf81b59c72e509ed5ebdfc
 
@@ -17,13 +17,24 @@ React 18 + Vite · Tailwind CSS · Vitest + React Testing Library · No router �
 ```
 src/
   data/
-    ratePlans.json      # PG&E rate plans (delivery, generation, CCA rates, TOU schedules)
-    sceRatePlans.json   # SCE rate plans (same schema as ratePlans.json)
-    serviceAreas.json   # Service area registry: utility → CCA → default plan
-    pgeTerritory.json   # ZIP-to-service-area lookup for PG&E territory
-    sceTerritory.json   # ZIP-to-service-area lookup for SCE territory
-    multiUtilityZips.json  # ZIPs that span PG&E/SCE boundaries (triggers UtilityPicker)
-    vehicles.json       # EV model database
+    ratePlans.json         # PG&E rate plans (delivery, generation, CCA rates, TOU schedules)
+    sceRatePlans.json      # SCE rate plans (same schema as ratePlans.json)
+    sdgeRatePlans.json     # SDG&E rate plans (same schema)
+    tdpudRatePlans.json    # TDPUD (Truckee) rate plans (same schema)
+    libertyRatePlans.json  # Liberty Utilities (Tahoe) rate plans (same schema)
+    serviceAreas.json      # Service area registry: serviceAreaId → utilityId, CCA(s), default plan/provider
+    pgeTerritory.json      # ZIP-to-service-area lookup for PG&E territory
+    sceTerritory.json      # ZIP-to-service-area lookup for SCE territory
+    sdgeTerritory.json     # ZIP-to-service-area lookup for SDG&E territory
+    tdpudTerritory.json    # ZIP-to-service-area lookup for TDPUD territory
+    libertyTerritory.json  # ZIP-to-service-area lookup for Liberty territory
+    multiUtilityZips.json  # ZIPs that span utility boundaries (triggers UtilityPicker)
+    vehicles.json          # EV model database
+    utilityRegistry.js     # UTILITY_REGISTRY: per-utility bundled provider ID, rate-plan + territory imports, metadata keys
+    ratePlanRegistry.js    # RATE_PLAN_REGISTRY: maps serviceAreaId → rate data, derived from utilityRegistry
+    effectivePlanConfig.js # Builds the effective planConfig (provider, CCA tier, delivery+generation rates) for the engine/UI
+  constants/
+    periodColors.js     # Single source of truth for TOU period labels, colors, and ordering
   engine/
     rateEngine.js / .test.js
     costCalculator.js / .test.js
@@ -31,18 +42,20 @@ src/
   hooks/
     useCurrentRate.js
     useCountdown.js
-  App.jsx            # RATE_PLAN_REGISTRY maps serviceAreaId → rate data file
+    useLocationLookup.js
+  App.jsx            # Resolves location → service area → RATE_PLAN_REGISTRY → effectivePlanConfig → engine/UI
 data-sources/
-  pge_source/       # Authoritative source documents for PG&E rate data
-    res-inclu-tou-current.xlsx # PG&E residential inclusive TOU rates (current)
-    3ce-rates.pdf              # 3CE (Central Coast Community Energy) rate sheet
+  pge_source/       # Authoritative source documents for PG&E + CCA rate data
   sce_source/       # Authoritative source documents for SCE rate data
-    SCE_Combined_Rates.xlsx    # SCE delivery + CCA generation rates workbook
+  sdge_source/      # Authoritative source documents for SDG&E rate data
+  tdpud_source/     # Authoritative source documents for TDPUD (Truckee) rate data
+  liberty_source/   # Authoritative source documents for Liberty Utilities (Tahoe) rate data
+  cca_source/       # Authoritative source documents for CCA territory/rate data
 ```
 
 See `src/data/README.md` for the registry pattern and instructions for adding a new utility.
 
-When modifying `ratePlans.json` or `sceRatePlans.json`, validate every changed cell against the documents in the corresponding `data-sources/*_source/` directory. Source files are the source of truth — the JSON files are derived artifacts. If the two disagree, the source document wins. Note the effective date in the rate data section below.
+When modifying any of the five rate plan files above, validate every changed cell against the documents in the corresponding `data-sources/*_source/` directory. Source files are the source of truth — the JSON files are derived artifacts. If the two disagree, the source document wins. Note the effective date in the rate data section below.
 
 -----
 
@@ -52,7 +65,7 @@ Six supported plans: **EV2-A, E-ELEC, EV-B, E-TOU-C, E-TOU-D, E-1**
 
 Source: PG&E Advice Letter 7846-E (eff. March 1 2026) · 3CE Rate Sheet v29 (eff. Feb 15 2026)
 
-**Schema v3.0** — every rate cell has three fields. This invariant must hold: `delivery + generation = totalBundled` (±0.00001). Applies to both `ratePlans.json` (PG&E) and `sceRatePlans.json` (SCE).
+**Schema v3.0** — every rate cell has three fields. This invariant must hold: `delivery + generation = totalBundled` (±0.00001). Applies to all five rate files: `ratePlans.json` (PG&E), `sceRatePlans.json` (SCE), `sdgeRatePlans.json` (SDG&E), `tdpudRatePlans.json` (TDPUD), and `libertyRatePlans.json` (Liberty).
 
 ```json
 "peak": {
@@ -115,7 +128,7 @@ TDD: write failing test first, then minimum code to pass, then refactor.
 
 **One hero number.** The current $/kWh rate is the single most prominent element.
 
-**Settings sheet** contains: season toggle · generation provider selector (PG&E bundled / 3CE 3Cchoice / 3CE 3Cprime) · rate plan selector. Persistent header shows active config (e.g., “EV2-A · 3CE 3Cchoice”) + gear icon.
+**Configuration is inline, not a sheet.** The Input Laboratory's two-column grid holds Location, Rate Plan, Generation Provider (toggle buttons, shown only when the plan supports CCA generation), Generation Tier (shown only when the selected CCA has multiple tiers), Vehicle, and Charger Speed — all editable directly, no modal or gear icon. The persistent header shows the active location and plan (e.g., "Plan EV2-A · PG&E + 3CE").
 
 -----
 

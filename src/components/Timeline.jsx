@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getDaySchedule } from '../engine/rateEngine';
 import { getPacificFractionalHour } from '../utils/pacificTime';
+import { PERIOD_COLORS } from '../constants/periodColors';
 
 function hourToLabel(hour) {
   if (hour === 0 || hour === 24) return '12 AM';
@@ -8,23 +9,6 @@ function hourToLabel(hour) {
   if (hour === 12) return '12 PM';
   return `${hour - 12} PM`;
 }
-
-// Design system palette colors for TOU periods
-const PERIOD_BG = {
-  offPeak:      '#2D8F5C',
-  partPeak:     '#B87B2B',
-  midPeak:      '#B87B2B',
-  peak:         '#C0392B',
-  superOffPeak: '#3B82F6',
-};
-
-const PERIOD_LABEL = {
-  offPeak:      'Off-Peak',
-  partPeak:     'Part-Peak',
-  midPeak:      'Mid-Peak',
-  peak:         'Peak',
-  superOffPeak: 'Super Off-Peak',
-};
 
 export default function Timeline({ planConfig }) {
   const [now, setNow] = useState(() => new Date());
@@ -76,13 +60,10 @@ export default function Timeline({ planConfig }) {
                 data-period={block.period}
                 style={{
                   width: `${widthPct}%`,
-                  backgroundColor: PERIOD_BG[block.period],
+                  backgroundColor: PERIOD_COLORS[block.period].timelineColor,
                   borderRight: i < schedule.length - 1 ? '2px solid rgba(255,255,255,0.25)' : 'none',
                 }}
-              >
-                {/* sr-only text keeps rate-content tests passing */}
-                <span className="sr-only">${block.rate.toFixed(2)}</span>
-              </div>
+              />
             );
           })}
         </div>
@@ -98,6 +79,7 @@ export default function Timeline({ planConfig }) {
             return (
               <div
                 key={i}
+                data-testid={`segment-price-${block.period}-${i}`}
                 className="flex items-center justify-center overflow-visible"
                 style={{ width: `${widthPct}%` }}
               >
@@ -145,9 +127,9 @@ export default function Timeline({ planConfig }) {
           <span key={period} className="flex items-center gap-1.5 font-medium">
             <span
               className="w-2.5 h-2.5 rounded-sm flex-shrink-0"
-              style={{ backgroundColor: PERIOD_BG[period] }}
+              style={{ backgroundColor: PERIOD_COLORS[period].timelineColor }}
             />
-            {PERIOD_LABEL[period]}
+            {PERIOD_COLORS[period].label}
           </span>
         ))}
       </div>

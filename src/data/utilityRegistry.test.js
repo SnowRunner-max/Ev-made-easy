@@ -5,6 +5,13 @@ import { UTILITY_REGISTRY, getUtilityConfigForServiceArea } from './utilityRegis
 import { buildEffectivePlanConfig, getProviderOptions } from './effectivePlanConfig';
 
 describe('utility registry', () => {
+  it('gives every service area a utilityId present in UTILITY_REGISTRY', () => {
+    for (const [serviceAreaId, serviceArea] of Object.entries(serviceAreasData.serviceAreas)) {
+      expect(serviceArea.utilityId, serviceAreaId).toBeTruthy();
+      expect(UTILITY_REGISTRY[serviceArea.utilityId], serviceAreaId).toBeTruthy();
+    }
+  });
+
   it('backs every service area with a utility config and rate data', () => {
     for (const [serviceAreaId, serviceArea] of Object.entries(serviceAreasData.serviceAreas)) {
       const utility = getUtilityConfigForServiceArea(serviceArea);

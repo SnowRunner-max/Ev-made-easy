@@ -1,11 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('../hooks/useCurrentRate', () => ({
-  useCurrentRate: vi.fn(),
-}));
-
-import { useCurrentRate } from '../hooks/useCurrentRate';
+import { describe, expect, it } from 'vitest';
 import CostFacts from './CostFacts';
 
 const planConfig = {
@@ -31,23 +25,15 @@ const summary = {
   },
 };
 
-beforeEach(() => {
-  vi.clearAllMocks();
-});
-
 describe('CostFacts', () => {
   it('prompts for calculator inputs when summary is unavailable', () => {
-    useCurrentRate.mockReturnValue({ period: 'offPeak', season: 'winter' });
-
-    render(<CostFacts planConfig={planConfig} summary={null} />);
+    render(<CostFacts planConfig={planConfig} summary={null} currentRate={{ period: 'offPeak', season: 'winter' }} />);
 
     expect(screen.getByText('Select a vehicle and charge level to see cost breakdown.')).toBeInTheDocument();
   });
 
   it('renders session total and dynamic delivery/generation labels', () => {
-    useCurrentRate.mockReturnValue({ period: 'offPeak', season: 'winter' });
-
-    render(<CostFacts planConfig={planConfig} summary={summary} />);
+    render(<CostFacts planConfig={planConfig} summary={summary} currentRate={{ period: 'offPeak', season: 'winter' }} />);
 
     expect(screen.getByText('for 50.0 kWh')).toBeInTheDocument();
     expect(screen.getByText('$10.00')).toBeInTheDocument();
@@ -59,9 +45,7 @@ describe('CostFacts', () => {
   });
 
   it('renders nothing when the active period has no rate data', () => {
-    useCurrentRate.mockReturnValue({ period: 'peak', season: 'winter' });
-
-    const { container } = render(<CostFacts planConfig={planConfig} summary={summary} />);
+    const { container } = render(<CostFacts planConfig={planConfig} summary={summary} currentRate={{ period: 'peak', season: 'winter' }} />);
 
     expect(container.firstChild).toBeNull();
   });

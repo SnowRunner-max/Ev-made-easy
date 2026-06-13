@@ -20,6 +20,12 @@
   --color-surface-container-high:    #E2DDD3;
   --color-surface-container-highest: #D8D3C9;
 
+  /* TOU period colors — must live in @theme so Tailwind generates
+     utilities like bg-green/20 used by the live-rate period pill */
+  --color-green: #2D8F5C;
+  --color-amber: #B87B2B;
+  --color-red:   #C0392B;
+
   /* Typography */
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-sans:    'Inter', system-ui, sans-serif;
@@ -32,14 +38,14 @@
   --text-secondary: #57534A;
   --text-muted:     #8B7F70;
 
-  /* TOU period colors — used in inline styles / donut chart */
-  --green:        #2D8F5C;
+  /* TOU period colors — legacy aliases of the @theme tokens above */
+  --green:        var(--color-green);
   --green-bg:     #E8F5EE;
   --green-border: #B8DFC8;
-  --amber:        #B87B2B;
+  --amber:        var(--color-amber);
   --amber-bg:     #FDF3E0;
   --amber-border: #E8CFA0;
-  --red:          #C0392B;
+  --red:          var(--color-red);
   --red-bg:       #FDECEB;
   --red-border:   #E8B4AF;
   --color-tou-super-off-peak: #3B82F6;

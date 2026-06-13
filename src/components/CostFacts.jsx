@@ -1,8 +1,6 @@
-import { useCurrentRate } from '../hooks/useCurrentRate';
 import { PERIOD_DISPLAY } from '../engine/rateEngine';
+import { PERIOD_ORDER } from '../constants/periodColors';
 import { getUtilityConfigForServiceArea } from '../data/utilityRegistry';
-
-const PERIOD_ORDER = ['peak', 'midPeak', 'partPeak', 'offPeak', 'superOffPeak'];
 
 const CCA_RATE_DATE_KEYS_BY_PROVIDER = {
   '3ce': ['3ceRateSheetDate', 'cceRateSheetDate'],
@@ -78,8 +76,8 @@ function RateTable({ rates, seasons }) {
   );
 }
 
-export default function CostFacts({ planConfig, summary, globalMetadata, serviceArea, provider }) {
-  const { period, season } = useCurrentRate(planConfig);
+export default function CostFacts({ planConfig, summary, globalMetadata, serviceArea, provider, currentRate }) {
+  const { period, season } = currentRate;
 
   if (!planConfig.touPeriods || !summary?.to80) {
     return (

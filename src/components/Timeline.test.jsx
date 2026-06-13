@@ -43,18 +43,18 @@ describe('Timeline — EV2-A', () => {
 
   it('shows winter off-peak rate $0.23', () => {
     render(<Timeline planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('segment-offPeak-0')).toHaveTextContent('$0.23');
+    expect(screen.getByTestId('segment-price-offPeak-0')).toHaveTextContent('$0.23');
   });
 
   it('shows winter peak rate $0.41', () => {
     render(<Timeline planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('segment-peak-2')).toHaveTextContent('$0.41');
+    expect(screen.getByTestId('segment-price-peak-2')).toHaveTextContent('$0.41');
   });
 
   it('shows summer peak rate $0.54', () => {
     vi.setSystemTime(new Date('2026-07-15T10:00:00-07:00'));
     render(<Timeline planConfig={ev2aConfig} />);
-    expect(screen.getByTestId('segment-peak-2')).toHaveTextContent('$0.54');
+    expect(screen.getByTestId('segment-price-peak-2')).toHaveTextContent('$0.54');
   });
 
   it('peak segment is marked as peak period', () => {
@@ -84,7 +84,7 @@ describe('Timeline — EV-B weekday (Tuesday Jan 6)', () => {
 
   it('renders 5 segments', () => {
     render(<Timeline planConfig={evbConfig} />);
-    expect(screen.getAllByTestId(/^segment-/)).toHaveLength(5);
+    expect(screen.getAllByTestId(/^segment-(?!price-)/)).toHaveLength(5);
   });
 });
 
@@ -97,7 +97,7 @@ describe('Timeline — EV-B weekend (Saturday Jan 10)', () => {
 
   it('renders 3 segments', () => {
     render(<Timeline planConfig={evbConfig} />);
-    expect(screen.getAllByTestId(/^segment-/)).toHaveLength(3);
+    expect(screen.getAllByTestId(/^segment-(?!price-)/)).toHaveLength(3);
   });
 });
 
