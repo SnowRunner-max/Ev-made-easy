@@ -161,6 +161,11 @@ function CostCard({ prefix, label, data }) {
           >
             ~{formatDuration(data.hoursNeeded)}
           </span>
+          {data.meteredKwh != null && (
+            <span data-testid={`${prefix}-metered-kwh`} className="text-[10px] text-pewter/70 block mt-0.5">
+              {data.meteredKwh.toFixed(1)} kWh at meter
+            </span>
+          )}
         </div>
       </div>
     </div>

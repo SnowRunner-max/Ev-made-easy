@@ -142,10 +142,10 @@ describe('App — provider selector', () => {
     expect(screen.getByTestId('provider-toggle')).toBeInTheDocument();
   });
 
-  it('provider selector hidden for E-1 (tiered, no touPeriods)', () => {
+  it('provider selector remains available for E-1 generation pricing', () => {
     renderWithLocation();
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-1' } });
-    expect(screen.queryByTestId('provider-toggle')).not.toBeInTheDocument();
+    expect(screen.getByTestId('provider-toggle')).toBeInTheDocument();
   });
 });
 
@@ -278,6 +278,80 @@ describe('App — Tahoe utilities', () => {
 });
 
 describe('App — TOU boundary recompute', () => {
+  it('displays the bill-backed winter 3Cchoice rate at full tariff precision', () => {
+    renderWithLocation();
+    fireEvent.click(screen.getByRole('button', { name: /Central Coast Community Energy/i }));
+    fireEvent.change(screen.getByLabelText('PCIA vintage'), { target: { value: '2021' } });
+    expect(screen.getByTestId('precise-rate')).toHaveTextContent('$0.27814/kWh');
+    const batteryEnergy = screen.getByTestId('to80-kwh').textContent;
+    const before = screen.getByTestId('to80-cost-now').textContent;
+    fireEvent.change(screen.getByLabelText('Charging efficiency percent'), { target: { value: '90' } });
+    expect(screen.getByTestId('to80-kwh').textContent).toBe(batteryEnergy);
+    expect(screen.getByTestId('to80-metered-kwh')).toHaveTextContent('40.0 kWh at meter');
+    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(before);
+  });
+
+  it('makes E-1 baseline assumptions editable without hiding provider or product', () => {
+    renderWithLocation();
+    fireEvent.click(screen.getByRole('button', { name: /Central Coast Community Energy/i }));
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-1' } });
+    expect(screen.getByTestId('tier-select')).toBeInTheDocument();
+    const above = screen.getByTestId('to80-cost-now').textContent;
+    fireEvent.change(screen.getByLabelText('Baseline assumption'), { target: { value: 'tier1' } });
+    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(above);
+    fireEvent.change(screen.getByLabelText('Remaining baseline kWh'), { target: { value: '5' } });
+    fireEvent.click(screen.getByText('See cost breakdown'));
+    expect(screen.getByText(/Total · Charge to 80%/)).toBeInTheDocument();
+    expect(screen.getByText('PCIA')).toBeInTheDocument();
+  });
+
+  it('shows bounded input validation instead of crashing for an unsupported session length', () => {
+    renderWithLocation();
+    fireEvent.change(screen.getByTestId('vehicle-select-compact'), { target: { value: 'custom' } });
+    fireEvent.change(screen.getByLabelText('Custom battery size in kWh'), { target: { value: '500' } });
+    fireEvent.change(screen.getByTestId('charger-speed-select'), { target: { value: '1.4' } });
+    fireEvent.change(screen.getByLabelText('Charging efficiency percent'), { target: { value: '1' } });
+    expect(screen.getByRole('alert')).toHaveTextContent('one-year horizon');
+    expect(screen.getByTestId('rate-value')).toBeInTheDocument();
+  });
+
+  it('discloses provider fallback when a confirmed CCA is unavailable on the new plan', () => {
+    renderWithLocation({ serviceAreaId: 'pge-kccp-mon', displayLabel: 'King City, CA', zip: '93930' });
+    fireEvent.click(screen.getByRole('button', { name: /King City Community Power/i }));
+    fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'EV2-A' } });
+    expect(screen.getByText(/selected provider is unavailable/)).toBeInTheDocument();
+    expect(screen.getByTestId('reference-estimate')).toBeInTheDocument();
+  });
+  it('refreshes a multi-period estimate while still inside the same starting period', () => {
+    vi.setSystemTime(new Date('2026-07-15T14:00:00-07:00'));
+    renderWithLocation();
+    const before = screen.getByTestId('to80-cost-now').textContent;
+    act(() => vi.advanceTimersByTime(30 * 60_000));
+    expect(screen.getByTestId('rate-badge')).toHaveTextContent('Off-Peak');
+    const after = screen.getByTestId('to80-cost-now').textContent;
+    expect(after).not.toBe(before);
+    renderWithLocation();
+    expect(screen.getAllByTestId('to80-cost-now')[1].textContent).toBe(after);
+  });
+
+  it('refreshes the calculation clock immediately on return from a suspended tab', () => {
+    vi.setSystemTime(new Date('2026-07-15T14:00:00-07:00'));
+    renderWithLocation();
+    const before = screen.getByTestId('to80-cost-now').textContent;
+    vi.setSystemTime(new Date('2026-07-15T14:30:00-07:00'));
+    fireEvent.focus(window);
+    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(before);
+  });
+
+  it('marks the provider as unconfirmed and shows only the selected provider in the header', () => {
+    renderWithLocation();
+    expect(screen.getByText(/Confirm your generation provider/i)).toBeInTheDocument();
+    expect(screen.getByTestId('app-header')).not.toHaveTextContent('+ 3CE');
+    fireEvent.click(screen.getByRole('button', { name: /Central Coast Community Energy/i }));
+    expect(screen.queryByText(/Confirm your generation provider/i)).not.toBeInTheDocument();
+    expect(screen.getByTestId('app-header')).toHaveTextContent('Central Coast Community Energy');
+    expect(screen.getByText(/incremental grid-import estimate/i)).toBeInTheDocument();
+  });
   it('updates the rate badge and cost estimate after crossing the 4 PM peak boundary (EV2-A summer)', () => {
     // Just before the 3pm-4pm part-peak window ends on a summer day
     vi.setSystemTime(new Date('2026-07-15T15:59:00-07:00'));

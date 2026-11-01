@@ -49,6 +49,7 @@ function buildMessage(period, season, rate, nextChange, planConfig, now) {
 
   const cheapestLabel = PERIOD_DISPLAY[cheapestPeriod].label;
   const pctVsCheapest = savingsPct(cheapestRate, rate);
+  if (!nextChange) return 'No upcoming time-based price change is known for this plan.';
   const nextChangeTime = formatPacificTime(nextChange.time);
   const cheapestStart = findNextPeriodStart(now, planConfig, cheapestPeriod);
   const cheapestTime = cheapestStart ? formatPacificTime(cheapestStart) : 'midnight';

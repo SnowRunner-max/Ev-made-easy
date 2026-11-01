@@ -7,7 +7,7 @@ const FIVE_MINUTES_MS = 5 * 60 * 1000;
  * but switches to every 1s when the next event is within 5 minutes.
  *
  * @param {() => void} onTick - Called on each interval tick
- * @param {() => number} getMsToNext - Returns ms until the next significant event
+ * @param {(wallNow: number) => number} getMsToNext - Returns ms until the next significant event
  * @param {any[]} deps - Effect dependencies (re-creates the interval when these change)
  */
 export function useSmartInterval(onTick, getMsToNext, deps) {
@@ -15,7 +15,7 @@ export function useSmartInterval(onTick, getMsToNext, deps) {
     let id;
 
     function schedule() {
-      const interval = getMsToNext() <= FIVE_MINUTES_MS ? 1_000 : 60_000;
+      const interval = getMsToNext(Date.now()) <= FIVE_MINUTES_MS ? 1_000 : 60_000;
       id = setInterval(() => {
         onTick();
         clearInterval(id);

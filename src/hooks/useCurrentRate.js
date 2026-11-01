@@ -1,19 +1,27 @@
-import { useState } from 'react';
-import { getRate, getNextRateChange } from '../engine/rateEngine';
+import { useEffect, useMemo, useState } from 'react';
+import { getRate, getNextRateChange, getNextIntegrationBoundary } from '../engine/rateEngine';
 import { useSmartInterval } from './useSmartInterval';
 
 export function useCurrentRate(planConfig) {
   const [now, setNow] = useState(() => new Date());
 
-  const nextChange = getNextRateChange(now, planConfig);
+  const nextChange = useMemo(() => getNextRateChange(now, planConfig), [now, planConfig]);
+  const nextBoundary = getNextIntegrationBoundary(now, planConfig).time.getTime();
+  useEffect(() => {
+    const refresh = () => setNow(new Date());
+    const onVisibility = () => { if (document.visibilityState === 'visible') refresh(); };
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   useSmartInterval(
     () => setNow(new Date()),
-    // Read the wall clock here, not the `now` state: useSmartInterval re-invokes
-    // this from a closure that effect deps only refresh after a boundary, so a
-    // captured `now` would freeze the delay and never tighten to the 1s cadence.
-    () => nextChange.time.getTime() - Date.now(),
-    [planConfig, nextChange.time.getTime()]
+    wallNow => nextBoundary - wallNow,
+    [planConfig, nextBoundary]
   );
 
   return { ...getRate(now, planConfig), nextChange, now };

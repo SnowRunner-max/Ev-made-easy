@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sourceFingerprint } from './source-utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
@@ -50,12 +50,9 @@ function walkFiles(rootRelativePath) {
 
 function hashFile(relativePath) {
   const absolutePath = path.join(repoRoot, relativePath);
-  const buffer = fs.readFileSync(absolutePath);
-  const stat = fs.statSync(absolutePath);
   return {
     path: relativePath,
-    bytes: stat.size,
-    sha256: crypto.createHash('sha256').update(buffer).digest('hex'),
+    ...sourceFingerprint(absolutePath, relativePath),
   };
 }
 

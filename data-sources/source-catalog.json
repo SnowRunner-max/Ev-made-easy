@@ -25,13 +25,13 @@
       "files": [
         {
           "path": "data-sources/cca_source/raw_sources/2026-January-Rate-Sheet-2024-Vintage.pdf",
-          "bytes": 132,
-          "sha256": "4f7be60f6f64d4e142b7c89e527a48fe022ab99990b16949d39e6d4f491eb4d9"
+          "bytes": 1412986,
+          "sha256": "d0cb5ff8ceb8475d25163c94f891a25e61bf41cb241ff575eda74267be025b1c"
         },
         {
           "path": "data-sources/cca_source/raw_sources/CCA_Generation_Rates.xlsx",
-          "bytes": 130,
-          "sha256": "913bce22f44160a545f8cf9d03eb4f429106caacf7bb196634ad97b05f5b2140"
+          "bytes": 33217,
+          "sha256": "ad1a9dc2edbf081feeef0a4da7e89185f424666cc5df50785e96e52782f247c3"
         },
         {
           "path": "data-sources/cca_source/raw_sources/CCA_Generation_Rates_Research.md",
@@ -40,43 +40,43 @@
         },
         {
           "path": "data-sources/cca_source/raw_sources/CPSF_ResidentialRates2025.pdf",
-          "bytes": 131,
-          "sha256": "3c4050ec102525356fb9438bd9183bc16adf7535ca4cb33ecd0c1166c8024ee5"
+          "bytes": 348083,
+          "sha256": "69dc5cff1c4c193c39fbd8d3626f77b9d8bff13b82d0bae053a5006d44488fc5"
         },
         {
           "path": "data-sources/cca_source/raw_sources/MCE-Residential-Rates-05052023.pdf",
-          "bytes": 131,
-          "sha256": "0b31e06d6b15dcc3c9626cfb524bbbea50f4944e8c8b8fc25698fa62dcdac3d2"
+          "bytes": 155981,
+          "sha256": "db92362d02205c24ccaed4c42e5508d5f4fd7077226b88cea3900acec9c55270"
         },
         {
           "path": "data-sources/cca_source/raw_sources/PCE-Residential-Rates-Effective-02-10-2025.pdf",
-          "bytes": 131,
-          "sha256": "4f89f6ce380684f262cf1fb550f65a1ea6e7a12817af68ce013921cd6d299873"
+          "bytes": 140074,
+          "sha256": "30c8c338dd41205fcdc7ab6c4143e8c0b3042f38294ab4be565681096d57211e"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Residential-Rates-2025-01.pdf",
-          "bytes": 131,
-          "sha256": "5b96606a6fe191aaaab01a2d2afc205981d98cef94b52383ef535c674b3988a8"
+          "bytes": 179324,
+          "sha256": "562626e814a39fae8b579e24e704248ce35886ecb7b6d275db75042d1a21bd97"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Residential-Rates_Effective-9.1.25.pdf",
-          "bytes": 130,
-          "sha256": "25be063025921b964b2578c625de5ea1df6d6c15f2f1bac2b035e88cbe732678"
+          "bytes": 73372,
+          "sha256": "cf620f8d451bca7a8d98a66b796e8b51df405b70164dc9516e3cbedb5a30959d"
         },
         {
           "path": "data-sources/cca_source/raw_sources/SJCE-Residential-Rates-March-1-2025.pdf",
-          "bytes": 131,
-          "sha256": "ddd91992b0863c89e6ae4799f75217a43e757e2818dcc1e8ae37294999773b41"
+          "bytes": 224056,
+          "sha256": "23184e6f58f7c5e3a6b1029b039dedd236035a2817836993c3abb076ef4e33b4"
         },
         {
           "path": "data-sources/cca_source/raw_sources/SVCE-4-2025-Residential-Rate-2.pdf",
-          "bytes": 130,
-          "sha256": "5c6127fa8702d091d4941e7880809855a2ea49c2ba1a951f61c22ed3807d46a8"
+          "bytes": 96308,
+          "sha256": "c0add478a3844f1b89c290f342dd8663011aa317ab51f2a315d96b7c3e781809"
         },
         {
           "path": "data-sources/cca_source/raw_sources/VCE-Jan-2025-Residential-Rate-Sheets.pdf",
-          "bytes": 130,
-          "sha256": "8d5627e0820d86c9dcb186544334a09de1c714944d86081c948a7c90e3fe5eb0"
+          "bytes": 85694,
+          "sha256": "0126fe70a1dd38e1fe7bcc2f4debd52083af717969a7d0c8d518060db7c5930d"
         },
         {
           "path": "data-sources/cca_source/raw_sources/Verification_Report.md",
@@ -90,13 +90,13 @@
         },
         {
           "path": "data-sources/cca_source/raw_sources/kccp-rcc.pdf",
-          "bytes": 131,
-          "sha256": "4a58a0b135041f0a473ac43ff4c138e303fc4f10d474daaddd160f63a7794aa5"
+          "bytes": 510405,
+          "sha256": "f08fbbd91fa08410c7003dfb67090a04ecf47f89220b5d6f1208311073a62395"
         },
         {
           "path": "data-sources/cca_source/raw_sources/pio-rcc-placer.pdf",
-          "bytes": 131,
-          "sha256": "693309096ef46975b190317bbce903687b4b29e22db62f1ebc9f328c1accb52d"
+          "bytes": 707189,
+          "sha256": "b0dea8d53e54ca38adcafaa62ad9108522e8960dbec577c29ae2e815ff33b58a"
         }
       ]
     },

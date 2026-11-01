@@ -75,6 +75,22 @@ describe('RateDisplay — TOU plan (EV2-A)', () => {
     expect(countdown).toHaveTextContent('15m');
     expect(countdown).toHaveTextContent('rises to');
   });
+
+  it('does not promise a drop for an equal-price boundary', () => {
+    const currentRate = buildCurrentRate(ev2aConfig, new Date('2026-01-15T02:00:00-08:00'));
+    currentRate.nextChange = { time: new Date('2026-01-16T00:00:00-08:00'),
+      newPeriod: 'offPeak', newRate: currentRate.rate };
+    render(<RateDisplay planConfig={ev2aConfig} currentRate={currentRate} />);
+    expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toBeInTheDocument();
+  });
+
+  it('handles no forthcoming price change without hiding the current rate', () => {
+    render(<RateDisplay planConfig={ev2aConfig}
+      currentRate={{ ...buildCurrentRate(ev2aConfig), nextChange: null }} />);
+    expect(screen.queryByTestId('countdown')).not.toBeInTheDocument();
+    expect(screen.getByTestId('rate-value')).toBeInTheDocument();
+  });
 });
 
 describe('RateDisplay — tiered plan (E-1)', () => {

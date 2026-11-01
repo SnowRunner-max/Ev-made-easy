@@ -4,6 +4,7 @@ import libertyRatePlans from '../data/libertyRatePlans.json';
 import tdpudRatePlans from '../data/tdpudRatePlans.json';
 import sdgeRatePlans from '../data/sdgeRatePlans.json';
 import { calcChargeCost, findCheapestWindow, calcChargeSummary } from './costCalculator';
+import { buildEffectivePlanConfig } from '../data/effectivePlanConfig';
 
 // All PST dates use January 15, 2026 (-08:00). EV-B weekday = Tuesday Jan 6.
 
@@ -42,32 +43,13 @@ function buildEffectiveConfig(planConfig) {
 
 // Build effective planConfig with 3CE 3cchoice generation rates
 function buildCCAConfig(planConfig, ccaId = '3ce', tierId = null) {
-  if (!planConfig.touPeriods) {
-    const r = planConfig.rates;
-    const ccaEntry = r.ccaGeneration[ccaId];
-    const tier = tierId ?? ccaEntry.defaultTier;
-    const delivery = r.delivery.tier1;
-    const generation = ccaEntry.tiers[tier].allUsage;
-    const combined = delivery + generation;
-    return { ...planConfig, _flatRate: { combined, delivery, generation } };
-  }
-  const seasons = Object.keys(planConfig.rates.delivery);
-  const rates = Object.fromEntries(
-    seasons.map(season => [
-      season,
-      Object.fromEntries(
-        Object.keys(planConfig.rates.delivery[season]).map(period => {
-          const ccaEntry = planConfig.rates.ccaGeneration[ccaId];
-          const tier = tierId ?? ccaEntry.defaultTier;
-          const delivery = planConfig.rates.delivery[season][period];
-          const generation = ccaEntry.tiers[tier][season][period];
-          const combined = delivery + generation;
-          return [period, { combined, delivery, generation }];
-        })
-      ),
-    ])
-  );
-  return { ...planConfig, rates };
+  return buildEffectivePlanConfig({
+    planConfig,
+    serviceArea: { utilityId: ['sdcp', 'cea'].includes(ccaId) ? 'sdge' : 'pge' },
+    providerId: ccaId,
+    tierId,
+    accountOptions: { pciaVintage: '2021', baselineTier: 'tier1', includeStateSurcharge: false },
+  });
 }
 
 const ev2aConfig = buildEffectiveConfig(ev2aRaw);
@@ -163,7 +145,7 @@ describe('findCheapestWindow — EV2-A', () => {
 describe('findCheapestWindow — EV-B', () => {
   it('finds off-peak start for weekday 30 kWh', () => {
     const { startHour, totalCost } = findCheapestWindow(new Date('2026-01-06T17:00:00-08:00'), 30, 7.7, evbConfig);
-    expect(startHour).toBeLessThan(7);
+    expect(startHour).toBe(23); // Earliest feasible off-peak start, not this morning.
     expect(totalCost).toBeCloseTo(30 * 0.23504, 1);
   });
 });
@@ -278,10 +260,10 @@ describe('ccaGeneration — EV2-A with 3CE 3cchoice vs 3cprime', () => {
   const ev2a3cprime  = buildCCAConfig(ev2aRaw, '3ce', '3cprime');
 
   it('3cchoice winter off-peak generation = 0.08449', () => {
-    // delivery=0.13012, generation=0.08449, combined=0.21461
+    // Standard 2021 vintage, before the separately tested state surcharge.
     const r = ev2a3cchoice.rates.winter.offPeak;
     expect(r.generation).toBeCloseTo(0.08449, 4);
-    expect(r.combined).toBeCloseTo(0.13012 + 0.08449, 4);
+    expect(r.combined).toBeCloseTo(0.27784, 5);
   });
 
   it('3cprime winter off-peak generation = 0.09249 (higher than 3cchoice)', () => {

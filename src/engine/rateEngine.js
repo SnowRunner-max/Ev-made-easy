@@ -1,5 +1,9 @@
-import { getPacificHour, buildPacificTime } from '../utils/pacificTime';
+import {
+  assertValidDate, getPacificFractionalHour, buildPacificTime,
+  getPacificTimeCandidates, getPacificDayTransitions,
+} from '../utils/pacificTime';
 import { PERIOD_COLORS } from '../constants/periodColors';
+import { getScheduleHourShift } from './schedulePolicy';
 
 // Period labels and color schemes now live in constants/periodColors.js.
 // Re-exported here so existing engine consumers keep working.
@@ -14,6 +18,7 @@ const PACIFIC_MONTH_FMT = new Intl.DateTimeFormat('en-US', {
 
 const PACIFIC_DATE_STR_FMT = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'America/Los_Angeles',
+  year: 'numeric', month: '2-digit', day: '2-digit',
 });
 
 const PACIFIC_WEEKDAY_FMT = new Intl.DateTimeFormat('en-US', {
@@ -26,8 +31,9 @@ function getPacificMonth(date) {
 }
 
 export function getPacificDateStr(date) {
-  // en-CA locale produces YYYY-MM-DD format
-  return PACIFIC_DATE_STR_FMT.format(date);
+  assertValidDate(date);
+  const parts = Object.fromEntries(PACIFIC_DATE_STR_FMT.formatToParts(date).map(p => [p.type, p.value]));
+  return `${parts.year.padStart(4, '0')}-${parts.month}-${parts.day}`;
 }
 
 function getPacificDayOfWeek(date) {
@@ -36,59 +42,64 @@ function getPacificDayOfWeek(date) {
   return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(dayName);
 }
 
-// Cache of FERC holiday dates per year, since the computation is pure but repeated often.
-const fercHolidayCache = new Map();
+// Retained legacy observation assumption, NOT a verified shared FERC calendar.
+const holidayCache = new Map();
 
 /**
- * Computes FERC-observed holiday dates for a given year.
- * Both PG&E and SCE follow the same FERC holiday calendar.
+ * Computes the existing assumed holiday dates for a nominal holiday year.
+ * Residential Saturday/Sunday observation remains verification-gated. PG&E's
+ * non-residential TOU holiday page has different Saturday treatment and cannot
+ * establish the EV-B/E-TOU-D residential policy by itself. Do not infer that
+ * other utilities share this policy.
  * Returns an array of 'YYYY-MM-DD' strings.
  */
-function getFercHolidayDates(year) {
-  if (fercHolidayCache.has(year)) return fercHolidayCache.get(year);
+function getAssumedHolidayDates(year) {
+  if (holidayCache.has(year)) return holidayCache.get(year);
 
   // nthWeekday: weekday 0=Sun..6=Sat; n>0 for nth occurrence, n<0 for last
   function nthWeekday(y, month, weekday, n) {
-    const first = new Date(y, month - 1, 1);
-    const firstOcc = 1 + ((weekday - first.getDay() + 7) % 7);
-    if (n > 0) return new Date(y, month - 1, firstOcc + (n - 1) * 7);
-    const lastDay = new Date(y, month, 0).getDate();
+    const first = new Date(Date.UTC(y, month - 1, 1));
+    const firstOcc = 1 + ((weekday - first.getUTCDay() + 7) % 7);
+    if (n > 0) return new Date(Date.UTC(y, month - 1, firstOcc + (n - 1) * 7));
+    const lastDay = new Date(Date.UTC(y, month, 0)).getUTCDate();
     let last = firstOcc;
     while (last + 7 <= lastDay) last += 7;
-    return new Date(y, month - 1, last);
+    return new Date(Date.UTC(y, month - 1, last));
   }
 
   // Observed date: Sat -> Fri, Sun -> Mon
   function observed(date) {
-    const day = date.getDay();
-    if (day === 6) return new Date(date.getFullYear(), date.getMonth(), date.getDate() - 1);
-    if (day === 0) return new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+    const day = date.getUTCDay();
+    if (day === 6) return new Date(date.getTime() - 86_400_000);
+    if (day === 0) return new Date(date.getTime() + 86_400_000);
     return date;
   }
 
   function fmt(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    return date.toISOString().slice(0, 10);
   }
 
   const dates = [
-    fmt(observed(new Date(year, 0, 1))),    // New Year's Day
+    fmt(observed(new Date(Date.UTC(year, 0, 1)))),    // New Year's Day
     fmt(nthWeekday(year, 2, 1, 3)),          // Presidents' Day: 3rd Monday of Feb
     fmt(nthWeekday(year, 5, 1, -1)),         // Memorial Day: last Monday of May
-    fmt(observed(new Date(year, 6, 4))),     // Independence Day
+    fmt(observed(new Date(Date.UTC(year, 6, 4)))),     // Independence Day
     fmt(nthWeekday(year, 9, 1, 1)),          // Labor Day: 1st Monday of Sep
-    fmt(observed(new Date(year, 10, 11))),   // Veterans Day
+    fmt(observed(new Date(Date.UTC(year, 10, 11)))),   // Veterans Day
     fmt(nthWeekday(year, 11, 4, 4)),         // Thanksgiving: 4th Thursday of Nov
-    fmt(observed(new Date(year, 11, 25))),   // Christmas Day
+    fmt(observed(new Date(Date.UTC(year, 11, 25)))),   // Christmas Day
   ];
 
-  fercHolidayCache.set(year, dates);
+  if (holidayCache.size >= 128) holidayCache.delete(holidayCache.keys().next().value);
+  holidayCache.set(year, dates);
   return dates;
 }
 
 // --- Exported functions ---
 
 /**
- * Returns whether the given date is a FERC-recognized holiday in Pacific Time.
+ * Returns whether the Pacific date matches the retained holiday assumption.
+ * This is an internally consistent calendar, not verified tariff observation.
  * EV-B and E-TOU-D TOU periods change on holidays.
  * @param {Date} date
  * @returns {boolean}
@@ -96,7 +107,7 @@ function getFercHolidayDates(year) {
 export function isHoliday(date) {
   const dateStr = getPacificDateStr(date);
   const year = parseInt(dateStr.split('-')[0]);
-  return getFercHolidayDates(year).includes(dateStr);
+  return [year - 1, year, year + 1].some(y => getAssumedHolidayDates(y).includes(dateStr));
 }
 
 /**
@@ -107,6 +118,7 @@ export function isHoliday(date) {
  * @returns {'summer' | 'winter' | null}
  */
 export function getSeason(date, planConfig) {
+  assertValidDate(date);
   if (!planConfig.seasons) return null;
   const month = getPacificMonth(date);
   const { startMonth, endMonth } = planConfig.seasons.summer;
@@ -145,6 +157,7 @@ function buildScheduleForDay(date, planConfig) {
   const dow = getPacificDayOfWeek(date);
   const isWeekend = dow === 0 || dow === 6;
   const holiday = isHoliday(date);
+  const hourShift = getScheduleHourShift(getPacificDateStr(date), planConfig);
 
   const blocks = [];
 
@@ -155,9 +168,13 @@ function buildScheduleForDay(date, planConfig) {
       if (!win.start) continue; // offPeak sentinel has no start
       if (!windowApplies(win.days, isWeekend, holiday)) continue;
 
-      const startHour = parseInt(win.start.split(':')[0]);
-      const rawEnd = parseInt(win.end.split(':')[0]);
-      const endHour = rawEnd === 0 ? 24 : rawEnd; // midnight = end of day
+      const parseHour = value => {
+        const [hour, minute] = value.split(':').map(Number);
+        return hour + minute / 60;
+      };
+      const startHour = parseHour(win.start) + hourShift;
+      const rawEnd = parseHour(win.end);
+      const endHour = (rawEnd === 0 ? 24 : rawEnd) + hourShift;
 
       blocks.push({ period, startHour, endHour });
     }
@@ -190,8 +207,9 @@ function buildScheduleForDay(date, planConfig) {
  * @returns {'peak' | 'partPeak' | 'offPeak'}
  */
 export function getCurrentPeriod(date, planConfig) {
+  assertValidDate(date);
   if (!planConfig.touPeriods) return 'offPeak';
-  const hour = getPacificHour(date);
+  const hour = getPacificFractionalHour(date);
   const schedule = buildScheduleForDay(date, planConfig);
   const block = schedule.find(b => hour >= b.startHour && hour < b.endHour);
   return block ? block.period : 'offPeak';
@@ -209,7 +227,26 @@ export function getCurrentPeriod(date, planConfig) {
  * @param {'bundled'|null} [provider]
  * @returns {{ period, season, rate, generation, delivery, periodLabel, colorScheme }}
  */
+function getRateValues(planConfig, season, period, provider) {
+  if (provider === 'bundled') {
+    const delivery = planConfig.rates.delivery[season][period];
+    const generation = planConfig.rates.generation[season][period];
+    return {
+      rate: planConfig.rates.totalBundled[season][period],
+      delivery, generation, components: { delivery, generation },
+    };
+  }
+  const cell = planConfig.rates[season][period];
+  return {
+    rate: cell.combined,
+    delivery: cell.delivery,
+    generation: cell.generation,
+    components: cell.components ?? { delivery: cell.delivery, generation: cell.generation },
+  };
+}
+
 export function getRate(date, planConfig, provider = null) {
+  assertValidDate(date);
   if (!planConfig.touPeriods) {
     // E-1 tiered plan — flat rate, no TOU periods; _flatRate set by getEffectiveConfig
     const flat = planConfig._flatRate;
@@ -219,6 +256,7 @@ export function getRate(date, planConfig, provider = null) {
       rate: flat ? flat.combined : null,
       generation: flat ? flat.generation : null,
       delivery: flat ? flat.delivery : null,
+      components: flat ? (flat.components ?? { delivery: flat.delivery, generation: flat.generation }) : null,
       periodLabel: 'Flat Rate',
       colorScheme: 'emerald',
     };
@@ -228,58 +266,64 @@ export function getRate(date, planConfig, provider = null) {
   const season = getSeason(date, planConfig);
   const { label: periodLabel, colorScheme } = PERIOD_DISPLAY[period];
 
-  let rate, delivery, generation;
-
-  if (provider === 'bundled') {
-    rate = planConfig.rates.totalBundled[season][period];
-    delivery = planConfig.rates.delivery[season][period];
-    generation = planConfig.rates.generation[season][period];
-  } else {
-    // Default: read pre-computed combined set by getEffectiveConfig() in App.jsx
-    const rateData = planConfig.rates[season][period];
-    rate = rateData.combined;
-    delivery = rateData.delivery;
-    generation = rateData.generation;
-  }
-
-  return { period, season, rate, generation, delivery, periodLabel, colorScheme };
+  return { period, season, ...getRateValues(planConfig, season, period, provider), periodLabel, colorScheme };
 }
 
 /**
- * Returns the next time the TOU period will change, and the new period/rate.
- * For tiered plans, returns a far-future sentinel (no rate changes).
+ * Returns the next strictly-future schedule/day/offset boundary for integration.
+ * Midnight is retained even when rate/period do not change. Both occurrences
+ * of repeated wall-clock boundaries and the DST reset/jump are considered.
  * @param {Date} date
  * @param {Object} planConfig
  * @returns {{ time: Date, newPeriod: string, newRate: number }}
  */
-export function getNextRateChange(date, planConfig, provider = null) {
-  if (!planConfig.touPeriods) {
-    // Tiered plan — no rate changes
-    return {
-      time: new Date(date.getTime() + 365 * 24 * 60 * 60 * 1000),
-      newPeriod: 'offPeak',
-      newRate: null,
-    };
-  }
-
-  const hour = getPacificHour(date);
+export function getNextIntegrationBoundary(date, planConfig, provider = null) {
+  assertValidDate(date);
   const dateStr = getPacificDateStr(date);
   const schedule = buildScheduleForDay(date, planConfig);
-
-  // Extract sorted boundary hours (each block's endHour, excluding the final 24)
-  const boundaries = schedule
-    .map(b => b.endHour)
-    .filter(h => h < 24)
-    .sort((a, b) => a - b);
-
-  const nextBoundaryHour = boundaries.find(b => b > hour);
-  const isNextDay = nextBoundaryHour === undefined;
-  const targetHour = isNextDay ? 0 : nextBoundaryHour;
-
-  const time = buildPacificTime(dateStr, targetHour, isNextDay);
+  const hours = [...new Set(schedule.flatMap(b => [b.startHour, b.endHour]))]
+    .filter(hour => hour > 0 && hour < 24);
+  const candidates = [
+    buildPacificTime(dateStr, 0, true),
+    ...getPacificDayTransitions(dateStr),
+    ...hours.flatMap(hour => getPacificTimeCandidates(dateStr, hour)),
+  ].filter(time => time.getTime() > date.getTime());
+  const time = new Date(Math.min(...candidates.map(candidate => candidate.getTime())));
+  if (!Number.isFinite(time.getTime()) || time.getTime() <= date.getTime()) {
+    throw new RangeError('No strictly-future Pacific integration boundary');
+  }
   const { rate: newRate, period: newPeriod } = getRate(time, planConfig, provider);
 
   return { time, newPeriod, newRate };
+}
+/**
+ * Next actual total-price change, not just a period label/day boundary.
+ * Returns null for flat/uniform rates or when the configured repeating annual
+ * schedule has no change in the next 370 days. Never rounds tariff precision.
+ * Consumers must handle null rather than displaying a fabricated countdown.
+ */
+export function getNextRateChange(date, planConfig, provider = null) {
+  assertValidDate(date);
+  if (!planConfig.touPeriods) return null;
+  const currentRate = getRate(date, planConfig, provider).rate;
+  if (!Number.isFinite(currentRate)) throw new RangeError('Expected a finite TOU price');
+  const cells = provider === 'bundled'
+    ? Object.values(planConfig.rates.totalBundled).flatMap(season => Object.values(season))
+    : Object.values(planConfig.rates).flatMap(season => Object.values(season).map(cell => cell.combined));
+  if (cells.every(rate => rate === currentRate)) return null;
+
+  const deadline = date.getTime() + 370 * 86_400_000;
+  let cursor = date;
+  // Day/schedule boundaries always advance; the absolute horizon bounds work
+  // even for a config whose differently priced cells never actually apply.
+  while (cursor.getTime() < deadline) {
+    const next = getNextIntegrationBoundary(cursor, planConfig, provider);
+    if (next.time.getTime() > deadline) break;
+    if (!Number.isFinite(next.newRate)) throw new RangeError('Expected a finite TOU price');
+    if (next.newRate !== currentRate) return next;
+    cursor = next.time;
+  }
+  return null;
 }
 
 /**
@@ -293,26 +337,15 @@ export function getNextRateChange(date, planConfig, provider = null) {
  * @returns {Array<{ startHour, endHour, period, rate, generation, delivery, periodLabel, colorScheme }>}
  */
 export function getDaySchedule(date, planConfig, provider = null) {
+  assertValidDate(date);
   if (!planConfig.touPeriods) return [];
 
   const season = getSeason(date, planConfig);
   const blocks = buildScheduleForDay(date, planConfig);
 
   return blocks.map(block => {
-    let rate, delivery, generation;
-
-    if (provider === 'bundled') {
-      rate = planConfig.rates.totalBundled[season][block.period];
-      delivery = planConfig.rates.delivery[season][block.period];
-      generation = planConfig.rates.generation[season][block.period];
-    } else {
-      const rateData = planConfig.rates[season][block.period];
-      rate = rateData.combined;
-      delivery = rateData.delivery;
-      generation = rateData.generation;
-    }
 
     const { label: periodLabel, colorScheme } = PERIOD_DISPLAY[block.period];
-    return { ...block, rate, generation, delivery, periodLabel, colorScheme };
+    return { ...block, ...getRateValues(planConfig, season, block.period, provider), periodLabel, colorScheme };
   });
 }

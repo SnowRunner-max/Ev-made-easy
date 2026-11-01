@@ -22,6 +22,8 @@ const summary = {
   to80: {
     kwhNeeded: 50,
     costNow: 10,
+    meteredKwh: 50,
+    componentCosts: { delivery: 6, generation: 4 },
   },
 };
 
@@ -42,6 +44,18 @@ describe('CostFacts', () => {
     expect(screen.getByText('$6.00')).toBeInTheDocument();
     expect(screen.getAllByText('SDCP Generation')).toHaveLength(2);
     expect(screen.getByText('$4.00')).toBeInTheDocument();
+  });
+
+  it('shows integrated subtotals instead of the starting-rate products', () => {
+    render(<CostFacts planConfig={planConfig}
+      summary={{ to80: { kwhNeeded: 50, meteredKwh: 60, costNow: 15,
+        componentCosts: { delivery: 9, generation: 5, pcia: 1 } } }}
+      currentRate={{ period: 'offPeak', season: 'winter' }} />);
+    expect(screen.getByText('$9.00')).toBeInTheDocument();
+    expect(screen.getByText('$5.00')).toBeInTheDocument();
+    expect(screen.getByText('$1.00')).toBeInTheDocument();
+    expect(screen.getByText('$15.00')).toBeInTheDocument();
+    expect(screen.getByText('$0.2500')).toBeInTheDocument();
   });
 
   it('renders nothing when the active period has no rate data', () => {

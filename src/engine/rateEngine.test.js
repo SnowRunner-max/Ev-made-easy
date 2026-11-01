@@ -10,6 +10,7 @@ import {
   isHoliday,
   getRate,
   getNextRateChange,
+  getNextIntegrationBoundary,
   getDaySchedule,
 } from './rateEngine';
 
@@ -403,7 +404,7 @@ describe('getNextRateChange — E-TOU-C (provider=bundled)', () => {
 
 describe('getNextRateChange — Liberty D-1 TOU EV seasonal boundary (provider=bundled)', () => {
   it('rolls Sep 30 late-night summer service into Oct 1 winter service at midnight', () => {
-    const r = getNextRateChange(new Date('2026-09-30T23:00:00-07:00'), libertyTouEvConfig, 'bundled');
+    const r = getNextIntegrationBoundary(new Date('2026-09-30T23:00:00-07:00'), libertyTouEvConfig, 'bundled');
 
     expect(r.time.toISOString()).toBe('2026-10-01T07:00:00.000Z');
     expect(r.newPeriod).toBe('offPeak');

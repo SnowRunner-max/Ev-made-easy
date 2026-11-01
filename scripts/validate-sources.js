@@ -2,7 +2,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { PATHS, fileSha256, readJson } from './territory-utils.js';
+import { PATHS, readJson } from './territory-utils.js';
+import { sourceFingerprint } from './source-utils.js';
 
 const repoRoot = PATHS.repoRoot;
 const defaultCatalogPath = path.join(repoRoot, 'data-sources/source-catalog.json');
@@ -12,6 +13,28 @@ export function validateSources({ catalogPath = defaultCatalogPath, manifestPath
   const errors = [];
   let rateFileCount = 0;
   let territoryFileCount = 0;
+  function validateFile(absolutePath, relativePath, expected, kind) {
+    let actual;
+    try {
+      actual = sourceFingerprint(absolutePath, relativePath);
+    } catch (error) {
+      if (error.code === 'ENOENT') {
+        errors.push(`Missing ${kind}source file: ${relativePath}`);
+      } else if (error.code === 'UNHYDRATED_LFS_POINTER') {
+        errors.push(error.message);
+      } else {
+        throw error;
+      }
+      return;
+    }
+
+    if (expected.bytes !== undefined && actual.bytes !== expected.bytes) {
+      errors.push(`Size mismatch for ${relativePath}: expected ${expected.bytes} bytes, found ${actual.bytes}`);
+    }
+    if (actual.sha256 !== expected.sha256) {
+      errors.push(`Hash mismatch for ${relativePath}`);
+    }
+  }
 
   if (!fs.existsSync(catalogPath)) {
     errors.push('Missing data-sources/source-catalog.json. Run npm run sources:catalog.');
@@ -29,15 +52,7 @@ export function validateSources({ catalogPath = defaultCatalogPath, manifestPath
     for (const file of group.files ?? []) {
       rateFileCount += 1;
       const absolutePath = path.join(catalogRoot, file.path);
-      if (!fs.existsSync(absolutePath)) {
-        errors.push(`Missing source file: ${file.path}`);
-        continue;
-      }
-
-      const sha256 = fileSha256(absolutePath);
-      if (sha256 !== file.sha256) {
-        errors.push(`Hash mismatch for ${file.path}`);
-      }
+      validateFile(absolutePath, file.path, file, '');
     }
   }
 
@@ -49,15 +64,7 @@ export function validateSources({ catalogPath = defaultCatalogPath, manifestPath
 
       territoryFileCount += 1;
       const absolutePath = path.join(manifestRoot, source.localPath);
-      if (!fs.existsSync(absolutePath)) {
-        errors.push(`Missing territory source file: ${source.localPath}`);
-        continue;
-      }
-
-      const sha256 = fileSha256(absolutePath);
-      if (sha256 !== source.sha256) {
-        errors.push(`Hash mismatch for ${source.localPath}`);
-      }
+      validateFile(absolutePath, source.localPath, source, 'territory ');
     }
   }
 

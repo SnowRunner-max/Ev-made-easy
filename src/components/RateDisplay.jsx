@@ -4,7 +4,7 @@ import { PERIOD_COLORS } from '../constants/periodColors';
 
 export default function RateDisplay({ planConfig, currentRate }) {
   const { period, rate, season, periodLabel, nextChange } = currentRate;
-  const { formatted } = useCountdown(nextChange.time);
+  const { formatted } = useCountdown(nextChange?.time);
 
   // E-1 tiered plan — no TOU
   if (!planConfig.touPeriods) {
@@ -30,6 +30,7 @@ export default function RateDisplay({ planConfig, currentRate }) {
           {rate != null && <span className="text-2xl font-normal opacity-50 tracking-normal">/kWh</span>}
         </div>
         <p className="text-sm text-pewter/60 mt-3">{planConfig.name} · No time-based pricing</p>
+        {rate != null && <p data-testid="precise-rate" className="text-xs text-pewter/60 mt-2">Effective energy rate: ${rate.toFixed(5)}/kWh</p>}
       </div>
     );
   }
@@ -37,8 +38,9 @@ export default function RateDisplay({ planConfig, currentRate }) {
   const colors    = PERIOD_COLORS[period] ?? PERIOD_COLORS.offPeak;
   const pillClass = colors.pillClass;
   const dotColor  = colors.pillDotColor;
-  const nextLabel = PERIOD_DISPLAY[nextChange.newPeriod]?.label ?? 'Next rate';
-  const direction = nextChange.newRate > rate ? 'rises to' : 'drops to';
+  const nextLabel = PERIOD_DISPLAY[nextChange?.newPeriod]?.label ?? 'Next rate';
+  const direction = nextChange?.newRate > rate ? 'rises to' : 'drops to';
+  const hasPriceChange = nextChange && Math.abs(nextChange.newRate - rate) > 1e-9;
 
   return (
     <div className="mb-3">
@@ -68,12 +70,13 @@ export default function RateDisplay({ planConfig, currentRate }) {
       </div>
 
       {/* Season / plan sublabel */}
+      <p data-testid="precise-rate" className="text-xs text-pewter/60 mt-2">Effective energy rate: ${rate.toFixed(5)}/kWh</p>
       <p className="text-xs text-pewter/50 mt-2 mb-5">
         {season === 'summer' ? 'Summer' : 'Winter'} · {planConfig.name}
       </p>
 
       {/* Countdown */}
-      <div
+      {hasPriceChange && <div
         data-testid="countdown"
         className="flex items-center gap-2 text-sm text-pewter/60"
       >
@@ -83,10 +86,10 @@ export default function RateDisplay({ planConfig, currentRate }) {
         </svg>
         <span>
           {nextLabel} {direction}{' '}
-          <span className="font-semibold text-white">${nextChange.newRate.toFixed(2)}/kWh</span>
+          <span className="font-semibold text-white">${nextChange.newRate.toFixed(5)}/kWh</span>
           {' '}in <span className="font-semibold text-white">{formatted}</span>
         </span>
-      </div>
+      </div>}
 
       <div className="mt-3 border-t border-white/[0.08]" />
     </div>

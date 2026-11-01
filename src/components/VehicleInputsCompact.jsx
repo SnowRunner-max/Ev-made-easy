@@ -42,6 +42,7 @@ export default function VehicleInputsCompact({
             value={customKwh}
             onChange={e => onCustomKwhChange(e.target.value)}
             placeholder="Battery size"
+            aria-label="Custom battery size in kWh"
             className="w-24 px-3 py-2 text-sm bg-surface-container-highest border-none rounded-lg focus:outline-none focus:ring-2 focus:ring-paprika/20"
           />
           <span className="text-xs text-[var(--text-muted)]">kWh</span>

@@ -21,10 +21,10 @@ export function useCountdown(targetTime) {
 
   useSmartInterval(
     () => setNow(new Date()),
-    () => targetTime.getTime() - Date.now(),
-    [targetTime]
+    wallNow => targetTime ? targetTime.getTime() - wallNow : Infinity,
+    [targetTime?.getTime()]
   );
 
-  const msRemaining = Math.max(0, targetTime.getTime() - now.getTime());
+  const msRemaining = targetTime ? Math.max(0, targetTime.getTime() - now.getTime()) : 0;
   return { msRemaining, formatted: formatTimeRemaining(msRemaining) };
 }

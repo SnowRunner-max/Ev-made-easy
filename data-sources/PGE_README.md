@@ -1,7 +1,7 @@
 # PG&E Rate Data — Structure Reference
 
-**Source of truth:** `src/data/ratePlans.json` (schema v3.0)
-**Territory:** Pacific Gas & Electric (PG&E), Buellton CA, baseline territory **P**
+**Derived snapshot:** `src/data/ratePlans.json` (schema v3.0); official tariffs/workbooks remain authoritative.
+**Territory:** Pacific Gas & Electric (PG&E), including Buellton CA. Baseline territory **P** in metadata is not a universal household allowance.
 **Current tariffs:** PG&E Advice Letter 7846-E (eff. 2026-03-01) · 3CE Rate Sheet v29 (eff. 2026-02-15)
 
 This document describes the live shape of `ratePlans.json`. If you only need to know what a field means or where a value lives, this is the right file.
@@ -29,10 +29,10 @@ This document describes the live shape of `ratePlans.json`. If you only need to 
 | `pgeAdviceLetter` | `"7846-E"` | Most recent PG&E tariff filing feeding these rates. |
 | `pgeEffectiveDate` | `"2026-03-01"` | Effective date of PG&E rate values. |
 | `cceRateSheetDate` | `"2026-02-15"` | Effective date of the 3CE rate sheet used. |
-| `pciaVintage` | `"2021"` | Vintage used for Buellton's PCIA exit fee. |
+| `pciaVintage` | `"2021"` | Legacy reference only; actual vintage must come from the account, never ZIP. |
 | `pciaRate` | `0.05264` | $/kWh PCIA added to CCA generation customers. |
 | `franchiseFeeRate` | `0.00048` | $/kWh franchise fee added to CCA generation customers. |
-| `holidays` | 8 entries | Names of PG&E-observed holidays. **Only EV-B uses holidays** (weekend schedule applies). |
+| `holidays` | 8 entries | Named holidays affect EV-B and E-TOU-D. Residential weekend observation remains unverified. |
 | `notes` | array | Invariants, CCA-specific caveats, and schema notes. |
 
 ---
@@ -100,7 +100,7 @@ Per-season map of period → window(s). A period's value can be a single object 
 }
 ```
 
-`days` values seen in the data: `"all"`, `"weekdays"`, `"weekdaysExceptHolidays"`, `"weekendsAndHolidays"`. **Holidays affect EV-B only.** `E-1.touPeriods = null`.
+`days` values seen in the data: `"all"`, `"weekdays"`, `"weekdaysExceptHolidays"`, `"weekendsAndHolidays"`. Holidays affect EV-B and E-TOU-D; the retained Saturday/Sunday observation assumption is not tariff-verified. `E-1.touPeriods = null`. EV-B shoulder exceptions are implemented in `src/engine/schedulePolicy.js`, not the raw windows.
 
 **Per-plan period count:**
 
@@ -196,13 +196,13 @@ Each plan has a `ccaGeneration` map keyed by CCA slug. Each CCA has a `name`, a 
 
 **CCA caveats (read these before using CCA rates):**
 
-- **Ava**: rates embed System Fees ($0.05115/kWh). **Do not add PCIA/FF on top.**
+- **Ava**: the stored embedded-System-Fees note is unverified. Existing numeric behavior is retained with a warning; do not infer correct PCIA/FF treatment from the note.
 - **Pioneer**: blended flat rates — same value for every period/season.
 - **KCCP**: blended flat rates; only appears on `E-1` and `E-TOU-C`.
 - **SVCE**: uses TOU-specific April 2025 table (not the 2026 blended table).
 - **RCEA EV-B**: sourced from now-eliminated EV-A schedule; EV-B is the successor.
 - **EV-B CCAs**: `pioneer` and `kccp` are not listed on EV-B.
-- **Applying PCIA + FF**: PG&E bills `pciaRate` + `franchiseFeeRate` on top of CCA generation as separate per-kWh charges (except for Ava — see above).
+- **Applying PCIA + FF**: Verified standard 3CE composition removes bundled PCIA from stored delivery, then adds account-vintage PCIA and franchise fee. Other CCAs and exempt customer groups need separate verification; never apply Buellton's reference fees globally.
 
 ---
 
@@ -213,7 +213,7 @@ Each plan has a `ccaGeneration` map keyed by CCA slug. Each CCA has a `name`, a 
 - **E-TOU-C, E-TOU-D** — Two periods only, no part-peak. E-TOU-C has a baseline credit applied externally (not embedded in rate cells).
 - **E-1** — Tiered, 24/7. Tier 2 in `totalBundled` collapses the old 101–400% and over-400% tiers.
 - **Base Services Charge** ($0.79/day, income tier 3 Buellton) — footnote only, not in per-kWh math.
-- **PCIA vintage** — Buellton = 2021 → `pciaRate: 0.05264`.
+- **PCIA vintage** — Account-specific. The supplied statement verifies 2021 for one account; unknown vintage is a warned standard 2021 reference, not a geographic fact.
 - **EV-A** — eliminated 2025-11-30. EV-B is the correct separately-metered plan.
 
 ---
@@ -226,16 +226,18 @@ rate = rates.delivery[season][period] + rates.generation[season][period]
      = rates.totalBundled[season][period]
 ```
 
-**CCA customer (e.g. 3CE 3Cchoice):**
+**Standard non-exempt 3CE 3Cchoice, explicit 2021 vintage:**
 ```
 rate = rates.delivery[season][period]
+     - (-0.01011)  // remove bundled PCIA credit retained in stored delivery
      + rates.ccaGeneration["3ce"].tiers["3cchoice"][season][period]
-     + _metadata.pciaRate
-     + _metadata.franchiseFeeRate
+     + 0.05264     // 2021 PCIA, not a universal account vintage
+     + 0.00048     // 2021 franchise fee
+     + 0.00030     // verified 2026 state energy surcharge
 ```
-*(Skip PCIA + FF for Ava — already embedded.)*
+Winter EV2-A off-peak is $0.27814/kWh under those assumptions. Bundled published totals above exclude the separately included state surcharge. `src/data/pgeChargePolicy.js` holds the source-backed vintage policy; exemptions and other-provider fees are not fabricated.
 
-Multi-hour charging spans multiple periods. Walk each period individually; do not average.
+Multi-hour charging spans multiple periods. Integrate metered energy and every component on the same boundaries before displaying a weighted session average. E-1 and E-TOU-C require explicit baseline assumptions; E-TOU-C's proportional billing-period allocation is not reproduced by incremental session splitting. NEM2 settlement and fixed charges are excluded.
 
 ---
 

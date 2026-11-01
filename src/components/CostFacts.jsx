@@ -79,7 +79,8 @@ function RateTable({ rates, seasons }) {
 export default function CostFacts({ planConfig, summary, globalMetadata, serviceArea, provider, currentRate }) {
   const { period, season } = currentRate;
 
-  if (!planConfig.touPeriods || !summary?.to80) {
+  const session = summary?.to80 ?? summary?.to100;
+  if (!session) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <p className="text-sm text-pewter/60 text-center">Select a vehicle and charge level to see cost breakdown.</p>
@@ -87,14 +88,15 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
     );
   }
 
-  const rateData = planConfig.rates[season]?.[period];
+  const rateData = planConfig._flatRate ?? planConfig.rates[season]?.[period];
   if (!rateData) return null;
 
-  const kwh = summary.to80.kwhNeeded;
-  const deliveryCost = rateData.delivery * kwh;
-  const generationCost = rateData.generation * kwh;
-  const totalCost = summary.to80.costNow;
-  const costPerKwh = rateData.combined;
+  const kwh = session.meteredKwh ?? session.kwhNeeded;
+  const componentCosts = session.componentCosts ?? {};
+  const deliveryCost = componentCosts.delivery ?? 0;
+  const generationCost = componentCosts.generation ?? 0;
+  const totalCost = session.costNow;
+  const costPerKwh = kwh ? totalCost / kwh : 0;
   const deliveryLabel = planConfig.deliveryLabel ?? 'Utility Delivery';
   const generationLabel = planConfig.generationLabel ?? 'Generation';
 
@@ -121,7 +123,7 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
       {/* Total */}
       <div className="mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-pewter/50 mb-2">
-          Total · Charge to 80%
+          Total · Charge to {summary.to80 ? '80%' : '100%'}
         </p>
         <div className="flex items-baseline gap-2">
           <span className="font-display font-bold text-white" style={{ fontSize: '52px', letterSpacing: '-2px' }}>
@@ -134,18 +136,23 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
       {/* Delivery group */}
       <div className="mb-4">
         <SectionHeader label={deliveryLabel} right={`$${deliveryCost.toFixed(2)}`} />
-        <KV label="Delivery charges" value={`$${rateData.delivery.toFixed(4)}/kWh`} />
+        <KV label="Delivery charges" value={`$${(deliveryCost / kwh).toFixed(4)}/kWh session average`} />
       </div>
 
       {/* Generation group */}
       <div className="mb-4">
         <SectionHeader label={generationLabel} right={`$${generationCost.toFixed(2)}`} />
-        <KV label={generationLabel} value={`$${rateData.generation.toFixed(4)}/kWh`} />
+        <KV label={generationLabel} value={`$${(generationCost / kwh).toFixed(4)}/kWh session average`} />
       </div>
 
       {/* Cost per kWh */}
+      {Object.entries(componentCosts).filter(([key, value]) => !['delivery', 'generation'].includes(key) && Math.abs(value) > 1e-9).map(([key, value]) => (
+        <KV key={key} label={({ pcia: 'PCIA', franchiseFee: 'Franchise fee', energySurcharge: 'State energy surcharge', baselineCredit: 'Baseline credit' })[key] ?? key}
+          value={`$${value.toFixed(2)}`} />
+      ))}
+      <p className="text-[10px] text-pewter/50 mb-3">Integrated across the session; individual amounts are rounded for display. Energy shown is metered grid import.</p>
       <div className="mb-5 pt-1 border-t border-white/10">
-        <KV label="Cost per kWh" value={`$${costPerKwh.toFixed(4)}`} prominent />
+        <KV label="Session average per metered kWh" value={`$${costPerKwh.toFixed(4)}`} prominent />
       </div>
 
       {/* Published per-kWh rate table */}

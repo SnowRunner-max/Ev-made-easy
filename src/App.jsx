@@ -34,6 +34,11 @@ export default function App() {
   });
   const [planId, setPlanId] = useState('EV2-A');
   const [provider, setProvider] = useState('pge');
+  const [confirmedProvider, setConfirmedProvider] = useState(null);
+  const [pciaVintage, setPciaVintage] = useState('');
+  const [baselineTier, setBaselineTier] = useState('');
+  const [baselineRemainingKwh, setBaselineRemainingKwh] = useState('');
+  const [efficiencyPct, setEfficiencyPct] = useState(100);
   const [ccaTier, setCcaTier] = useState(null); // null = use CCA's defaultTier
   const [selectedVehicleId, setSelectedVehicleId] = useState(vehiclesData.vehicles[0].id);
   const [customKwh, setCustomKwh] = useState('');
@@ -58,6 +63,10 @@ export default function App() {
       const newArea = serviceAreasData.serviceAreas[resolved.serviceAreaId];
       setPlanId(newArea.defaultPlanId);
       setProvider(newArea.defaultProvider);
+      setConfirmedProvider(null);
+      setPciaVintage('');
+      setBaselineTier('');
+      setBaselineRemainingKwh('');
       setCcaTier(null);
     }
     setLocationResult(resolved);
@@ -69,6 +78,7 @@ export default function App() {
 
   function handleProviderChange(newProvider) {
     setProvider(newProvider);
+    setConfirmedProvider(newProvider);
     setCcaTier(null); // reset tier when switching CCA
   }
 
@@ -83,10 +93,18 @@ export default function App() {
   }
 
   const effectivePlanConfig = useMemo(
-    () => buildEffectivePlanConfig({ planConfig: activePlanConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier }),
-    [activePlanConfig, serviceArea, effectiveProvider, effectiveTier]
+    () => buildEffectivePlanConfig({
+      planConfig: activePlanConfig, serviceArea, providerId: effectiveProvider, tierId: effectiveTier,
+      accountOptions: {
+        pciaVintage: pciaVintage || undefined,
+        baselineTier: baselineTier || undefined,
+        baselineRemainingKwh: baselineRemainingKwh === '' ? undefined : Number(baselineRemainingKwh),
+        includeStateSurcharge: true,
+      },
+    }),
+    [activePlanConfig, serviceArea, effectiveProvider, effectiveTier, pciaVintage, baselineTier, baselineRemainingKwh]
   );
-  const supportsProviderToggle = !!activePlanConfig.touPeriods && providerOptions.length > 1;
+  const supportsProviderToggle = providerOptions.length > 1;
 
   const isCustomVehicle = selectedVehicleId === CUSTOM_ID;
   const selectedVehicle = vehiclesData.vehicles.find(v => v.id === selectedVehicleId);
@@ -98,12 +116,25 @@ export default function App() {
 
   const currentRate = useCurrentRate(effectivePlanConfig);
 
-  const summary = useMemo(
-    () => hasValidLocation && batteryKwh > 0 && summaryPct < 100
-      ? calcChargeSummary(new Date(), batteryKwh, summaryPct, chargerKw, effectivePlanConfig)
-      : null,
-    [hasValidLocation, batteryKwh, summaryPct, chargerKw, effectivePlanConfig, currentRate.period]
+  const calculation = useMemo(
+    () => {
+      if (!hasValidLocation || batteryKwh <= 0 || summaryPct >= 100) return { summary: null };
+      try {
+        return { summary: calcChargeSummary(currentRate.now, batteryKwh, summaryPct, chargerKw, effectivePlanConfig,
+          { chargingEfficiency: efficiencyPct / 100, optimize: false }) };
+      } catch (error) {
+        if (!(error instanceof RangeError)) throw error;
+        return { summary: null, error: error.message };
+      }
+    },
+    [hasValidLocation, batteryKwh, summaryPct, chargerKw, effectivePlanConfig, currentRate.now, efficiencyPct]
   );
+  const { summary } = calculation;
+  const isReferenceEstimate = (supportsProviderToggle && confirmedProvider !== effectiveProvider)
+    || provider !== effectiveProvider
+    || (effectiveProvider === '3ce' && pciaVintage === '')
+    || (effectivePlanConfig.utilityId === 'pge' && ['E-1', 'E-TOU-C'].includes(planId)
+      && baselineTier === '' && baselineRemainingKwh === '');
 
   if (!planConfig) {
     return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
@@ -136,9 +167,7 @@ export default function App() {
               <span>
                 <span className="text-[var(--text-muted)] mr-1">Plan</span>
                 <span className="font-semibold text-ink">{planId}</span>
-                {serviceArea?.cca && (
-                  <span className="text-[var(--text-muted)]"> · {serviceArea.utility} + {serviceArea.cca}</span>
-                )}
+                <span className="text-[var(--text-muted)]"> · {!effectivePlanConfig.isBundledProvider && `${serviceArea.utility} + `}{effectivePlanConfig._displayProvider}</span>
               </span>
             </>
           )}
@@ -229,6 +258,52 @@ export default function App() {
             </div>
           </div>
 
+          {hasValidLocation && (
+            <section className="mb-6 text-sm space-y-3" aria-label="Pricing assumptions">
+              {supportsProviderToggle && confirmedProvider !== effectiveProvider && (
+                <p role="status">Confirm your generation provider using the buttons above. Location alone does not identify your account; these are provisional rates.</p>
+              )}
+              {provider !== effectiveProvider && (
+                <p role="status">Your selected provider is unavailable on this plan. Showing the bundled provider as a provisional fallback; this does not confirm your account service.</p>
+              )}
+              {effectivePlanConfig.utilityId === 'pge' && effectiveProvider === '3ce' && (
+                <>
+                  <label className="block">
+                    PCIA vintage (from your bill)
+                    <select aria-label="PCIA vintage" value={pciaVintage} onChange={e => setPciaVintage(e.target.value)} className="ml-2 bg-surface-container-high p-2 rounded">
+                      <option value="">Unknown — assumes standard non-exempt 2021</option>
+                      {Array.from({ length: 18 }, (_, i) => String(2009 + i)).map(year => <option key={year} value={year}>{year}</option>)}
+                    </select>
+                  </label>
+                  <p>3CE reference charges assume standard non-exempt service. CARE, medical and other exempt-customer-group pricing is not supported.</p>
+                </>
+              )}
+              {effectivePlanConfig.utilityId === 'pge' && ['E-1', 'E-TOU-C'].includes(planId) && (
+                <>
+                  <label className="block">Baseline assumption
+                    <select aria-label="Baseline assumption" value={baselineTier} onChange={e => { setBaselineTier(e.target.value); setBaselineRemainingKwh(''); }} className="ml-2 bg-surface-container-high p-2 rounded">
+                      <option value="">Unknown — above-baseline reference</option>
+                      <option value="tier1">Within baseline</option>
+                      <option value="tier2">Above baseline</option>
+                    </select>
+                  </label>
+                  <label className="block">Remaining baseline (metered kWh, optional)
+                    <input aria-label="Remaining baseline kWh" type="number" min="0" value={baselineRemainingKwh}
+                      onChange={e => setBaselineRemainingKwh(e.target.value === '' ? '' : String(Math.max(0, Number(e.target.value))))}
+                      className="ml-2 w-24 bg-surface-container-high p-2 rounded" />
+                  </label>
+                </>
+              )}
+              <label className="block">Wall-to-battery efficiency (%)
+                <input aria-label="Charging efficiency percent" type="number" min="1" max="100" value={efficiencyPct}
+                  onChange={e => setEfficiencyPct(Math.max(1, Math.min(100, Number(e.target.value) || 100)))}
+                  className="ml-2 w-20 bg-surface-container-high p-2 rounded" />
+              </label>
+              <p>100% assumes no charging losses; adjust for your vehicle and charger. Charger speed is wall power. Constant-power duration excludes tapering and temperature effects.</p>
+              {effectivePlanConfig._pricingWarnings?.map(warning => <p key={warning} role="note">{warning}</p>)}
+              <p>Incremental grid-import estimate, not a bill or NEM2 settlement. Excludes solar export credits, true-up balances, non-bypassable-charge reconciliation, fixed daily charges and local taxes. State energy surcharge is included where verified.</p>
+            </section>
+          )}
           {/* CURRENT CHARGE — full width */}
           <section
             data-testid="calculator"
@@ -268,6 +343,9 @@ export default function App() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-paprika/10 blur-[100px] pointer-events-none -mr-16 max-[860px]:mr-0 -mt-16" />
 
           <div className="relative z-10">
+            {hasValidLocation && isReferenceEstimate && (
+              <p data-testid="reference-estimate" className="text-sm text-pewter mb-4">Provisional reference estimate — provider, PCIA vintage or baseline assumptions are not account-confirmed.</p>
+            )}
             {!hasValidLocation ? (
               <div className="flex flex-col items-center justify-center text-center py-20 gap-4">
                 <span className="material-symbols-outlined text-4xl text-pewter/40">bolt</span>
@@ -295,6 +373,8 @@ export default function App() {
                     {isCustomVehicle ? 'Charging Cost Estimate' : `To Charge ${selectedVehicle?.name ?? 'your EV'}`}
                   </p>
                   <CostOutput summary={summary} />
+                  <p className="text-xs text-pewter/60 mt-3">Energy-only grid charging, not solar settlement or amount due. Fixed daily fees excluded.</p>
+                  {calculation.error && <p role="alert" className="text-sm text-pewter">{calculation.error} Adjust charging inputs to calculate a supported session.</p>}
                   {!summary && (
                     <p className="text-sm text-pewter">
                       {currentPct >= 100
