@@ -1,5 +1,6 @@
 import { calcChargeCost } from './costCalculator';
-import { buildPacificTime } from '../utils/pacificTime';
+import { getPacificDateStr } from './rateEngine';
+import { buildPacificTime, getPacificTimeCandidates } from '../utils/pacificTime';
 
 export function getWindowSegments(start, end) {
   if (start === end) return [[0, 24]];
@@ -37,6 +38,13 @@ export function calculateChargingWindow({
     throw new RangeError('Check battery, charger and efficiency settings.');
   const start = buildPacificTime(date, startHour);
   const end = buildPacificTime(date, endHour, endHour <= startHour);
+  // Compatible conversion keeps the earlier repeated fall time, but skipped
+  // spring times must never silently move a selected endpoint forward.
+  for (const [label, time, hour] of [['Start', start, startHour], ['End', end, endHour]]) {
+    const calendarDate = getPacificDateStr(time);
+    if (!getPacificTimeCandidates(calendarDate, hour).length)
+      throw new RangeError(label + ' time does not exist during the Pacific daylight-saving clock change. Choose a different time.');
+  }
   const windowHours = (end - start) / 3_600_000;
   if (windowHours <= 0)
     throw new RangeError(

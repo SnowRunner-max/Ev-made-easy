@@ -84,3 +84,48 @@ describe('redesign with real ZIP lookup and tariff engine', () => {
     expect(screen.getByTestId('app-header')).toHaveTextContent('San Francisco, CA');
   });
 });
+
+
+it('keeps both midnight chart endpoints reachable by keyboard', async () => {
+  render(<App />);
+  await enterZip('94103');
+  fireEvent.click(screen.getByRole('link', { name: 'Charging', exact: true }));
+  const handle = screen.getByLabelText('Charging window end on chart');
+  fireEvent.keyDown(handle, { key: 'Home' });
+  expect(handle).toHaveAttribute('aria-valuenow', '0');
+  expect(handle).toHaveStyle({ left: '0%' });
+  expect(screen.getByLabelText('Charging window end')).toHaveValue('00:00');
+  fireEvent.keyDown(handle, { key: 'ArrowRight' });
+  expect(screen.getByLabelText('Charging window end')).toHaveValue('00:15');
+  fireEvent.keyDown(handle, { key: 'End' });
+  expect(handle).toHaveAttribute('aria-valuenow', '24');
+  expect(handle).toHaveStyle({ left: '100%' });
+  fireEvent.keyDown(handle, { key: 'ArrowLeft' });
+  expect(screen.getByLabelText('Charging window end')).toHaveValue('23:45');
+});
+
+
+it('preserves left-edge midnight while dragging the end handle', async () => {
+  render(<App />);
+  await enterZip('94103');
+  fireEvent.click(screen.getByRole('link', { name: 'Charging', exact: true }));
+  const handle = screen.getByLabelText('Charging window end on chart');
+  const plot = handle.parentElement;
+  vi.spyOn(plot, 'getBoundingClientRect').mockReturnValue({ width: 240 });
+  handle.setPointerCapture = vi.fn();
+  function pointer(type, clientX) {
+    const event = new Event(type, { bubbles: true });
+    Object.defineProperties(event, {
+      clientX: { value: clientX }, button: { value: 0 }, pointerId: { value: 1 },
+    });
+    fireEvent(handle, event);
+  }
+  pointer('pointerdown', 60);
+  pointer('pointermove', 0);
+  expect(handle).toHaveAttribute('aria-valuenow', '0');
+  expect(handle).toHaveStyle({ left: '0%' });
+  pointer('pointermove', 2.5);
+  expect(screen.getByLabelText('Charging window end')).toHaveValue('00:15');
+  pointer('pointerup', 2.5);
+  expect(handle.setPointerCapture).toHaveBeenCalledWith(1);
+});

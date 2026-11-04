@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { getRate, getPacificDateStr } from '../engine/rateEngine';
 import { buildPacificTime } from '../utils/pacificTime';
 import { getWindowSegments } from '../engine/chargingWindow';
@@ -17,9 +17,12 @@ export function timeLabel(hour) {
 }
 function WindowHandle({ kind, value, onChange, plotRef, nextDay, close }) {
   const drag = useRef(null);
-  const position = kind === 'end' && value === 0 ? 24 : value;
+  // Midnight has two chart positions even though both represent hour zero.
+  const [midnightAtEnd, setMidnightAtEnd] = useState(true);
+  const position = kind === 'end' && value === 0 ? (midnightAtEnd ? 24 : 0) : value;
   const update = (hour) => {
     const h = Math.round(Math.max(0, Math.min(kind === 'start' ? 23.75 : 24, hour)) * 4) / 4;
+    setMidnightAtEnd(h === 24);
     onChange(h === 24 ? 0 : h);
   };
   return (

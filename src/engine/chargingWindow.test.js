@@ -62,3 +62,19 @@ describe('selected charging windows', () => {
     expect(getWindowSegments(0, 0)).toEqual([[0, 24]]);
   });
 });
+
+
+describe('nonexistent Pacific window endpoints', () => {
+  it.each([
+    ['2026-03-08', 1.5, 2.5],
+    ['2026-03-08', 2.5, 4],
+    ['2026-03-07', 23, 2.5],
+  ])('rejects skipped times for %s, %s to %s', (date, startHour, endHour) => {
+    expect(() => calculateChargingWindow({ ...args, date, startHour, endHour }))
+      .toThrow(/does not exist.*daylight-saving/i);
+  });
+  it('retains the earlier occurrence of repeated fall times', () => {
+    const result = calculateChargingWindow({ ...args, date: '2026-11-01', startHour: 1.5, endHour: 2.5 });
+    expect(result.windowHours).toBe(2);
+  });
+});
