@@ -2,6 +2,7 @@ export default function TierSelector({ tier, options, onChange }) {
   return (
     <div className="mt-0.5">
       <select
+        aria-label="Generation tier"
         data-testid="tier-select"
         value={tier}
         onChange={e => onChange(e.target.value)}

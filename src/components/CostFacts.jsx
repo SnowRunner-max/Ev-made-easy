@@ -123,7 +123,7 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
       {/* Total */}
       <div className="mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-pewter/50 mb-2">
-          Total · Charge to {summary.to80 ? '80%' : '100%'}
+          Total · {session.complete === false ? `Reaches ${Math.round(session.finalPct)}% of ${summary.to80 ? '80%' : '100%'} target` : `Charge to ${summary.to80 ? '80%' : '100%'}`}
         </p>
         <div className="flex items-baseline gap-2">
           <span className="font-display font-bold text-white" style={{ fontSize: '52px', letterSpacing: '-2px' }}>
@@ -136,13 +136,13 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
       {/* Delivery group */}
       <div className="mb-4">
         <SectionHeader label={deliveryLabel} right={`$${deliveryCost.toFixed(2)}`} />
-        <KV label="Delivery charges" value={`$${(deliveryCost / kwh).toFixed(4)}/kWh session average`} />
+        <KV label="Delivery charges" value={`$${(kwh ? deliveryCost / kwh : 0).toFixed(4)}/kWh session average`} />
       </div>
 
       {/* Generation group */}
       <div className="mb-4">
         <SectionHeader label={generationLabel} right={`$${generationCost.toFixed(2)}`} />
-        <KV label={generationLabel} value={`$${(generationCost / kwh).toFixed(4)}/kWh session average`} />
+        <KV label={generationLabel} value={`$${(kwh ? generationCost / kwh : 0).toFixed(4)}/kWh session average`} />
       </div>
 
       {/* Cost per kWh */}

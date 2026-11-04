@@ -16,6 +16,7 @@ export default function VehicleInputsCompact({
     <div className="space-y-2">
       <select
         data-testid="vehicle-select-compact"
+        aria-label="Vehicle"
         value={selectedId}
         onChange={e => onSelectedIdChange(e.target.value)}
         disabled={disabled}

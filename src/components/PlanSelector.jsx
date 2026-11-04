@@ -23,6 +23,7 @@ export default function PlanSelector({ planId, plans, onChange, disabled = false
   return (
     <select
       data-testid="plan-select"
+      aria-label="Rate plan"
       value={planId}
       onChange={e => onChange(e.target.value)}
       disabled={disabled}

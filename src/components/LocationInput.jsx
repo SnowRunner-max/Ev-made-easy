@@ -56,10 +56,10 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
         )}
         {isValid && (
           <span
-            className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"
+            aria-hidden="true" className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"
             style={{ fontSize: '16px' }}
           >
-            check_circle
+            ✓
           </span>
         )}
         {isError && (
@@ -67,7 +67,7 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
             className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-red-400 pointer-events-none"
             style={{ fontSize: '16px' }}
           >
-            error
+            !
           </span>
         )}
         {inputValue && (

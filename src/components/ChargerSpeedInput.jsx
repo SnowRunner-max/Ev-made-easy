@@ -23,6 +23,7 @@ export default function ChargerSpeedInput({ chargerKw, vehicleMaxKw, onChange, d
   return (
     <select
       data-testid="charger-speed-select"
+      aria-label="Charger speed"
       value={chargerKw}
       onChange={e => onChange(parseFloat(e.target.value))}
       disabled={disabled}

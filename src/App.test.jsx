@@ -20,6 +20,7 @@ vi.mock('./components/LocationInput', () => ({
 }));
 
 beforeEach(() => {
+  window.location.hash = '#setup';
   vi.useFakeTimers();
   vi.setSystemTime(new Date('2026-01-15T10:00:00-08:00'));
 });
@@ -44,12 +45,12 @@ describe('App — structure', () => {
     expect(screen.getByTestId('app-header')).toHaveTextContent(/MyEVRate/i);
   });
 
-  it('renders rate badge, timeline, calculator, charging tip', () => {
+  it('renders rate badge, chart and calculator', () => {
     renderWithLocation();
     expect(screen.getByTestId('rate-badge')).toBeInTheDocument();
     expect(screen.getByTestId('timeline')).toBeInTheDocument();
     expect(screen.getByTestId('calculator')).toBeInTheDocument();
-    expect(screen.getByTestId('charging-tip')).toBeInTheDocument();
+    expect(screen.getByLabelText('Charging window start')).toHaveValue('00:00');
   });
 
   it('does not expose default pricing before a valid location is selected', () => {
@@ -249,7 +250,7 @@ describe('App — SBCE service area (SCE + Santa Barbara Clean Energy)', () => {
   it('uses SCE delivery labels instead of PG&E labels in SCE territory', () => {
     render(<App />);
     act(() => capturedOnResolved({ serviceAreaId: 'sce-sbce-sb', displayLabel: 'Santa Barbara, CA', zip: '93101' }));
-    fireEvent.click(screen.getByText('See cost breakdown'));
+    fireEvent.click(screen.getByRole('button', { name: 'Pricing details', exact: true }));
     expect(screen.getByText('SCE Delivery')).toBeInTheDocument();
     expect(screen.queryByText('PG&E Delivery')).not.toBeInTheDocument();
   });
@@ -262,7 +263,7 @@ describe('App — Tahoe utilities', () => {
 
     expect(screen.getByTestId('plan-select').value).toBe('LIBERTY-D1-TOU-EV');
     expect(screen.queryByTestId('provider-toggle')).not.toBeInTheDocument();
-    expect(screen.getByTestId('rate-value')).toHaveTextContent(/\$0\.\d{2}/);
+    expect(screen.getByTestId('rate-value')).toHaveTextContent(/\d+\.\d{2}¢/);
     expect(screen.getByTestId('cost-estimate-section')).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 
@@ -272,7 +273,7 @@ describe('App — Tahoe utilities', () => {
 
     expect(screen.getByTestId('plan-select').value).toBe('TDPUD-TOU-PRIMARY');
     expect(screen.queryByTestId('provider-toggle')).not.toBeInTheDocument();
-    expect(screen.getByTestId('rate-value')).toHaveTextContent('$0.16');
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('15.67¢');
     expect(screen.getByTestId('cost-estimate-section')).toHaveTextContent(/\$\d+\.\d{2}/);
   });
 });
@@ -282,13 +283,14 @@ describe('App — TOU boundary recompute', () => {
     renderWithLocation();
     fireEvent.click(screen.getByRole('button', { name: /Central Coast Community Energy/i }));
     fireEvent.change(screen.getByLabelText('PCIA vintage'), { target: { value: '2021' } });
+    expect(screen.getByTestId('rate-value')).toHaveTextContent('27.81¢');
     expect(screen.getByTestId('precise-rate')).toHaveTextContent('$0.27814/kWh');
-    const batteryEnergy = screen.getByTestId('to80-kwh').textContent;
-    const before = screen.getByTestId('to80-cost-now').textContent;
+    const batteryEnergy = screen.getByTestId('battery-display').textContent;
+    const before = screen.getByTestId('session-cost').textContent;
     fireEvent.change(screen.getByLabelText('Charging efficiency percent'), { target: { value: '90' } });
-    expect(screen.getByTestId('to80-kwh').textContent).toBe(batteryEnergy);
-    expect(screen.getByTestId('to80-metered-kwh')).toHaveTextContent('40.0 kWh at meter');
-    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(before);
+    expect(screen.getByTestId('battery-display').textContent).toBe(batteryEnergy);
+    expect(screen.getByTestId('session-metered-kwh')).toHaveTextContent('40.0 kWh');
+    expect(screen.getByTestId('session-cost').textContent).not.toBe(before);
   });
 
   it('makes E-1 baseline assumptions editable without hiding provider or product', () => {
@@ -296,22 +298,23 @@ describe('App — TOU boundary recompute', () => {
     fireEvent.click(screen.getByRole('button', { name: /Central Coast Community Energy/i }));
     fireEvent.change(screen.getByTestId('plan-select'), { target: { value: 'E-1' } });
     expect(screen.getByTestId('tier-select')).toBeInTheDocument();
-    const above = screen.getByTestId('to80-cost-now').textContent;
+    const above = screen.getByTestId('session-cost').textContent;
     fireEvent.change(screen.getByLabelText('Baseline assumption'), { target: { value: 'tier1' } });
-    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(above);
+    expect(screen.getByTestId('session-cost').textContent).not.toBe(above);
     fireEvent.change(screen.getByLabelText('Remaining baseline kWh'), { target: { value: '5' } });
-    fireEvent.click(screen.getByText('See cost breakdown'));
+    fireEvent.click(screen.getByRole('button', { name: 'Pricing details', exact: true }));
     expect(screen.getByText(/Total · Charge to 80%/)).toBeInTheDocument();
     expect(screen.getByText('PCIA')).toBeInTheDocument();
   });
 
-  it('shows bounded input validation instead of crashing for an unsupported session length', () => {
+  it('caps an extreme charging request to the selected window without crashing', () => {
     renderWithLocation();
     fireEvent.change(screen.getByTestId('vehicle-select-compact'), { target: { value: 'custom' } });
     fireEvent.change(screen.getByLabelText('Custom battery size in kWh'), { target: { value: '500' } });
     fireEvent.change(screen.getByTestId('charger-speed-select'), { target: { value: '1.4' } });
     fireEvent.change(screen.getByLabelText('Charging efficiency percent'), { target: { value: '1' } });
-    expect(screen.getByRole('alert')).toHaveTextContent('one-year horizon');
+    expect(screen.getByText(/window too short/i)).toBeInTheDocument();
+    expect(screen.getByTestId('session-metered-kwh')).toHaveTextContent('8.4 kWh');
     expect(screen.getByTestId('rate-value')).toBeInTheDocument();
   });
 
@@ -322,25 +325,25 @@ describe('App — TOU boundary recompute', () => {
     expect(screen.getByText(/selected provider is unavailable/)).toBeInTheDocument();
     expect(screen.getByTestId('reference-estimate')).toBeInTheDocument();
   });
-  it('refreshes a multi-period estimate while still inside the same starting period', () => {
+  it('keeps a selected wall-clock window stable as the current clock advances', () => {
     vi.setSystemTime(new Date('2026-07-15T14:00:00-07:00'));
     renderWithLocation();
-    const before = screen.getByTestId('to80-cost-now').textContent;
+    const before = screen.getByTestId('session-cost').textContent;
     act(() => vi.advanceTimersByTime(30 * 60_000));
     expect(screen.getByTestId('rate-badge')).toHaveTextContent('Off-Peak');
-    const after = screen.getByTestId('to80-cost-now').textContent;
-    expect(after).not.toBe(before);
+    const after = screen.getByTestId('session-cost').textContent;
+    expect(after).toBe(before);
     renderWithLocation();
-    expect(screen.getAllByTestId('to80-cost-now')[1].textContent).toBe(after);
+    expect(screen.getAllByTestId('session-cost')[1].textContent).toBe(after);
   });
 
-  it('refreshes the calculation clock immediately on return from a suspended tab', () => {
+  it('keeps a selected window stable on return from a suspended tab', () => {
     vi.setSystemTime(new Date('2026-07-15T14:00:00-07:00'));
     renderWithLocation();
-    const before = screen.getByTestId('to80-cost-now').textContent;
+    const before = screen.getByTestId('session-cost').textContent;
     vi.setSystemTime(new Date('2026-07-15T14:30:00-07:00'));
     fireEvent.focus(window);
-    expect(screen.getByTestId('to80-cost-now').textContent).not.toBe(before);
+    expect(screen.getByTestId('session-cost').textContent).toBe(before);
   });
 
   it('marks the provider as unconfirmed and shows only the selected provider in the header', () => {
@@ -352,26 +355,26 @@ describe('App — TOU boundary recompute', () => {
     expect(screen.getByTestId('app-header')).toHaveTextContent('Central Coast Community Energy');
     expect(screen.getByText(/incremental grid-import estimate/i)).toBeInTheDocument();
   });
-  it('updates the rate badge and cost estimate after crossing the 4 PM peak boundary (EV2-A summer)', () => {
+  it('updates the current-rate badge without moving the selected charging window', () => {
     // Just before the 3pm-4pm part-peak window ends on a summer day
     vi.setSystemTime(new Date('2026-07-15T15:59:00-07:00'));
     render(<App />);
     act(() => capturedOnResolved(DEFAULT_LOCATION));
 
     expect(screen.getByTestId('rate-badge')).toHaveTextContent('Part-Peak');
-    const beforeCost = screen.getByTestId('to80-cost-now').textContent;
+    const beforeCost = screen.getByTestId('session-cost').textContent;
 
     // Advance past the 4 PM boundary
     act(() => vi.advanceTimersByTime(2 * 60_000));
 
     expect(screen.getByTestId('rate-badge')).toHaveTextContent('Peak');
-    const afterCost = screen.getByTestId('to80-cost-now').textContent;
-    expect(afterCost).not.toBe(beforeCost);
+    const afterCost = screen.getByTestId('session-cost').textContent;
+    expect(afterCost).toBe(beforeCost);
 
     // A fresh render at the post-boundary time should match the live-updated value
     render(<App />);
     act(() => capturedOnResolved(DEFAULT_LOCATION));
-    const freshCost = screen.getAllByTestId('to80-cost-now')[1].textContent;
+    const freshCost = screen.getAllByTestId('session-cost')[1].textContent;
     expect(afterCost).toBe(freshCost);
   });
 });
