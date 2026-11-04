@@ -12,7 +12,7 @@ export default function UtilityPicker({ candidates, serviceAreas, onSelect }) {
     : 'Multiple service options may apply here. Which one serves your address?';
 
   return (
-    <div className="mt-1 rounded-lg bg-[var(--color-surface-container)] p-3 space-y-2">
+    <div className="utility-picker mt-1 rounded-lg bg-[var(--color-surface-container)] p-3 space-y-2">
       <p className="text-[11px] font-medium text-[var(--text-primary)] leading-snug">
         {prompt}
       </p>

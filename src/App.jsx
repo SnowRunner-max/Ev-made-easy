@@ -287,7 +287,7 @@ export default function App() {
                     {hasValidLocation ? (
                       <>
                         <span data-testid="rate-value">{(selectedRate * 100).toFixed(2)}¢</span> /
-                        kWh · energy only
+                        kWh · session average · energy only
                       </>
                     ) : (
                       'Add your location in Setup'

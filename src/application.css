@@ -45,7 +45,8 @@
 .pricing-details [class*="border-"] { border-color:var(--line); }
 .pricing-dialog>.primary-button { margin-top:18px; width:100%; }
 @media(max-width:650px) {
-  .active-context { display:none; }
+  .toolbar { height:auto; min-height:56px; flex-wrap:wrap; gap:4px 12px; padding-top:6px; padding-bottom:10px; }
+  .active-context { display:block; order:3; flex-basis:100%; margin-left:0; text-align:left; overflow-wrap:anywhere; font-size:.76rem; }
   .toolbar .icon-button { margin-left:auto; }
   .settings-content>.grid { grid-template-columns:1fr; gap:10px; margin-bottom:10px; }
   .settings-content>.grid>div { padding:10px 16px; }
@@ -62,3 +63,13 @@
   .schedule-plan { max-width:45%; overflow:hidden; text-overflow:ellipsis; }
 }
 @media(hover:none) { [data-tooltip]:hover:after { display:none; } }
+
+/* Match utility choices to both appearances, including ambiguous ZIP lookup. */
+.apple-app .utility-picker { background:var(--control); color:var(--text); }
+.apple-app .utility-picker p { color:var(--text); }
+.apple-app .utility-picker button { background:var(--surface); color:var(--text); min-height:44px; }
+.apple-app .utility-picker button:hover { background:var(--bg); }
+
+.charge-page > .card { min-width:0; }
+.schedule-plan { min-width:0; overflow:hidden; text-overflow:ellipsis; }
+@media(max-width:1100px) { .charge-page { grid-template-columns:minmax(0,1fr); } }

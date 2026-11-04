@@ -111,15 +111,16 @@ Vitest and React Testing Library are the standard tools. Test behavior, not impl
 
 ## UI/UX Rules
 
-- **Layout**: Split panel with the light Input Laboratory on the left and ink-black Results Monolith on the right. Stack vertically at the mobile breakpoint (860px).
-- **Color palette**: Use CSS custom properties in `src/index.css`, not one-off hex values. Key tokens are `--color-ink` (#050517), `--color-paprika` (#CF5C36), `--color-apricot` (#EFC88B), `--color-custard` (#F4E3B2), and `--color-offwhite` (#FAFAF8).
+The approved Apple-inspired redesign supersedes the former Input Laboratory / Results Monolith layout and live-rate hero requirements.
+
+- **Layout**: Separate Setup and Charging views, with session inputs preserved when switching tabs. On wide screens, show the charge estimate and charging-window chart side by side; stack these cards on smaller screens.
+- **Appearance**: Support light and dark appearances throughout, including dialogs, utility-disambiguation choices, and all interactive states. Use the shared CSS custom properties in `src/apple.css` and integration rules in `src/application.css`; avoid new one-off colors.
 - **TOU colors**: Green for off-peak, amber for part-peak, and red for peak. Use `src/constants/periodColors.js` for period labels, colors, and ordering, including additional utility-specific periods.
-- **Typography**: Use Space Grotesk for hero numbers and structural headers only. Use DM Sans or Inter for other interface text.
-- **No 1px structural borders**: Separate sections with background-color shifts. Reserve borders for interactive elements such as focus rings and toggle groups.
-- **Results Monolith is always dark**: Never render light-background cards inside it.
-- **One hero number**: The current $/kWh rate is the single most prominent element.
-- **Configuration is inline, not a sheet**: The Input Laboratory's two-column grid holds Location, Rate Plan, Generation Provider, Generation Tier, Vehicle, and Charger Speed. Show generation provider toggle buttons only when the plan supports CCA generation, and the tier selector only when the selected CCA has multiple tiers. Keep these controls directly editable; no modal or gear icon.
-- **Persistent context**: The header shows the active location and plan, for example, "Plan EV2-A · PG&E + 3CE".
+- **Typography**: Use the shell's system font stack for interface text and hero numbers.
+- **One hero number**: The selected charging session's total energy cost is the most prominent number. The smaller per-kWh value is the session average, not the current live rate; label it accordingly. The current-period badge describes the current clock, independently of the selected charging window.
+- **Setup controls**: Keep Location, Rate Plan, Generation Provider, Generation Tier, Vehicle, and Charger Speed directly editable in Setup. Show provider buttons only when the plan supports CCA generation, and the tier selector only when the selected CCA has multiple tiers. Keep account assumptions and efficiency in the expandable account details.
+- **Persistent context**: Show the active location, plan, and provider in the header on desktop and mobile. Wrap the mobile context rather than hiding it.
+- **Pricing details**: Show integrated session components, pricing assumptions, exclusions, and sources in the pricing dialog.
 
 ## Action Boundaries
 
