@@ -218,7 +218,7 @@ describe('calcChargeSummary — mid-peak utility plans', () => {
       libertyTouEvConfig
     );
 
-    expect(to80.costNow).toBeCloseTo(36 * 0.3746, 1);
+    expect(to80.costNow).toBeCloseTo(36 * 0.48369, 1);
     expect(to80.cheapestCost).toBeLessThan(to80.costNow);
   });
 });

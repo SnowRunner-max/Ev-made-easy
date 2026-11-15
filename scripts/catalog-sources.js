@@ -33,6 +33,11 @@ const sourceGroups = [
     description: 'Authoritative SDG&E delivery and SDG&E-territory CCA generation source documents.',
     roots: ['data-sources/sdge_source/raw_sources'],
   },
+  {
+    id: 'liberty-rate-sources',
+    description: 'Authoritative Liberty Utilities (CalPeco) residential tariff sheets and rate brochure.',
+    roots: ['data-sources/liberty_source'],
+  },
 ];
 
 function walkFiles(rootRelativePath) {
