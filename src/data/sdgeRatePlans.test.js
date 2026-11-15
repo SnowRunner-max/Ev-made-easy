@@ -3,9 +3,9 @@ import sdgeRatePlans from './sdgeRatePlans.json';
 
 describe('SDG&E rate plan metadata', () => {
   it('stores effective dates as full ISO dates for staleness checks', () => {
-    expect(sdgeRatePlans._metadata.sdgeEffectiveDate).toBe('2026-04-01');
-    expect(sdgeRatePlans._metadata.sdcpRateEffectiveDate).toBe('2026-01-01');
-    expect(sdgeRatePlans._metadata.ceaRateEffectiveDate).toBe('2026-02-01');
+    expect(sdgeRatePlans._metadata.sdgeEffectiveDate).toBe('2026-08-01');
+    expect(sdgeRatePlans._metadata.sdcpRateEffectiveDate).toBe('2026-05-01');
+    expect(sdgeRatePlans._metadata.ceaRateEffectiveDate).toBe('2026-06-01');
     expect(sdgeRatePlans._metadata.sdgeEffectiveDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });

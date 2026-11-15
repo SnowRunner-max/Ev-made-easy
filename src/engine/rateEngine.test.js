@@ -264,16 +264,16 @@ describe('getRate — EV2-A (provider=bundled)', () => {
 describe('getRate — SDG&E EV-TOU-5 (provider=bundled)', () => {
   it('winter super off-peak rate and components', () => {
     const r = getRate(new Date('2026-01-15T02:00:00-08:00'), sdgeEvTou5Config, 'bundled');
-    expect(r.rate).toBeCloseTo(0.12115, 4);
+    expect(r.rate).toBeCloseTo(0.12332, 4);
     expect(r.delivery).toBeCloseTo(0.04705, 4);
-    expect(r.generation).toBeCloseTo(0.07410, 4);
+    expect(r.generation).toBeCloseTo(0.07627, 4);
     expect(r.period).toBe('superOffPeak');
     expect(r.season).toBe('winter');
   });
 
   it('summer peak rate', () => {
     const r = getRate(new Date('2026-07-15T17:00:00-07:00'), sdgeEvTou5Config, 'bundled');
-    expect(r.rate).toBeCloseTo(0.80292, 4);
+    expect(r.rate).toBeCloseTo(0.80205, 4);
     expect(r.season).toBe('summer');
   });
 });

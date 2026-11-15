@@ -106,7 +106,7 @@ describe('ChargingTip — SDG&E EV-TOU-5 (super off-peak is the cheapest window)
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
 
-  // Winter bundled rates: peak 0.53263, offPeak 0.47610, superOffPeak 0.12115
+  // Winter bundled rates (SDG&E 8/1/2026 total rate table): peak 0.52383, offPeak 0.46566, superOffPeak 0.12332
 
   it('does NOT claim off-peak is the cheapest window (10 AM off-peak)', () => {
     vi.setSystemTime(new Date('2026-01-15T10:00:00-08:00'));
@@ -119,8 +119,8 @@ describe('ChargingTip — SDG&E EV-TOU-5 (super off-peak is the cheapest window)
     render(<ChargingTip planConfig={sdgeEvTou5Config} currentRate={buildCurrentRate(sdgeEvTou5Config)} />);
     const msg = screen.getByTestId('tip-message');
     expect(msg).toHaveTextContent(/super off-peak/i);
-    // savings vs super off-peak: 1 - 0.12115/0.47610 ≈ 75%
-    expect(msg).toHaveTextContent(/75%/);
+    // savings vs super off-peak: 1 - 0.12332/0.46566 ≈ 74%
+    expect(msg).toHaveTextContent(/74%/);
   });
 
   it('treats super off-peak as the cheapest window (2 AM)', () => {
@@ -135,8 +135,8 @@ describe('ChargingTip — SDG&E EV-TOU-5 (super off-peak is the cheapest window)
     render(<ChargingTip planConfig={sdgeEvTou5Config} currentRate={buildCurrentRate(sdgeEvTou5Config)} />);
     const msg = screen.getByTestId('tip-message');
     expect(msg).toHaveTextContent(/super off-peak.*cheapest/i);
-    // savings vs super off-peak: 1 - 0.12115/0.53263 ≈ 77%
-    expect(msg).toHaveTextContent(/77%/);
+    // savings vs super off-peak: 1 - 0.12332/0.52383 ≈ 76%
+    expect(msg).toHaveTextContent(/76%/);
   });
 
   it('recommends waiting for super off-peak during late-evening off-peak (10 PM)', () => {
