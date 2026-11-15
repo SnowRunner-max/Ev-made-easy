@@ -13,7 +13,9 @@
     ],
     "notes": [
       "Liberty tariff totals include distribution, ECAC generation/offset/balancing, GHG, PPP, GRCMA, BRRBA, and MARBA charges shown in the tariff tables (AL 298-E / 298-E-A, effective September 1, 2026). The separately listed $0.00130/kWh CPUC and Energy Commission surcharges are excluded, matching prior releases.",
-      "The app stores the ECAC Generation, ECAC Offset, and ECAC Balancing columns in generation and all other tariff columns in delivery so combined equals the published total usage charge.",
+      "The app stores the sum of the ECAC Generation, ECAC Offset, and ECAC Balancing columns in generation, and the published total usage charge minus that sum in delivery, so combined always equals the published total.",
+      "The tariff's own columns are rounded and do not always add up to its published total: the non-ECAC columns sum to $0.31593 on the TOU schedules and $0.28001 on D-1 baseline, while several published totals imply $0.31592 and $0.28000. Stored delivery therefore differs from the column sum by $0.00001 in those rows; the published total wins.",
+      "Schedule D-1 has a different ECAC Generation column for each tier. rates.generation.allUsage is the permanent baseline value only; tierGeneration records the generation portion of each tier in the tiers metadata.",
       "Customer charges are recorded in fixedCharges metadata and are not included in EV charging session estimates.",
       "TOU periods are approximated to whole-hour boundaries used by the app: 5:01pm is represented as 5pm, 10:01pm as 10pm, 7:01am as 7am, and 10:01am as 10am."
     ]
@@ -129,6 +131,11 @@
         "baseline": 0.39821,
         "excess": 0.45084,
         "nonPermanent": 0.43121
+      },
+      "tierGeneration": {
+        "baseline": 0.11821,
+        "excess": 0.13491,
+        "nonPermanent": 0.12407
       },
       "fixedCharges": {
         "customerCharge": 31.7,

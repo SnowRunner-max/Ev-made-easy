@@ -108,7 +108,7 @@
                 "winter": { "peak": 0.09532, "offPeak": 0.09532, "superOffPeak": 0.09532 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 },
                 "winter": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 }
               },
@@ -205,7 +205,7 @@
                 "winter": { "peak": 0.11591, "offPeak": 0.11591, "superOffPeak": 0.11591 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 },
                 "winter": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 }
               },
@@ -301,7 +301,7 @@
                 "winter": { "peak": 0.11336, "offPeak": 0.11336, "superOffPeak": 0.11336 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 },
                 "winter": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 }
               },
@@ -397,7 +397,7 @@
                 "winter": { "peak": 0.13621, "offPeak": 0.13621, "superOffPeak": 0.13621 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.17592, "offPeak": 0.17592, "superOffPeak": 0.17592 },
                 "winter": { "peak": 0.17592, "offPeak": 0.17592, "superOffPeak": 0.17592 }
               },
@@ -455,7 +455,7 @@
             "defaultTier": "clean-impact",
             "tiers": {
               "clean-impact": { "label": "Clean Impact (50% renewable)", "allUsage": 0.14465 },
-              "clean-impact-plus": { "label": "Clean Impact Plus (50% renewable + 75% carbon free)", "allUsage": 0.18438 },
+              "clean-impact-plus": { "label": "Clean Impact Plus (55% renewable + 75% carbon free)", "allUsage": 0.18438 },
               "green-impact-premium": { "label": "Green Impact Premium (100% renewable)", "allUsage": 0.19088 }
             }
           }

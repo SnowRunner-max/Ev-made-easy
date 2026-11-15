@@ -263,7 +263,7 @@ describe('getRate — EV2-A (provider=bundled)', () => {
 
 describe('getRate — SDG&E EV-TOU-5 (provider=bundled)', () => {
   it('winter super off-peak rate and components', () => {
-    const r = getRate(new Date('2026-01-15T02:00:00-08:00'), sdgeEvTou5Config, 'bundled');
+    const r = getRate(new Date('2026-12-15T02:00:00-08:00'), sdgeEvTou5Config, 'bundled');
     expect(r.rate).toBeCloseTo(0.12332, 4);
     expect(r.delivery).toBeCloseTo(0.04705, 4);
     expect(r.generation).toBeCloseTo(0.07627, 4);
@@ -272,7 +272,7 @@ describe('getRate — SDG&E EV-TOU-5 (provider=bundled)', () => {
   });
 
   it('summer peak rate', () => {
-    const r = getRate(new Date('2026-07-15T17:00:00-07:00'), sdgeEvTou5Config, 'bundled');
+    const r = getRate(new Date('2026-09-15T17:00:00-07:00'), sdgeEvTou5Config, 'bundled');
     expect(r.rate).toBeCloseTo(0.80205, 4);
     expect(r.season).toBe('summer');
   });
@@ -348,18 +348,18 @@ describe('getRate — TDPUD residential rates', () => {
 describe('getRate — Liberty D-1 TOU EV rates', () => {
   // Liberty Schedule TOU D-1 EV, 34th Revised Sheet 155 (AL 298-E-A), effective 2026-09-01.
   it('matches winter off/mid/peak rates', () => {
-    expect(getRate(new Date('2026-01-15T06:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.31592, 5);
-    expect(getRate(new Date('2026-01-15T07:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.48369, 5);
-    expect(getRate(new Date('2026-01-15T17:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.49199, 5);
+    expect(getRate(new Date('2026-12-15T06:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.31592, 5);
+    expect(getRate(new Date('2026-12-15T07:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.48369, 5);
+    expect(getRate(new Date('2026-12-15T17:00:00-08:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.49199, 5);
   });
 
   it('matches summer off/peak rates', () => {
-    expect(getRate(new Date('2026-07-15T09:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.31592, 5);
-    expect(getRate(new Date('2026-07-15T10:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.48218, 5);
+    expect(getRate(new Date('2026-09-15T09:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.31592, 5);
+    expect(getRate(new Date('2026-09-15T10:00:00-07:00'), libertyTouEvConfig, 'bundled').rate).toBeCloseTo(0.48218, 5);
   });
 
   it('stores the three ECAC columns as generation and the remaining riders as delivery', () => {
-    const r = getRate(new Date('2026-07-15T10:00:00-07:00'), libertyTouEvConfig, 'bundled');
+    const r = getRate(new Date('2026-09-15T10:00:00-07:00'), libertyTouEvConfig, 'bundled');
     // ECAC Generation 0.03646 + ECAC Offset 0.09088 + ECAC Balancing 0.03892
     expect(r.generation).toBeCloseTo(0.16626, 5);
     expect(r.delivery).toBeCloseTo(0.31592, 5);
