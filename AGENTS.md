@@ -55,7 +55,7 @@ Use `npm run test:ci && npm run lint && npm run build` before opening a PR.
 
 ## Coding Style & Naming Conventions
 
-Follow the existing React style: functional components, hooks, ES modules, and concise pure helpers. Use PascalCase for components (`RateDisplay.jsx`), camelCase for hooks and utilities (`useCurrentRate.js`, `pacificTime.js`), and co-locate tests beside the file they cover. Match the formatting style of the file you edit.
+Follow the existing React style: functional components, hooks, ES modules, and concise pure helpers. Use PascalCase for components (`ChargingWindow.jsx`), camelCase for hooks and utilities (`useCurrentRate.js`, `pacificTime.js`), and co-locate tests beside the file they cover. Match the formatting style of the file you edit.
 
 Styling is primarily Tailwind utility classes plus shared tokens in `src/index.css`. Prefer existing CSS variables and avoid introducing one-off colors. Linting is enforced with `eslint.config.js`.
 

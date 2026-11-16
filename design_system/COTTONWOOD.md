@@ -61,7 +61,7 @@ Single source of truth: `src/constants/periodColors.js` (labels, colors, orderin
 | Peak | Red | `#C0392B` |
 | Super off-peak | Blue | `#3B82F6` |
 
-The charging-window chart and legend set these inline from `PERIOD_COLORS`. The brighter `.hour-bar` / `.bar` fills in the CSS (`#34c759`, `#ffb340`, `#ff7b52`) are only fallbacks. Bars outside the selected window render at 40% opacity.
+The charging-window chart and legend set these inline from `PERIOD_COLORS`. Bars outside the selected window render at 40% opacity.
 
 Never encode period by color alone: pair with the label text or legend.
 
@@ -108,7 +108,5 @@ System font stack for everything, including hero numbers: `-apple-system, BlinkM
 
 ## 8. Known gaps
 
-- Dead code still on the legacy palette: `Calculator`, `RateDisplay`, `Timeline` and `ChargingTip` are not mounted anywhere, and `PERIOD_COLORS` keeps `tip`, `pillClass` and `pillDotColor` only for them. Remove them together.
-- CSS `.hour-bar`, `.bar` and legend fills duplicate period colors instead of reading `periodColors.js`.
 - Chart colors are the same in light and dark; verify contrast of amber and green bars against the dark surface.
 - No current light/dark screenshots are committed beyond `charging-window-mobile.jpg`.
