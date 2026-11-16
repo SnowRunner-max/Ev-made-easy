@@ -104,7 +104,7 @@ export function getPacificHour(date) {
 
 /**
  * Returns the Pacific Time hour as a fractional number (e.g. 14.5 = 2:30 PM).
- * Used by Timeline to position the current-time marker precisely.
+ * Used to position the current-time marker precisely.
  */
 export function getPacificFractionalHour(date) {
   assertValidDate(date);

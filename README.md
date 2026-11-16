@@ -96,10 +96,7 @@ src/
     costCalculator.js # Multi-period charging cost calculation
   components/
     PlanSelector.jsx  # Plan dropdown (EV2-A / E-ELEC / EV-B)
-    RateDisplay.jsx   # Live rate badge with color coding
-    Timeline.jsx      # 24-hour rate visualization (3–5 segments)
-    Calculator.jsx    # EV selector + charge slider + cost output
-    ChargingTip.jsx   # Contextual recommendations
+    ChargingWindow.jsx # Charging-window chart, handles, and price legend
     Footer.jsx        # Rate source footnote
   hooks/
     useCurrentRate.js # Returns current rate + next change for selected plan

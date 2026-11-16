@@ -194,7 +194,7 @@ export default function App() {
       baselineRemainingKwh === '');
 
   if (!planConfig) {
-    return <div className="p-8 text-red-600">Error: Unknown rate plan &quot;{planId}&quot;</div>;
+    return <div className="p-8 text-[var(--danger)]">Error: Unknown rate plan &quot;{planId}&quot;</div>;
   }
 
   const selectedRate = result?.meteredKwh ? result.totalCost / result.meteredKwh : currentRate.rate;
@@ -482,7 +482,7 @@ export default function App() {
                           aria-label="PCIA vintage"
                           value={pciaVintage}
                           onChange={(e) => setPciaVintage(e.target.value)}
-                          className="ml-2 bg-surface-container-high p-2 rounded"
+                          className="ml-2 bg-[var(--control)] p-2 rounded"
                         >
                           <option value="">Unknown — assumes standard non-exempt 2021</option>
                           {Array.from({ length: 18 }, (_, i) => String(2009 + i)).map((year) => (
@@ -510,7 +510,7 @@ export default function App() {
                               setBaselineTier(e.target.value);
                               setBaselineRemainingKwh('');
                             }}
-                            className="ml-2 bg-surface-container-high p-2 rounded"
+                            className="ml-2 bg-[var(--control)] p-2 rounded"
                           >
                             <option value="">Unknown — above-baseline reference</option>
                             <option value="tier1">Within baseline</option>
@@ -531,7 +531,7 @@ export default function App() {
                                   : String(Math.max(0, Number(e.target.value))),
                               )
                             }
-                            className="ml-2 w-24 bg-surface-container-high p-2 rounded"
+                            className="ml-2 w-24 bg-[var(--control)] p-2 rounded"
                           />
                         </label>
                       </>
@@ -547,7 +547,7 @@ export default function App() {
                       onChange={(e) =>
                         setEfficiencyPct(Math.max(1, Math.min(100, Number(e.target.value) || 100)))
                       }
-                      className="ml-2 w-20 bg-surface-container-high p-2 rounded"
+                      className="ml-2 w-20 bg-[var(--control)] p-2 rounded"
                     />
                   </label>
                   <p>
