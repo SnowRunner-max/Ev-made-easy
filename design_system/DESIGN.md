@@ -1,3 +1,5 @@
+> **Legacy:** superseded by `COTTONWOOD.md` (the current Apple-style system). Kept for history only.
+
 # Design System Document: The Kinetic Utility
 
 ## 1. Overview & Creative North Star
