@@ -171,6 +171,9 @@ export function buildEffectivePlanConfig({ planConfig, serviceArea, providerId, 
     utilityId: utility?.id,
     bundledProviderId: utility?.bundledProviderId,
   };
+  if (utility?.id === 'liberty') {
+    sharedConfig._pricingWarnings.push('Liberty\'s separately listed $0.00130/kWh CPUC and Energy Commission surcharge is not included in these rates; Liberty\'s rate brochure includes it, so brochure rates are $0.00130/kWh higher.');
+  }
   if (utility?.id === 'pge' && (planConfig.rateDesignation === 'EV-B' || planConfig.scheduleCode === 'E-TOU-D')) {
     sharedConfig._pricingWarnings.push('Residential holiday observation is not tariff-verified; the internally consistent legacy observation assumption is retained.');
   }

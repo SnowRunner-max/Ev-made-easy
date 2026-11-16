@@ -191,44 +191,75 @@
       "description": "Authoritative SDG&E delivery and SDG&E-territory CCA generation source documents.",
       "files": [
         {
-          "path": "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-02-01.pdf",
-          "bytes": 464494,
-          "sha256": "2d01c56bd9a092243aa8edcfa55f4b9e2165485ee87069f8d779a7c615701995"
+          "path": "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-08-01.pdf",
+          "bytes": 468292,
+          "sha256": "02c84dfec9098e27796f5fb121524f0c41aeadb8a6dbd2bc780f522b1b0bfc88"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/DR-total-rates-2026-04-01.pdf",
-          "bytes": 154477,
-          "sha256": "575fe0ca200024af015005ab7c9605dd9bf3673ef4a254c4f76f85f3073a2d50"
+          "path": "data-sources/sdge_source/raw_sources/DR-total-rates-2026-08-01.pdf",
+          "bytes": 138368,
+          "sha256": "229f5dcd2e87fa8244154efe599e2237f2ba9303f6614ba42c9626ef448eda15"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-04-01.pdf",
-          "bytes": 155166,
-          "sha256": "701e6ed9566ede8364da1e9e71935260ec4b5d01bd91a6b32c12641d51651814"
+          "path": "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-08-01.pdf",
+          "bytes": 139673,
+          "sha256": "19d38eef4ce84e184c93b8c913c4b6f8ffbb3c35b3c17dff10f3e01e710ecc95"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-04-01.pdf",
-          "bytes": 176233,
-          "sha256": "27a0b2b68f84489c943669192237fb280d3324f9ca59e99b53395141f47476cd"
+          "path": "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-08-01.pdf",
+          "bytes": 160277,
+          "sha256": "2c9831e2919add432a4a89f401e4351620c209777b92ec1f7be446f8dd8d8cc0"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-01-01.pdf",
-          "bytes": 491443,
-          "sha256": "05aa508c81910e9d9c4b1c6e4ba2cc79c0102bcd50f300e90e744737f02fce5c"
+          "path": "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-08-01.pdf",
+          "bytes": 544052,
+          "sha256": "6cb484fd33dd795091d59818166417bd1c3d81bc607affd7366e63ec4953a75b"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-MB-total-rates-2026-04-01.pdf",
-          "bytes": 157186,
-          "sha256": "8d11c86e94d91b9b4b7d2ac118d7e9e13b772c33aed9936675de5107fb3eb1b9"
+          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-MB-total-rates-2026-08-01.pdf",
+          "bytes": 141740,
+          "sha256": "f8ff9d993ec42a4a41eee4db60bf3b59ec6f646b5c9bd2af0346ec5e82c23b01"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-04-01.pdf",
-          "bytes": 155210,
-          "sha256": "0c589c531323972ab7357a244834fb78a6dce7d2cc698087d1d24c26240f8da2"
+          "path": "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-08-01.pdf",
+          "bytes": 139886,
+          "sha256": "e99e3875990a4968db0fef661687d667f96d7675b5cfb035aa9f2aa2b9fe9950"
         },
         {
-          "path": "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-04-01.pdf",
-          "bytes": 156934,
-          "sha256": "a255c80ce290b699e6b46b463cebffd18415bcf783b7638e4455e3389b9790f4"
+          "path": "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-08-01.pdf",
+          "bytes": 141564,
+          "sha256": "9222cdb16134e9dbfe2ba1afe4d08480d2443aaa4839ae8b7ecd1f3ad869aa33"
+        }
+      ]
+    },
+    {
+      "id": "liberty-rate-sources",
+      "description": "Authoritative Liberty Utilities (CalPeco) residential tariff sheets and rate brochure.",
+      "files": [
+        {
+          "path": "data-sources/liberty_source/Electric Rates & Tariffs - Residential - California Electric - Liberty.html",
+          "bytes": 178122,
+          "sha256": "e1c5408189b34fa11ca6709451221701e12392be0678f77c0d9dae0152f691b2"
+        },
+        {
+          "path": "data-sources/liberty_source/Liberty Electric Rates Brochure 9-2026.pdf",
+          "bytes": 4559609,
+          "sha256": "aae43f649e5ed7aafdadaaa367b584207569205f40107267e71db2f2a34390ab"
+        },
+        {
+          "path": "data-sources/liberty_source/Schedule No D-1 TOU.pdf",
+          "bytes": 428492,
+          "sha256": "277743536efeb9642cdee6147e5b7cc54411ae06d1af7f357840034a9e57bc19"
+        },
+        {
+          "path": "data-sources/liberty_source/Schedule No D-1.pdf",
+          "bytes": 891659,
+          "sha256": "3be85fd0fc35353ee8dbdc2618645b0f344ad4e8178ec46e14f43f992daa4ccd"
+        },
+        {
+          "path": "data-sources/liberty_source/Schedule No. D-1 TOU EV Domestic Service.pdf",
+          "bytes": 389928,
+          "sha256": "10f524e0a60fbf51d4b77003230cba1432d34d7100a9d6b5385392091424fd7a"
         }
       ]
     }

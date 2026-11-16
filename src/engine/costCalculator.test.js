@@ -103,14 +103,14 @@ describe('calcChargeCost — EV2-A', () => {
 });
 
 describe('calcChargeCost — SDG&E EV-TOU-5', () => {
-  it('winter super off-peak 2 AM, 30 kWh costs 30 × 0.12115', () => {
+  it('winter super off-peak 2 AM, 30 kWh costs 30 × 0.12332', () => {
     const { totalCost } = calcChargeCost(new Date('2026-01-15T02:00:00-08:00'), 30, 7.7, sdgeEvTou5Config);
-    expect(totalCost).toBeCloseTo(30 * 0.12115, 2);
+    expect(totalCost).toBeCloseTo(30 * 0.12332, 2);
   });
 
-  it('summer peak 5 PM, 20 kWh costs 20 × 0.80292', () => {
+  it('summer peak 5 PM, 20 kWh costs 20 × 0.80205', () => {
     const { totalCost } = calcChargeCost(new Date('2026-07-15T17:00:00-07:00'), 20, 7.7, sdgeEvTou5Config);
-    expect(totalCost).toBeCloseTo(20 * 0.80292, 2);
+    expect(totalCost).toBeCloseTo(20 * 0.80205, 2);
   });
 });
 
@@ -154,8 +154,8 @@ describe('findCheapestWindow — SDG&E EV-TOU-5', () => {
   it('picks a super off-peak start (midnight–6 AM) over off-peak for 30 kWh', () => {
     const { startHour, totalCost } = findCheapestWindow(new Date('2026-01-15T10:00:00-08:00'), 30, 7.7, sdgeEvTou5Config);
     expect(startHour).toBeLessThan(6);
-    // 30 kWh at 7.7 kW ≈ 3.9h, fits inside the 6h super off-peak window at 0.12115
-    expect(totalCost).toBeCloseTo(30 * 0.12115, 2);
+    // 30 kWh at 7.7 kW ≈ 3.9h, fits inside the 6h super off-peak window at 0.12332
+    expect(totalCost).toBeCloseTo(30 * 0.12332, 2);
   });
 });
 
@@ -218,7 +218,7 @@ describe('calcChargeSummary — mid-peak utility plans', () => {
       libertyTouEvConfig
     );
 
-    expect(to80.costNow).toBeCloseTo(36 * 0.3746, 1);
+    expect(to80.costNow).toBeCloseTo(36 * 0.48369, 1);
     expect(to80.cheapestCost).toBeLessThan(to80.costNow);
   });
 });
@@ -361,9 +361,9 @@ describe('ccaGeneration — E-1 flat rate with multiple CCAs', () => {
 describe('ccaGeneration — SDG&E EV-TOU-5 with SDCP and CEA', () => {
   it('SDCP PowerOn uses flat generation across EV-TOU-5 periods', () => {
     const cfg = buildCCAConfig(sdgeEvTou5Raw, 'sdcp', 'poweron');
-    expect(cfg.rates.winter.superOffPeak.generation).toBeCloseTo(0.10194, 4);
-    expect(cfg.rates.summer.peak.generation).toBeCloseTo(0.10194, 4);
-    expect(cfg.rates.winter.superOffPeak.combined).toBeCloseTo(0.04705 + 0.10194, 4);
+    expect(cfg.rates.winter.superOffPeak.generation).toBeCloseTo(0.10171, 4);
+    expect(cfg.rates.summer.peak.generation).toBeCloseTo(0.10171, 4);
+    expect(cfg.rates.winter.superOffPeak.combined).toBeCloseTo(0.04705 + 0.10171, 4);
   });
 
   it('CEA Clean Impact combines with SDG&E delivery', () => {

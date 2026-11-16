@@ -2,18 +2,18 @@
   "_metadata": {
     "version": "3.0.0",
     "territory": "SDG&E",
-    "sdgeEffectiveDate": "2026-04-01",
-    "sdcpRateEffectiveDate": "2026-01-01",
-    "ceaRateEffectiveDate": "2026-02-01",
-    "sourceDate": "2026-05-15",
+    "sdgeEffectiveDate": "2026-08-01",
+    "sdcpRateEffectiveDate": "2026-05-01",
+    "ceaRateEffectiveDate": "2026-06-01",
+    "sourceDate": "2026-11-15",
     "sources": [
-      "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-04-01.pdf",
-      "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-04-01.pdf",
-      "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-04-01.pdf",
-      "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-04-01.pdf",
-      "data-sources/sdge_source/raw_sources/DR-total-rates-2026-04-01.pdf",
-      "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-01-01.pdf",
-      "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-02-01.pdf"
+      "data-sources/sdge_source/raw_sources/EV-TOU-5-total-rates-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/EV-TOU-and-EV-TOU-2-total-rates-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/TOU-ELEC-total-rates-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/TOU-DR1-total-rates-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/DR-total-rates-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/SDCP-SDGE-JRC-2026-08-01.pdf",
+      "data-sources/sdge_source/raw_sources/CEA-SDGE-JRC-2026-08-01.pdf"
     ],
     "holidays": [
       "New Year's Day",
@@ -46,7 +46,7 @@
       "uiHint": "EV-optimized with overnight super off-peak pricing.",
       "eligibility": "Residential customers with qualifying electric vehicles or qualifying home fueling equipment.",
       "meteringScope": "wholeHouse",
-      "tariffSource": "EV-TOU-5-total-rates-2026-04-01",
+      "tariffSource": "EV-TOU-5-total-rates-2026-08-01",
       "seasons": {
         "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
         "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
@@ -65,16 +65,16 @@
       },
       "rates": {
         "delivery": {
-          "summer": { "peak": 0.33273, "offPeak": 0.33273, "superOffPeak": 0.04705 },
-          "winter": { "peak": 0.33273, "offPeak": 0.33273, "superOffPeak": 0.04705 }
+          "summer": { "peak": 0.31809, "offPeak": 0.31809, "superOffPeak": 0.04705 },
+          "winter": { "peak": 0.31809, "offPeak": 0.31809, "superOffPeak": 0.04705 }
         },
         "generation": {
-          "summer": { "peak": 0.47019, "offPeak": 0.17311, "superOffPeak": 0.08147 },
-          "winter": { "peak": 0.19990, "offPeak": 0.14337, "superOffPeak": 0.07410 }
+          "summer": { "peak": 0.48396, "offPeak": 0.17818, "superOffPeak": 0.08385 },
+          "winter": { "peak": 0.20574, "offPeak": 0.14757, "superOffPeak": 0.07627 }
         },
         "totalBundled": {
-          "summer": { "peak": 0.80292, "offPeak": 0.50584, "superOffPeak": 0.12852 },
-          "winter": { "peak": 0.53263, "offPeak": 0.47610, "superOffPeak": 0.12115 }
+          "summer": { "peak": 0.80205, "offPeak": 0.49627, "superOffPeak": 0.1309 },
+          "winter": { "peak": 0.52383, "offPeak": 0.46566, "superOffPeak": 0.12332 }
         },
         "ccaGeneration": {
           "sdcp": {
@@ -83,18 +83,18 @@
             "tiers": {
               "powerbase": {
                 "label": "PowerBase (45% renewable)",
-                "summer": { "peak": 0.09325, "offPeak": 0.09325, "superOffPeak": 0.09325 },
-                "winter": { "peak": 0.09325, "offPeak": 0.09325, "superOffPeak": 0.09325 }
+                "summer": { "peak": 0.09303, "offPeak": 0.09303, "superOffPeak": 0.09303 },
+                "winter": { "peak": 0.09303, "offPeak": 0.09303, "superOffPeak": 0.09303 }
               },
               "poweron": {
                 "label": "PowerOn (53% renewable + 2% carbon free)",
-                "summer": { "peak": 0.10194, "offPeak": 0.10194, "superOffPeak": 0.10194 },
-                "winter": { "peak": 0.10194, "offPeak": 0.10194, "superOffPeak": 0.10194 }
+                "summer": { "peak": 0.10171, "offPeak": 0.10171, "superOffPeak": 0.10171 },
+                "winter": { "peak": 0.10171, "offPeak": 0.10171, "superOffPeak": 0.10171 }
               },
               "power100": {
                 "label": "Power100 (100% renewable)",
-                "summer": { "peak": 0.11194, "offPeak": 0.11194, "superOffPeak": 0.11194 },
-                "winter": { "peak": 0.11194, "offPeak": 0.11194, "superOffPeak": 0.11194 }
+                "summer": { "peak": 0.11171, "offPeak": 0.11171, "superOffPeak": 0.11171 },
+                "winter": { "peak": 0.11171, "offPeak": 0.11171, "superOffPeak": 0.11171 }
               }
             }
           },
@@ -108,7 +108,7 @@
                 "winter": { "peak": 0.09532, "offPeak": 0.09532, "superOffPeak": 0.09532 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 },
                 "winter": { "peak": 0.13503, "offPeak": 0.13503, "superOffPeak": 0.13503 }
               },
@@ -128,7 +128,7 @@
           "tier2": 0.39688,
           "tier3": 0.79343,
           "unit": "$/meter/day",
-          "note": "SDG&E Base Services Charge is $0.79343/day standard and $0.39688/day for DRAH/FERA in the 4/1/2026 total rate tables."
+          "note": "SDG&E Base Services Charge is $0.79343/day standard and $0.39688/day for DRAH/FERA in the 8/1/2026 total rate tables."
         }
       }
     },
@@ -143,7 +143,7 @@
       "uiHint": "EV TOU option with whole-house service.",
       "eligibility": "Residential customers with qualifying electric vehicles.",
       "meteringScope": "wholeHouse",
-      "tariffSource": "EV-TOU-and-EV-TOU-2-total-rates-2026-04-01",
+      "tariffSource": "EV-TOU-and-EV-TOU-2-total-rates-2026-08-01",
       "seasons": {
         "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
         "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
@@ -162,16 +162,16 @@
       },
       "rates": {
         "delivery": {
-          "summer": { "peak": 0.31934, "offPeak": 0.31934, "superOffPeak": 0.17837 },
-          "winter": { "peak": 0.31934, "offPeak": 0.31934, "superOffPeak": 0.17837 }
+          "summer": { "peak": 0.30496, "offPeak": 0.30496, "superOffPeak": 0.1673 },
+          "winter": { "peak": 0.30496, "offPeak": 0.30496, "superOffPeak": 0.1673 }
         },
         "generation": {
-          "summer": { "peak": 0.47019, "offPeak": 0.17311, "superOffPeak": 0.08147 },
-          "winter": { "peak": 0.19990, "offPeak": 0.14337, "superOffPeak": 0.07410 }
+          "summer": { "peak": 0.48396, "offPeak": 0.17818, "superOffPeak": 0.08385 },
+          "winter": { "peak": 0.20574, "offPeak": 0.14757, "superOffPeak": 0.07627 }
         },
         "totalBundled": {
-          "summer": { "peak": 0.78953, "offPeak": 0.49245, "superOffPeak": 0.25984 },
-          "winter": { "peak": 0.51924, "offPeak": 0.46271, "superOffPeak": 0.25247 }
+          "summer": { "peak": 0.78892, "offPeak": 0.48314, "superOffPeak": 0.25115 },
+          "winter": { "peak": 0.5107, "offPeak": 0.45253, "superOffPeak": 0.24357 }
         },
         "ccaGeneration": {
           "sdcp": {
@@ -180,18 +180,18 @@
             "tiers": {
               "powerbase": {
                 "label": "PowerBase (45% renewable)",
-                "summer": { "peak": 0.10631, "offPeak": 0.10631, "superOffPeak": 0.10631 },
-                "winter": { "peak": 0.10631, "offPeak": 0.10631, "superOffPeak": 0.10631 }
+                "summer": { "peak": 0.10607, "offPeak": 0.10607, "superOffPeak": 0.10607 },
+                "winter": { "peak": 0.10607, "offPeak": 0.10607, "superOffPeak": 0.10607 }
               },
               "poweron": {
                 "label": "PowerOn (53% renewable + 2% carbon free)",
-                "summer": { "peak": 0.11588, "offPeak": 0.11588, "superOffPeak": 0.11588 },
-                "winter": { "peak": 0.11588, "offPeak": 0.11588, "superOffPeak": 0.11588 }
+                "summer": { "peak": 0.11563, "offPeak": 0.11563, "superOffPeak": 0.11563 },
+                "winter": { "peak": 0.11563, "offPeak": 0.11563, "superOffPeak": 0.11563 }
               },
               "power100": {
                 "label": "Power100 (100% renewable)",
-                "summer": { "peak": 0.12588, "offPeak": 0.12588, "superOffPeak": 0.12588 },
-                "winter": { "peak": 0.12588, "offPeak": 0.12588, "superOffPeak": 0.12588 }
+                "summer": { "peak": 0.12563, "offPeak": 0.12563, "superOffPeak": 0.12563 },
+                "winter": { "peak": 0.12563, "offPeak": 0.12563, "superOffPeak": 0.12563 }
               }
             }
           },
@@ -205,7 +205,7 @@
                 "winter": { "peak": 0.11591, "offPeak": 0.11591, "superOffPeak": 0.11591 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 },
                 "winter": { "peak": 0.15561, "offPeak": 0.15561, "superOffPeak": 0.15561 }
               },
@@ -239,7 +239,7 @@
       "uiHint": "Whole-house electrification TOU plan.",
       "eligibility": "Residential customers with qualifying EV, storage, or electric heat pump technology.",
       "meteringScope": "wholeHouse",
-      "tariffSource": "TOU-ELEC-total-rates-2026-04-01",
+      "tariffSource": "TOU-ELEC-total-rates-2026-08-01",
       "seasons": {
         "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
         "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
@@ -258,16 +258,16 @@
       },
       "rates": {
         "delivery": {
-          "summer": { "peak": 0.26879, "offPeak": 0.26879, "superOffPeak": 0.26879 },
-          "winter": { "peak": 0.26879, "offPeak": 0.26879, "superOffPeak": 0.26879 }
+          "summer": { "peak": 0.25561, "offPeak": 0.25561, "superOffPeak": 0.25561 },
+          "winter": { "peak": 0.25561, "offPeak": 0.25561, "superOffPeak": 0.25561 }
         },
         "generation": {
-          "summer": { "peak": 0.45690, "offPeak": 0.12945, "superOffPeak": 0.08637 },
-          "winter": { "peak": 0.24311, "offPeak": 0.11774, "superOffPeak": 0.07856 }
+          "summer": { "peak": 0.47028, "offPeak": 0.13324, "superOffPeak": 0.08889 },
+          "winter": { "peak": 0.25023, "offPeak": 0.12118, "superOffPeak": 0.08085 }
         },
         "totalBundled": {
-          "summer": { "peak": 0.72569, "offPeak": 0.39824, "superOffPeak": 0.35516 },
-          "winter": { "peak": 0.51190, "offPeak": 0.38653, "superOffPeak": 0.34735 }
+          "summer": { "peak": 0.72589, "offPeak": 0.38885, "superOffPeak": 0.3445 },
+          "winter": { "peak": 0.50584, "offPeak": 0.37679, "superOffPeak": 0.33646 }
         },
         "ccaGeneration": {
           "sdcp": {
@@ -276,18 +276,18 @@
             "tiers": {
               "powerbase": {
                 "label": "PowerBase (45% renewable)",
-                "summer": { "peak": 0.09362, "offPeak": 0.09362, "superOffPeak": 0.09362 },
-                "winter": { "peak": 0.09362, "offPeak": 0.09362, "superOffPeak": 0.09362 }
+                "summer": { "peak": 0.09339, "offPeak": 0.09339, "superOffPeak": 0.09339 },
+                "winter": { "peak": 0.09339, "offPeak": 0.09339, "superOffPeak": 0.09339 }
               },
               "poweron": {
                 "label": "PowerOn (53% renewable + 2% carbon free)",
-                "summer": { "peak": 0.10234, "offPeak": 0.10234, "superOffPeak": 0.10234 },
-                "winter": { "peak": 0.10234, "offPeak": 0.10234, "superOffPeak": 0.10234 }
+                "summer": { "peak": 0.1021, "offPeak": 0.1021, "superOffPeak": 0.1021 },
+                "winter": { "peak": 0.1021, "offPeak": 0.1021, "superOffPeak": 0.1021 }
               },
               "power100": {
                 "label": "Power100 (100% renewable)",
-                "summer": { "peak": 0.11234, "offPeak": 0.11234, "superOffPeak": 0.11234 },
-                "winter": { "peak": 0.11234, "offPeak": 0.11234, "superOffPeak": 0.11234 }
+                "summer": { "peak": 0.1121, "offPeak": 0.1121, "superOffPeak": 0.1121 },
+                "winter": { "peak": 0.1121, "offPeak": 0.1121, "superOffPeak": 0.1121 }
               }
             }
           },
@@ -301,7 +301,7 @@
                 "winter": { "peak": 0.11336, "offPeak": 0.11336, "superOffPeak": 0.11336 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
                 "summer": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 },
                 "winter": { "peak": 0.15307, "offPeak": 0.15307, "superOffPeak": 0.15307 }
               },
@@ -335,7 +335,7 @@
       "uiHint": "Standard residential TOU plan.",
       "eligibility": "Standard residential customers",
       "meteringScope": "wholeHouse",
-      "tariffSource": "TOU-DR1-total-rates-2026-04-01",
+      "tariffSource": "TOU-DR1-total-rates-2026-08-01",
       "seasons": {
         "summer": { "startMonth": 6, "endMonth": 10, "label": "Summer (Jun-Oct)" },
         "winter": { "startMonth": 11, "endMonth": 5, "label": "Winter (Nov-May)" }
@@ -354,16 +354,16 @@
       },
       "rates": {
         "delivery": {
-          "summer": { "peak": 0.34652, "offPeak": 0.34652, "superOffPeak": 0.34652 },
-          "winter": { "peak": 0.34652, "offPeak": 0.34652, "superOffPeak": 0.34652 }
+          "summer": { "peak": 0.33192, "offPeak": 0.33192, "superOffPeak": 0.33192 },
+          "winter": { "peak": 0.33192, "offPeak": 0.33192, "superOffPeak": 0.33192 }
         },
         "generation": {
-          "summer": { "peak": 0.34920, "offPeak": 0.12853, "superOffPeak": 0.04121 },
-          "winter": { "peak": 0.27475, "offPeak": 0.19304, "superOffPeak": 0.10228 }
+          "summer": { "peak": 0.35943, "offPeak": 0.13229, "superOffPeak": 0.04241 },
+          "winter": { "peak": 0.28279, "offPeak": 0.19868, "superOffPeak": 0.10527 }
         },
         "totalBundled": {
-          "summer": { "peak": 0.69572, "offPeak": 0.47505, "superOffPeak": 0.38773 },
-          "winter": { "peak": 0.62127, "offPeak": 0.53956, "superOffPeak": 0.44880 }
+          "summer": { "peak": 0.69135, "offPeak": 0.46421, "superOffPeak": 0.37433 },
+          "winter": { "peak": 0.61471, "offPeak": 0.5306, "superOffPeak": 0.43719 }
         },
         "ccaGeneration": {
           "sdcp": {
@@ -372,18 +372,18 @@
             "tiers": {
               "powerbase": {
                 "label": "PowerBase (45% renewable)",
-                "summer": { "peak": 0.12009, "offPeak": 0.12009, "superOffPeak": 0.12009 },
-                "winter": { "peak": 0.12009, "offPeak": 0.12009, "superOffPeak": 0.12009 }
+                "summer": { "peak": 0.11988, "offPeak": 0.11988, "superOffPeak": 0.11988 },
+                "winter": { "peak": 0.11988, "offPeak": 0.11988, "superOffPeak": 0.11988 }
               },
               "poweron": {
                 "label": "PowerOn (53% renewable + 2% carbon free)",
-                "summer": { "peak": 0.13021, "offPeak": 0.13021, "superOffPeak": 0.13021 },
-                "winter": { "peak": 0.13021, "offPeak": 0.13021, "superOffPeak": 0.13021 }
+                "summer": { "peak": 0.13, "offPeak": 0.13, "superOffPeak": 0.13 },
+                "winter": { "peak": 0.13, "offPeak": 0.13, "superOffPeak": 0.13 }
               },
               "power100": {
                 "label": "Power100 (100% renewable)",
-                "summer": { "peak": 0.14021, "offPeak": 0.14021, "superOffPeak": 0.14021 },
-                "winter": { "peak": 0.14021, "offPeak": 0.14021, "superOffPeak": 0.14021 }
+                "summer": { "peak": 0.14, "offPeak": 0.14, "superOffPeak": 0.14 },
+                "winter": { "peak": 0.14, "offPeak": 0.14, "superOffPeak": 0.14 }
               }
             }
           },
@@ -393,25 +393,25 @@
             "tiers": {
               "clean-impact": {
                 "label": "Clean Impact (50% renewable)",
-                "summer": { "peak": 0.13789, "offPeak": 0.13789, "superOffPeak": 0.13789 },
-                "winter": { "peak": 0.13789, "offPeak": 0.13789, "superOffPeak": 0.13789 }
+                "summer": { "peak": 0.13621, "offPeak": 0.13621, "superOffPeak": 0.13621 },
+                "winter": { "peak": 0.13621, "offPeak": 0.13621, "superOffPeak": 0.13621 }
               },
               "clean-impact-plus": {
-                "label": "Clean Impact Plus (50% renewable + 75% carbon free)",
-                "summer": { "peak": 0.17760, "offPeak": 0.17760, "superOffPeak": 0.17760 },
-                "winter": { "peak": 0.17760, "offPeak": 0.17760, "superOffPeak": 0.17760 }
+                "label": "Clean Impact Plus (55% renewable + 75% carbon free)",
+                "summer": { "peak": 0.17592, "offPeak": 0.17592, "superOffPeak": 0.17592 },
+                "winter": { "peak": 0.17592, "offPeak": 0.17592, "superOffPeak": 0.17592 }
               },
               "green-impact-premium": {
                 "label": "Green Impact Premium (100% renewable)",
-                "summer": { "peak": 0.18410, "offPeak": 0.18410, "superOffPeak": 0.18410 },
-                "winter": { "peak": 0.18410, "offPeak": 0.18410, "superOffPeak": 0.18410 }
+                "summer": { "peak": 0.18243, "offPeak": 0.18243, "superOffPeak": 0.18243 },
+                "winter": { "peak": 0.18243, "offPeak": 0.18243, "superOffPeak": 0.18243 }
               }
             }
           }
         }
       },
       "baselineCredit": {
-        "rate": -0.10892,
+        "rate": -0.10702,
         "note": "Applied to usage up to 130% of baseline. Rates shown are pre-credit."
       },
       "fixedCharges": {
@@ -435,35 +435,35 @@
       "uiHint": "Flat residential rate with baseline tiers.",
       "eligibility": "Standard residential customers",
       "meteringScope": "wholeHouse",
-      "tariffSource": "DR-total-rates-2026-04-01",
+      "tariffSource": "DR-total-rates-2026-08-01",
       "rates": {
-        "delivery": { "tier1": 0.23760 },
-        "generation": { "allUsage": 0.18274 },
-        "totalBundled": { "tier1": 0.42034 },
+        "delivery": { "tier1": 0.22491 },
+        "generation": { "allUsage": 0.18808 },
+        "totalBundled": { "tier1": 0.41299 },
         "ccaGeneration": {
           "sdcp": {
             "name": "San Diego Community Power",
             "defaultTier": "poweron",
             "tiers": {
-              "powerbase": { "label": "PowerBase (45% renewable)", "allUsage": 0.12710 },
-              "poweron": { "label": "PowerOn (53% renewable + 2% carbon free)", "allUsage": 0.13808 },
-              "power100": { "label": "Power100 (100% renewable)", "allUsage": 0.14808 }
+              "powerbase": { "label": "PowerBase (45% renewable)", "allUsage": 0.12684 },
+              "poweron": { "label": "PowerOn (53% renewable + 2% carbon free)", "allUsage": 0.1378 },
+              "power100": { "label": "Power100 (100% renewable)", "allUsage": 0.1478 }
             }
           },
           "cea": {
             "name": "Clean Energy Alliance",
             "defaultTier": "clean-impact",
             "tiers": {
-              "clean-impact": { "label": "Clean Impact (50% renewable)", "allUsage": 0.14630 },
-              "clean-impact-plus": { "label": "Clean Impact Plus (50% renewable + 75% carbon free)", "allUsage": 0.18603 },
-              "green-impact-premium": { "label": "Green Impact Premium (100% renewable)", "allUsage": 0.19252 }
+              "clean-impact": { "label": "Clean Impact (50% renewable)", "allUsage": 0.14465 },
+              "clean-impact-plus": { "label": "Clean Impact Plus (55% renewable + 75% carbon free)", "allUsage": 0.18438 },
+              "green-impact-premium": { "label": "Green Impact Premium (100% renewable)", "allUsage": 0.19088 }
             }
           }
         }
       },
       "tiers": {
-        "baseline": 0.42034,
-        "above130Percent": 0.52926
+        "baseline": 0.41299,
+        "above130Percent": 0.52
       },
       "fixedCharges": {
         "type": "incomeBasedBSC",

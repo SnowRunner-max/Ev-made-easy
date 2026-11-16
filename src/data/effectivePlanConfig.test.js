@@ -247,3 +247,28 @@ describe('explicit PG&E baseline contract', () => {
     expect(result._aboveBaselineComponent).toBeNull();
   });
 });
+
+describe('Liberty pricing exclusions', () => {
+  const libertyPlans = UTILITY_REGISTRY.liberty.ratePlans.ratePlans;
+  const libertyArea = serviceAreas.serviceAreas['liberty-tahoe'];
+
+  it.each(Object.keys(libertyPlans))('%s warns that the $0.00130/kWh state surcharge is excluded', planId => {
+    const result = buildEffectivePlanConfig({
+      planConfig: libertyPlans[planId],
+      serviceArea: libertyArea,
+      providerId: 'liberty',
+    });
+    expect(result._pricingWarnings.join(' ')).toMatch(/\$0\.00130\/kWh.*surcharge.*not included/i);
+  });
+
+  it('does not add the Liberty surcharge warning to other utilities', () => {
+    expect(build()._pricingWarnings.join(' ')).not.toMatch(/0\.00130/);
+  });
+
+  it('records D-1 generation per tier because the ECAC Generation column differs by tier', () => {
+    const d1 = libertyPlans['LIBERTY-D1'];
+    // Schedule D-1 (eff. 2026-09-01): ECAC Generation + Offset 0.05953 + Balancing 0.03892
+    expect(d1.tierGeneration).toEqual({ baseline: 0.11821, excess: 0.13491, nonPermanent: 0.12407 });
+    expect(d1.rates.generation.allUsage).toBe(d1.tierGeneration.baseline);
+  });
+});
