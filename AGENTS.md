@@ -36,7 +36,7 @@ Runtime data files:
 
 See `src/data/README.md` for the registry pattern, territory pipeline, and instructions for adding a utility.
 
-Authoritative references live in `data-sources/pge_source/`, `data-sources/sce_source/`, `data-sources/sdge_source/`, `data-sources/tdpud_source/`, `data-sources/liberty_source/`, and `data-sources/cca_source/`. Design references live in `design_system/`. Build output goes to `dist/`.
+Authoritative references live in `data-sources/pge_source/`, `data-sources/sce_source/`, `data-sources/sdge_source/`, `data-sources/tdpud_source/`, `data-sources/liberty_source/`, and `data-sources/cca_source/`. The design system lives in `design_system/COTTONWOOD.md` (reconstructed from the shipped CSS; `charging-window-mobile.jpg` is the implemented mobile reference). Build output goes to `dist/`.
 
 ## Build, Test, and Development Commands
 
@@ -111,16 +111,17 @@ Vitest and React Testing Library are the standard tools. Test behavior, not impl
 
 ## UI/UX Rules
 
-The approved Apple-inspired redesign supersedes the former Input Laboratory / Results Monolith layout and live-rate hero requirements.
+`design_system/COTTONWOOD.md` is the design system; read it before UI work, and update it in the same change when tokens or components change. The Apple-inspired redesign supersedes the former Input Laboratory / Results Monolith ("Kinetic Utility") layout, which has been removed.
 
-- **Layout**: Separate Setup and Charging views, with session inputs preserved when switching tabs. On wide screens, show the charge estimate and charging-window chart side by side; stack these cards on smaller screens.
-- **Appearance**: Support light and dark appearances throughout, including dialogs, utility-disambiguation choices, and all interactive states. Use the shared CSS custom properties in `src/apple.css` and integration rules in `src/application.css`; avoid new one-off colors.
-- **TOU colors**: Green for off-peak, amber for part-peak, and red for peak. Use `src/constants/periodColors.js` for period labels, colors, and ordering, including additional utility-specific periods.
-- **Typography**: Use the shell's system font stack for interface text and hero numbers.
+- **Layout**: Separate Charging and Setup views, with session inputs preserved when switching tabs. On wide screens (>1100px), show the charge estimate and charging-window chart side by side; stack these cards on smaller screens. Sidebar nav on desktop, floating bottom nav at 650px and below.
+- **Appearance**: Support light and dark appearances throughout, including dialogs, utility-disambiguation choices, and all interactive states. Use the shared CSS custom properties in `src/apple.css` and integration rules in `src/application.css`; avoid new one-off colors, and give any new token a dark value. Calm and Apple-like: no gradients on content, decorative emoji, nested cards, or stat-card rows.
+- **TOU colors**: Green for off-peak, amber for part-peak, and red for peak. Use `src/constants/periodColors.js` for period labels, colors, and ordering, including additional utility-specific periods. Never rely on color alone; keep labels or legends.
+- **Typography**: Use the shell's system font stack for interface text and hero numbers, with tabular numerals for prices and times.
 - **One hero number**: The selected charging session's total energy cost is the most prominent number. The smaller per-kWh value is the session average, not the current live rate; label it accordingly. The current-period badge describes the current clock, independently of the selected charging window.
 - **Setup controls**: Keep Location, Rate Plan, Generation Provider, Generation Tier, Vehicle, and Charger Speed directly editable in Setup. Show provider buttons only when the plan supports CCA generation, and the tier selector only when the selected CCA has multiple tiers. Keep account assumptions and efficiency in the expandable account details.
 - **Persistent context**: Show the active location, plan, and provider in the header on desktop and mobile. Wrap the mobile context rather than hiding it.
 - **Pricing details**: Show integrated session components, pricing assumptions, exclusions, and sources in the pricing dialog.
+- **Accessibility**: 44px minimum touch targets, visible focus rings, and support for reduced motion, reduced transparency, and forced colors.
 
 ## Action Boundaries
 

@@ -5,8 +5,6 @@
 > The original Cottonwood document was lost; names and values below describe what the
 > code does today, not a recovered original. Where this file and the CSS disagree, the
 > CSS wins until this file is updated.
-> `design_system/DESIGN.md` ("Kinetic Utility", Input Laboratory / Results Monolith) is
-> **legacy** and superseded by this document.
 
 ## 1. Principles
 
@@ -107,4 +105,4 @@ System font stack for everything, including hero numbers: `-apple-system, BlinkM
 
 - Tailwind `@theme` tokens in `src/index.css` still carry the legacy warm palette (paprika, custard, Space Grotesk/Inter). Components that use them (period tip boxes, rate badges, pricing tables) are only partially re-themed via overrides in `src/application.css`. Migrating those to the tokens above would let the legacy palette be deleted.
 - `PERIOD_COLORS` still has `pillClass` entries written for the retired dark "Results Monolith"; chart colors in CSS duplicate `timelineColor` values rather than reading them.
-- No dark-mode screenshots of the current UI are committed; `design_system/*.png` and `example*.html` depict superseded designs.
+- No current light/dark screenshots are committed beyond `charging-window-mobile.jpg`; capture them when the design system is next revised.
