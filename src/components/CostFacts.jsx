@@ -27,9 +27,9 @@ function getCcaRateDate(globalMetadata, provider) {
 
 function SectionHeader({ label, right }) {
   return (
-    <div className="flex justify-between items-baseline pb-2 border-b border-white/10 mb-2">
-      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-white">{label}</span>
-      {right && <span className="text-[10px] font-mono text-pewter/50">{right}</span>}
+    <div className="flex justify-between items-baseline pb-2 border-b border-[var(--line)] mb-2">
+      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text)]">{label}</span>
+      {right && <span className="text-[10px] tabular-nums text-[var(--secondary)]">{right}</span>}
     </div>
   );
 }
@@ -37,8 +37,8 @@ function SectionHeader({ label, right }) {
 function KV({ label, value, prominent }) {
   return (
     <div className="flex justify-between items-baseline py-1.5">
-      <span className={`text-[13px] ${prominent ? 'text-white font-medium' : 'text-pewter/70'}`}>{label}</span>
-      <span className={`font-mono text-[13px] tabular-nums ${prominent ? 'text-white font-semibold' : 'text-pewter/80'}`}>{value}</span>
+      <span className={`text-[13px] ${prominent ? 'text-[var(--text)] font-medium' : 'text-[var(--secondary)]'}`}>{label}</span>
+      <span className={`tabular-nums text-[13px] tabular-nums ${prominent ? 'text-[var(--text)] font-semibold' : 'text-[var(--secondary)]'}`}>{value}</span>
     </div>
   );
 }
@@ -51,20 +51,20 @@ function RateTable({ rates, seasons }) {
     <table className="w-full border-collapse mt-1">
       <thead>
         <tr>
-          <th className="py-1.5 text-left text-[10px] font-medium text-pewter/40">Period</th>
+          <th className="py-1.5 text-left text-[10px] font-medium text-[var(--secondary)]">Period</th>
           {seasonKeys.map(s => (
-            <th key={s} className="py-1.5 text-right text-[10px] font-medium text-pewter/40 capitalize">{seasons[s].label}</th>
+            <th key={s} className="py-1.5 text-right text-[10px] font-medium text-[var(--secondary)] capitalize">{seasons[s].label}</th>
           ))}
         </tr>
       </thead>
       <tbody>
         {periodKeys.map(period => (
-          <tr key={period} className="border-t border-white/[0.06]">
-            <td className="py-1.5 text-[12px] text-pewter/60">{PERIOD_DISPLAY[period].label}</td>
+          <tr key={period} className="border-t border-[var(--line)]">
+            <td className="py-1.5 text-[12px] text-[var(--secondary)]">{PERIOD_DISPLAY[period].label}</td>
             {seasonKeys.map(s => {
               const rate = rates[s][period];
               return (
-                <td key={s} className="py-1.5 text-right font-mono text-[12px] text-white/80 tabular-nums">
+                <td key={s} className="py-1.5 text-right tabular-nums text-[12px] text-[var(--text)] tabular-nums">
                   {rate ? `$${rate.combined.toFixed(5)}` : '—'}
                 </td>
               );
@@ -83,7 +83,7 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
   if (!session) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-sm text-pewter/60 text-center">Select a vehicle and charge level to see cost breakdown.</p>
+        <p className="text-sm text-[var(--secondary)] text-center">Select a vehicle and charge level to see cost breakdown.</p>
       </div>
     );
   }
@@ -115,21 +115,21 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
   return (
     <div className="overflow-y-auto flex-1">
       {/* Header */}
-      <div className="flex items-baseline justify-between mb-5 pb-3 border-b border-white/10">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-pewter/50">Cost Breakdown</span>
-        <span className="text-[10px] font-mono text-pewter/40">{planConfig.name}</span>
+      <div className="flex items-baseline justify-between mb-5 pb-3 border-b border-[var(--line)]">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--secondary)]">Cost Breakdown</span>
+        <span className="text-[10px] tabular-nums text-[var(--secondary)]">{planConfig.name}</span>
       </div>
 
       {/* Total */}
       <div className="mb-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-pewter/50 mb-2">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--secondary)] mb-2">
           Total · {session.complete === false ? `Reaches ${Math.round(session.finalPct)}% of ${summary.to80 ? '80%' : '100%'} target` : `Charge to ${summary.to80 ? '80%' : '100%'}`}
         </p>
         <div className="flex items-baseline gap-2">
-          <span className="font-display font-bold text-white" style={{ fontSize: '52px', letterSpacing: '-2px' }}>
+          <span className="font-bold text-[var(--text)]" style={{ fontSize: '2rem', letterSpacing: '-1px' }}>
             ${totalCost.toFixed(2)}
           </span>
-          <span className="font-mono text-[12px] text-pewter/50">for {kwh.toFixed(1)} kWh</span>
+          <span className="tabular-nums text-[12px] text-[var(--secondary)]">for {kwh.toFixed(1)} kWh</span>
         </div>
       </div>
 
@@ -150,8 +150,8 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
         <KV key={key} label={({ pcia: 'PCIA', franchiseFee: 'Franchise fee', energySurcharge: 'State energy surcharge', baselineCredit: 'Baseline credit' })[key] ?? key}
           value={`$${value.toFixed(2)}`} />
       ))}
-      <p className="text-[10px] text-pewter/50 mb-3">Integrated across the session; individual amounts are rounded for display. Energy shown is metered grid import.</p>
-      <div className="mb-5 pt-1 border-t border-white/10">
+      <p className="text-[10px] text-[var(--secondary)] mb-3">Integrated across the session; individual amounts are rounded for display. Energy shown is metered grid import.</p>
+      <div className="mb-5 pt-1 border-t border-[var(--line)]">
         <KV label="Session average per metered kWh" value={`$${costPerKwh.toFixed(4)}`} prominent />
       </div>
 
@@ -169,15 +169,15 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
           <SectionHeader label="Sources" />
           <div className="flex flex-col gap-0.5 mt-1">
             {effectiveDate && (
-              <div className="py-1.5 border-t border-white/[0.06]">
-                <p className="text-[12px] font-medium text-white">{serviceArea?.utility ?? 'Utility'} Tariff Schedule</p>
-                <p className="text-[10px] font-mono text-pewter/40">Effective {effectiveDate}</p>
+              <div className="py-1.5 border-t border-[var(--line)]">
+                <p className="text-[12px] font-medium text-[var(--text)]">{serviceArea?.utility ?? 'Utility'} Tariff Schedule</p>
+                <p className="text-[10px] tabular-nums text-[var(--secondary)]">Effective {effectiveDate}</p>
               </div>
             )}
             {ccaRateDate && (
-              <div className="py-1.5 border-t border-white/[0.06]">
-                <p className="text-[12px] font-medium text-white">{ccaName} Generation Rate Sheet</p>
-                <p className="text-[10px] font-mono text-pewter/40">Effective {ccaRateDate}</p>
+              <div className="py-1.5 border-t border-[var(--line)]">
+                <p className="text-[12px] font-medium text-[var(--text)]">{ccaName} Generation Rate Sheet</p>
+                <p className="text-[10px] tabular-nums text-[var(--secondary)]">Effective {ccaRateDate}</p>
               </div>
             )}
           </div>
@@ -186,7 +186,7 @@ export default function CostFacts({ planConfig, summary, globalMetadata, service
 
       {/* Fine print */}
       {(bsc || dmc) && (
-        <p className="text-[10px] text-pewter/35 leading-relaxed mt-2">
+        <p className="text-[10px] text-[var(--secondary)] leading-relaxed mt-2">
           {bsc && `Excludes daily base service charge: $${bsc.tier1.toFixed(2)} T1 · $${bsc.tier2.toFixed(2)} T2 · $${bsc.tier3.toFixed(2)} T3 per day.`}
           {dmc && `Excludes daily meter charge: $${dmc.rate.toFixed(5)}/day.`}
         </p>

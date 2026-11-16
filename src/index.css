@@ -1,56 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette */
-  --color-ink:             #050517;
-  --color-ink-light:       #12122a;
-  --color-ink-surface:     #1a1a34;
-  --color-paprika:         #CF5C36;
-  --color-paprika-hover:   #B84E2D;
-  --color-apricot:         #EFC88B;
-  --color-custard:         #F4E3B2;
-  --color-pewter:          #D3D5D7;
-  --color-pewter-light:    #EAEBED;
-  --color-offwhite:        #FAFAF8;
+  /* Cottonwood tokens live in src/apple.css; Tailwind utilities (bg-control,
+     text-fg, border-line, ...) read them so both stay in sync. */
+  --color-surface: var(--surface);
+  --color-control: var(--control);
+  --color-line:    var(--line);
+  --color-fg:      var(--text);
+  --color-muted:   var(--secondary);
+  --color-accent:  var(--blue);
+  --color-danger:  var(--danger);
 
-  /* Surface hierarchy — warm palette */
-  --color-surface:                   #F4F2EE;  /* page bg */
-  --color-paper:                     #FAF8F4;  /* left panel bg */
-  --color-surface-container:         #EAE6DF;
-  --color-surface-container-high:    #E2DDD3;
-  --color-surface-container-highest: #D8D3C9;
-
-  /* TOU period colors — must live in @theme so Tailwind generates
-     utilities like bg-green/20 used by the live-rate period pill */
+  /* TOU period colors (see src/constants/periodColors.js) */
   --color-green: #2D8F5C;
   --color-amber: #B87B2B;
   --color-red:   #C0392B;
-
-  /* Typography */
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-sans:    'Inter', system-ui, sans-serif;
-  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 :root {
-  /* Semantic text — warm tones */
-  --text-primary:   #1a1b2e;
-  --text-secondary: #57534A;
-  --text-muted:     #8B7F70;
-
-  /* TOU period colors — legacy aliases of the @theme tokens above */
-  --green:        var(--color-green);
-  --green-bg:     #E8F5EE;
-  --green-border: #B8DFC8;
-  --amber:        var(--color-amber);
-  --amber-bg:     #FDF3E0;
-  --amber-border: #E8CFA0;
-  --red:          var(--color-red);
-  --red-bg:       #FDECEB;
-  --red-border:   #E8B4AF;
   --color-tou-super-off-peak: #3B82F6;
-
-  --topbar-h: 56px;
 }
 
 html,
@@ -59,7 +27,7 @@ body,
   width: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  background: var(--color-surface);
+  background: var(--bg);
 }
 
 body {
@@ -67,28 +35,9 @@ body {
   touch-action: pan-y;
 }
 
-/* Eyebrow label utility */
-.eyebrow {
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
 /* Field label (input section headers) */
 .field-label {
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  font-size: .82rem;
+  color: var(--secondary);
   margin-bottom: 6px;
-}
-
-/* Material Symbols */
-.material-symbols-outlined {
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }

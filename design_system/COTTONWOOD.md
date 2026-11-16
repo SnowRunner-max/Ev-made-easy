@@ -42,8 +42,11 @@ Defined as CSS custom properties in `src/apple.css`; dark values are applied by 
 | `--control` | `#efeff3` | `#333337` | Inputs, segmented tracks, ring track |
 | `--blue` | `#0071e3` | `#64acff` | Primary action, selection, window handles |
 | `--green` | `#247b40` | `#79da94` | Good/off-peak text, recommendation |
-| `--green-fill` | `#34c759` | `#30d158` | Charge ring, off-peak fills |
+| `--green-fill` | `#34c759` | `#30d158` | Charge ring |
+| `--danger` | `#c9372c` | `#ff6b5e` | Errors and invalid input |
 | `--sidebar` | `rgba(233,235,240,.8)` | `rgba(32,32,35,.9)` | Translucent nav |
+
+Tailwind utilities read the same tokens through `@theme` in `src/index.css` (`bg-control`, `bg-surface`, `text-fg`, `text-muted`, `text-accent`, `text-danger`, `border-line`), so both styling paths stay in sync. Arbitrary values such as `text-[var(--secondary)]` are also fine.
 
 Rules: use these variables; do not introduce one-off hex values. New tokens follow the same short-name pattern and must define a dark value.
 
@@ -51,12 +54,14 @@ Rules: use these variables; do not introduce one-off hex values. New tokens foll
 
 Single source of truth: `src/constants/periodColors.js` (labels, colors, ordering, including utility-specific periods such as Super Off-Peak and Mid-Peak).
 
-| Period | Meaning | Chart fill |
+| Period | Meaning | Chart/legend color (`timelineColor`) |
 | --- | --- | --- |
-| Off-peak | Green | `#34c759` |
-| Part-peak / Mid-peak | Amber | `#ffb340` |
-| Peak | Red | `#ff7b52` |
-| Super off-peak | Blue | `#3b82f6` |
+| Off-peak | Green | `#2D8F5C` |
+| Part-peak / Mid-peak | Amber | `#B87B2B` |
+| Peak | Red | `#C0392B` |
+| Super off-peak | Blue | `#3B82F6` |
+
+The charging-window chart and legend set these inline from `PERIOD_COLORS`. The brighter `.hour-bar` / `.bar` fills in the CSS (`#34c759`, `#ffb340`, `#ff7b52`) are only fallbacks. Bars outside the selected window render at 40% opacity.
 
 Never encode period by color alone: pair with the label text or legend.
 
@@ -101,8 +106,9 @@ System font stack for everything, including hero numbers: `-apple-system, BlinkM
 - Text contrast: `--secondary` on `--surface` ≥ 4.5:1 in both appearances; verify when adding tokens.
 - Charts must remain readable without color: period names appear in the legend and hour detail.
 
-## 8. Known gaps (to resolve when rebuilding properly)
+## 8. Known gaps
 
-- Tailwind `@theme` tokens in `src/index.css` still carry the legacy warm palette (paprika, custard, Space Grotesk/Inter). Components that use them (period tip boxes, rate badges, pricing tables) are only partially re-themed via overrides in `src/application.css`. Migrating those to the tokens above would let the legacy palette be deleted.
-- `PERIOD_COLORS` still has `pillClass` entries written for the retired dark "Results Monolith"; chart colors in CSS duplicate `timelineColor` values rather than reading them.
-- No current light/dark screenshots are committed beyond `charging-window-mobile.jpg`; capture them when the design system is next revised.
+- Dead code still on the legacy palette: `Calculator`, `RateDisplay`, `Timeline` and `ChargingTip` are not mounted anywhere, and `PERIOD_COLORS` keeps `tip`, `pillClass` and `pillDotColor` only for them. Remove them together.
+- CSS `.hour-bar`, `.bar` and legend fills duplicate period colors instead of reading `periodColors.js`.
+- Chart colors are the same in light and dark; verify contrast of amber and green bars against the dark surface.
+- No current light/dark screenshots are committed beyond `charging-window-mobile.jpg`.

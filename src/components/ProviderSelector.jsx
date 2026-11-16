@@ -8,7 +8,7 @@ export default function ProviderSelector({ provider, onChange, options = DEFAULT
   return (
     <div
       data-testid="provider-toggle"
-      className="flex p-1 bg-surface-container rounded-lg overflow-hidden"
+      className="flex p-1 bg-[var(--control)] rounded-lg overflow-hidden"
     >
       {options.map(opt => (
         <button
@@ -19,8 +19,8 @@ export default function ProviderSelector({ provider, onChange, options = DEFAULT
           className={[
             'flex-1 py-2 px-4 rounded text-xs font-bold transition-all',
             provider === opt.value
-              ? 'bg-white shadow-sm text-paprika'
-              : 'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]',
+              ? 'bg-[var(--surface)] shadow-sm text-[var(--blue)]'
+              : 'bg-transparent text-[var(--secondary)] hover:text-[var(--text)]',
           ].join(' ')}
         >
           {opt.label}

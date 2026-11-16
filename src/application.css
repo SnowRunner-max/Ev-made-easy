@@ -14,7 +14,6 @@
 .reference-note svg { width:13px; height:13px; }
 .settings-content>.grid { gap:14px; margin-bottom:14px; }
 .settings-content>.grid>div { background:var(--surface); border-radius:18px; padding:15px 18px; min-width:0; }
-.settings-content .field-label { font-size:.82rem; text-transform:none; letter-spacing:0; margin-bottom:6px; color:var(--secondary); }
 .settings-content input,.settings-content select { color:var(--text); background-color:var(--control); font-size:1rem; min-height:44px; padding:8px 12px; }
 .settings-content select { padding-right:28px; overflow:hidden; text-overflow:ellipsis; }
 .settings-content [data-testid=provider-toggle] { background:var(--control); padding:3px; }
@@ -38,11 +37,6 @@
 .dialog-heading h2 { font-size:1.3rem; }
 .pricing-details { font-size:.88rem; }
 .pricing-details p { margin-bottom:14px; }
-.pricing-details [class*="text-"] { color:var(--text); }
-.pricing-details [class*="text-[10px]"],.pricing-details [class*="text-[11px]"],.pricing-details th { font-size:.76rem; }
-.pricing-details [class*="text-[12px]"],.pricing-details [class*="text-[13px]"],.pricing-details td { font-size:.88rem; }
-.pricing-details [class*="bg-"] { background:var(--control); }
-.pricing-details [class*="border-"] { border-color:var(--line); }
 .pricing-dialog>.primary-button { margin-top:18px; width:100%; }
 @media(max-width:650px) {
   .toolbar { height:auto; min-height:56px; flex-wrap:wrap; gap:4px 12px; padding-top:6px; padding-bottom:10px; }
@@ -50,8 +44,7 @@
   .toolbar .icon-button { margin-left:auto; }
   .settings-content>.grid { grid-template-columns:1fr; gap:10px; margin-bottom:10px; }
   .settings-content>.grid>div { padding:10px 16px; }
-  .settings-content .field-label { margin-bottom:4px; }
-  .settings-content input,.settings-content select { min-height:40px; padding-top:6px; padding-bottom:6px; }
+    .settings-content input,.settings-content select { min-height:40px; padding-top:6px; padding-bottom:6px; }
   .settings-content [data-testid=provider-toggle] button { padding:6px; font-size:.88rem; }
   .setup-heading { margin-bottom:14px; }
   .account-settings { padding:12px 16px; }

@@ -10,6 +10,7 @@
   --blue: #0071e3;
   --green: #247b40;
   --green-fill: #34c759;
+  --danger: #c9372c;
   --sidebar: rgba(233,235,240,.8);
 }
 * { box-sizing: border-box; }
@@ -164,7 +165,7 @@ dialog::backdrop { background: #0004; backdrop-filter: blur(6px); }
 .detail-row { display: flex; justify-content: space-between; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--line); }
 .detail-row strong { color: var(--text); font-weight: 550; text-align: right; }
 .primary-button { display: block; margin: 26px 0 0 auto; border: 0; border-radius: 24px; min-height: 48px; padding: 10px 28px; background: var(--blue); color: #fff; font-size: 1rem; font-weight: 600; }
-.dark { color-scheme: dark; --bg: #18181a; --surface: #242426; --text: #f5f5f7; --secondary: #b3b3ba; --line: #3b3b40; --control: #333337; --blue: #64acff; --green: #79da94; --green-fill: #30d158; --sidebar: rgba(32,32,35,.9); }
+.dark { color-scheme: dark; --bg: #18181a; --surface: #242426; --text: #f5f5f7; --secondary: #b3b3ba; --line: #3b3b40; --control: #333337; --blue: #64acff; --green: #79da94; --green-fill: #30d158; --danger: #ff6b5e; --sidebar: rgba(32,32,35,.9); }
 .dark .card { border-color: #38383c; }
 .dark .recommendation { background: #25392c; }
 .dark .recommendation p { color: #b1cfb9; }

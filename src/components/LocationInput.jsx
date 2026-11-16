@@ -41,22 +41,22 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
           aria-invalid={isError ? 'true' : undefined}
           aria-describedby="location-status"
           className={[
-            'w-full px-3 py-2.5 text-sm text-[var(--text-primary)] bg-surface-container-highest border-none rounded-lg',
+            'w-full px-3 py-2.5 text-sm text-[var(--text)] bg-[var(--control)] border-none rounded-lg',
             'focus:outline-none focus:ring-2 transition-colors font-medium appearance-none',
-            isError  ? 'ring-2 ring-red-400/60 focus:ring-red-400/80' : '',
+            isError  ? 'ring-2 ring-[var(--danger)]/60 focus:ring-[var(--danger)]/80' : '',
             isValid  ? 'ring-2 ring-emerald-400/60 focus:ring-emerald-400/80' : '',
-            !isError && !isValid ? 'focus:ring-paprika/20' : '',
+            !isError && !isValid ? 'focus:ring-[var(--blue)]/30' : '',
           ].filter(Boolean).join(' ')}
         />
 
         {isResolving && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs select-none pointer-events-none">
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--secondary)] text-xs select-none pointer-events-none">
             …
           </span>
         )}
         {isValid && (
           <span
-            aria-hidden="true" className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"
+            aria-hidden="true" className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--green)] pointer-events-none"
             style={{ fontSize: '16px' }}
           >
             ✓
@@ -64,7 +64,7 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
         )}
         {isError && (
           <span
-            className="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-red-400 pointer-events-none"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--danger)] pointer-events-none"
             style={{ fontSize: '16px' }}
           >
             !
@@ -75,7 +75,7 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
             data-testid="location-clear"
             onClick={handleClear}
             aria-label="Clear location"
-            className="absolute right-8 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-primary)] text-xs px-1"
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-[var(--secondary)] hover:text-[var(--text)] text-xs px-1"
           >
             ✕
           </button>
@@ -89,9 +89,9 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
         aria-live="polite"
         className={[
           'text-[10px] leading-relaxed',
-          isError ? 'text-red-400' : '',
+          isError ? 'text-[var(--danger)]' : '',
           isValid ? 'text-emerald-600' : '',
-          !isError && !isValid ? 'text-[var(--text-muted)]' : '',
+          !isError && !isValid ? 'text-[var(--secondary)]' : '',
         ].filter(Boolean).join(' ')}
       >
         {result?.errorCode === 'multi_utility' && (
@@ -108,7 +108,7 @@ export default function LocationInput({ onLocationResolved, onLocationCleared })
           />
         )}
         {result?.errorCode && result.errorCode !== 'multi_utility' && ERROR_MESSAGES[result.errorCode] && (
-          <p className="text-[10px] leading-relaxed text-red-400">{ERROR_MESSAGES[result.errorCode]}</p>
+          <p className="text-[10px] leading-relaxed text-[var(--danger)]">{ERROR_MESSAGES[result.errorCode]}</p>
         )}
         {isValid && serviceArea && `${serviceArea.utility} territory · ${serviceArea.shortLabel}`}
         {isResolving && '…'}
